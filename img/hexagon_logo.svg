@@ -1,0 +1,22 @@
+<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <polygon points="50,5 90,25 90,75 50,95 10,75 10,25"
+           fill="none"
+           stroke="#38d84e"
+           stroke-width="5"
+           stroke-linejoin="round"
+           style="filter: drop-shadow(0 0 5px rgba(56, 216, 78, 0.8));"/>
+  
+  <style>
+    /* Clave para el efecto "Neon Glow" en el SVG */
+    .neon-glow {
+      filter: drop-shadow(0 0 2px #38d84e) 
+              drop-shadow(0 0 8px #38d84e);
+      transition: 0.3s;
+    }
+    /* Añade un efecto hover si lo usas como botón */
+    .neon-glow:hover {
+      filter: drop-shadow(0 0 4px #fff) 
+              drop-shadow(0 0 10px #38d84e);
+    }
+  </style>
+</svg>

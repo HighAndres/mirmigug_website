@@ -1,0 +1,526 @@
+/* GENERAL */
+body {
+  font-family: 'Inter', sans-serif;
+}
+
+.brand-green { color: #38d84e; }
+.brand-green-bg { background-color: #38d84e; }
+
+/* NAVBAR */
+.navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  backdrop-filter: blur(10px);
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 1000;
+  border-bottom: 1px solid #111;
+}
+
+.nav-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-name {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #38d84e;
+}
+
+.menu {
+  display: flex;
+  gap: 2rem;
+}
+
+.menu a {
+  transition: 0.3s;
+}
+
+.menu a:hover {
+  color: #38d84e;
+}
+
+/* Botón */
+.btn-contacto {
+  background: #38d84e;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  color: black;
+  transition: 0.3s;
+}
+
+.btn-contacto:hover {
+  background: #55ff7b;
+}
+
+/* MENU MÓVIL */
+.menu-btn {
+  display: none;
+  font-size: 2rem;
+}
+
+.mobile-menu {
+  display: flex;
+  flex-direction: column;
+  background: #000;
+  padding: 20px;
+  gap: 1rem;
+}
+
+.mobile-menu a {
+  font-size: 1.2rem;
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .menu { display: none; }
+  .btn-contacto { display: none; }
+  .menu-btn { display: block; }
+}
+
+/* HERO */
+.hero {
+  height: 100vh;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.hero-title {
+  font-size: 3rem;
+  font-weight: 900;
+  color: #38d84e;
+}
+
+.hero-subtitle {
+  max-width: 600px;
+  margin: auto;
+  margin-top: 20px;
+  color: #ccc;
+  margin-bottom: 2rem;
+}
+
+
+/* BOTÓN DEL HERO */
+.hero-btn {
+  border: 2px solid #38d84e;
+  padding: 8px 20px;
+  border-radius: 40px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #ffffff;
+  display: inline-block !important;
+  width: auto;
+  min-width: 160px;
+  margin: 0 auto;
+  transition: 0.3s ease;
+
+  /* Resplandor permanente */
+  box-shadow: 0 0 12px rgba(56, 216, 78, 0.7);
+
+  /* Animación de resplandor */
+  animation: glowPulse 2.2s infinite ease-in-out;
+}
+
+/* Animación hover */
+.hero-btn:hover {
+  background: #38d84e;
+  color: black;
+  transform: scale(1.07);
+  box-shadow: 0 0 22px rgba(56, 216, 78, 1);
+}
+
+/* Animación pulso */
+@keyframes glowPulse {
+  0%   { box-shadow: 0 0 6px rgba(56, 216, 78, 0.4); }
+  50%  { box-shadow: 0 0 18px rgba(56, 216, 78, 1); }
+  100% { box-shadow: 0 0 6px rgba(56, 216, 78, 0.4); }
+}
+
+
+/* Hover Animation */
+.hero-btn:hover {
+  background: #38d84e;
+  color: black;
+  transform: scale(1.07);
+  box-shadow: 0 0 18px #38d84e;
+}
+/* Idle Pulse Animation */
+.hero-btn {
+  animation: pulseGlow 2.5s infinite ease-in-out;
+}
+@keyframes pulseGlow {
+  0% {
+    box-shadow: 0 0 0px rgba(56, 216, 78, 0.0);
+  }
+  50% {
+    box-shadow: 0 0 12px rgba(56, 216, 78, 0.4);
+  }
+  100% {
+    box-shadow: 0 0 0px rgba(56, 216, 78, 0.0);
+  }
+}
+
+
+
+/* ===== HERO BACKGROUND IMAGE ===== */
+.hero-bg {
+  background-image: url('../img/fondo_hero.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+}
+
+/* Capa oscura para contraste */
+.hero-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55); /* puedes ajustar opacidad */
+  backdrop-filter: blur(2px);
+  z-index: 0;
+}
+
+/* Asegura que el contenido del hero esté encima */
+.hero-bg * {
+  position: relative;
+  z-index: 1;
+}
+
+
+/* SECCIONES */
+.section {
+  padding: 5rem 2rem;
+}
+
+.section-title {
+  text-align: center;
+  font-size: 2.5rem;
+  color: #38d84e;
+  margin-bottom: 3rem;
+}
+
+/* QUIENES SOMOS */
+.pillars {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.pillar-item {
+  border: 1px solid #38d84e;
+  padding: 10px 20px;
+  border-radius: 20px;
+  color: #38d84e;
+}
+
+/* TARJETAS */
+.cards {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.card {
+  background: #111;
+  padding: 2rem;
+  border-radius: 1rem;
+  border: 1px solid #222;
+  transition: 0.3s;
+}
+
+.card:hover {
+  border-color: #38d84e;
+}
+
+/* PLANES */
+.plans {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.plan-card {
+  padding: 2rem;
+  background: #111;
+  border: 1px solid #222;
+  border-radius: 1rem;
+  text-align: center;
+  transition: 0.3s;
+}
+
+.plan-card:hover {
+  border-color: #38d84e;
+}
+
+.price {
+  display: block;
+  margin-top: 1rem;
+  font-weight: 700;
+  color: #38d84e;
+}
+
+/* CONTACTO */
+.contact-form {
+  max-width: 500px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.contact-form input,
+.contact-form textarea {
+  background: #000;
+  border: 1px solid #444;
+  padding: 12px;
+  border-radius: 8px;
+  color: white;
+}
+
+.contact-form textarea {
+  height: 150px;
+}
+
+.contact-form button {
+  background: #38d84e;
+  padding: 12px;
+  border-radius: 8px;
+  color: black;
+  font-weight: 600;
+}
+
+.contact-form button:hover {
+  background: #55ff7b;
+}
+
+/* FOOTER */
+.footer {
+  padding: 2rem;
+  text-align: center;
+  color: #777;
+}
+
+
+/* ===== SERVICE ICONS ===== */
+.service-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.service-icon {
+  width: 26px;
+  height: 26px;
+  flex: 0 0 26px;
+  color: #38d84e;         /* usa el verde marca */
+  opacity: 0.95;
+}
+
+.card h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+
+/* COTIZADOR */
+.quote-grid{
+  display:grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 1.25rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.quote-card{
+  background: rgba(0,0,0,.55);
+  border: 1px solid rgba(56,216,78,.25);
+  border-radius: 16px;
+  padding: 1.25rem;
+  box-shadow: 0 0 0 1px rgba(56,216,78,.08), 0 20px 60px rgba(0,0,0,.35);
+}
+
+.quote-title{
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: #38d84e;
+  margin-bottom: 1rem;
+}
+
+.quote-row{
+  margin-bottom: 1rem;
+}
+
+.quote-label{
+  display:block;
+  font-weight: 700;
+  color: #e5e7eb;
+  margin-bottom: .5rem;
+}
+
+.quote-hint{
+  color: #9ca3af;
+  font-size: .9rem;
+  margin-top: .35rem;
+}
+
+.quote-divider{
+  height:1px;
+  background: rgba(56,216,78,.18);
+  margin: 1rem 0;
+}
+
+.quote-checks{
+  display:grid;
+  grid-template-columns: 1fr;
+  gap: .5rem;
+}
+
+.check{
+  display:flex;
+  align-items:center;
+  gap:.6rem;
+  padding:.6rem .75rem;
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 12px;
+  background: rgba(255,255,255,.02);
+}
+
+.check input{
+  accent-color: #38d84e;
+}
+
+.quote-actions{
+  display:flex;
+  gap:.75rem;
+  margin-top: 1rem;
+}
+
+.quote-result .quote-price{
+  border: 1px solid rgba(56,216,78,.18);
+  border-radius: 14px;
+  padding: 1rem;
+  background: rgba(56,216,78,.06);
+  margin-bottom: 1rem;
+}
+
+.quote-price-main{
+  font-size: 2rem;
+  font-weight: 900;
+  color: #ffffff;
+}
+
+.quote-price-sub{
+  color:#9ca3af;
+  font-size:.9rem;
+  margin-top:.4rem;
+  line-height: 1.35;
+}
+
+.quote-breakdown{
+  display:grid;
+  gap:.5rem;
+  margin: 1rem 0;
+}
+
+.quote-line{
+  display:flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding:.6rem .75rem;
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 12px;
+  background: rgba(255,255,255,.02);
+  color: #e5e7eb;
+}
+
+.quote-line small{
+  color:#9ca3af;
+}
+
+.w-full{ width:100%; display:block; }
+.hidden{ display:none; }
+
+@media (max-width: 900px){
+  .quote-grid{ grid-template-columns: 1fr; }
+  .quote-actions{ flex-direction: column; }
+}
+
+/* WhatsApp Floating Button */
+.whatsapp-float {
+  position: fixed;
+  bottom: 22px;
+  right: 22px;
+  width: 56px;
+  height: 56px;
+  background: #25d366;
+  color: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 24px rgba(0,0,0,.35);
+  z-index: 999;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.whatsapp-float:hover {
+  transform: scale(1.08);
+  box-shadow: 0 12px 30px rgba(0,0,0,.45);
+}
+
+
+/* ================================
+   COTIZADOR – FIX SELECT / OPTIONS
+   Evita texto blanco en desplegables
+   ================================ */
+
+#planes select,
+#planes option {
+  color: #0f172a;              /* Texto oscuro */
+  background-color: #ffffff;   /* Fondo claro */
+}
+
+/* Select cerrado (cuando no está desplegado) */
+#planes select {
+  padding: 0.6rem 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid #38d84e;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* Hover y foco */
+#planes select:hover,
+#planes select:focus {
+  outline: none;
+  border-color: #38d84e;
+  box-shadow: 0 0 0 2px rgba(56, 216, 78, 0.25);
+}
+
+/* Opciones al pasar el mouse (Chrome / Edge) */
+#planes option:hover {
+  background-color: #eafff0;
+}
+
+/* Firefox fix */
+#planes select:-moz-focusring {
+  color: transparent;
+  text-shadow: 0 0 0 #0f172a;
+}
