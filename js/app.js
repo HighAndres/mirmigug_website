@@ -280,3 +280,10 @@ document.querySelectorAll(".card").forEach(card => {
     card.style.setProperty("--y", `${e.clientY - rect.top}px`);
   });
 });
+
+// Close mobile menu when clicking a link
+document.querySelectorAll("#mobileMenu a").forEach(a => {
+  a.addEventListener("click", () => {
+    document.getElementById("mobileMenu")?.classList.add("hidden");
+  });
+});

@@ -25,33 +25,46 @@
 <body class="bg-black text-white font-inter overflow-x-hidden">
 
   <!-- NAVBAR -->
-  <header class="navbar">
-    <nav class="nav-content">
-      <div class="logo">
-        <img src="img/hexagon_logo.svg" class="w-10" alt="Mirmibug Logo">
-        <span class="brand-name">MIRMIBUG</span>
-      </div>
+<header class="navbar">
+  <nav class="nav-content">
+    <div class="logo">
+      <img src="img/hexagon_logo.svg" class="w-10" alt="Mirmibug Logo">
+      <span class="brand-name">MIRMIBUG</span>
+    </div>
 
-      <ul class="menu">
-        <li><a href="#inicio">Inicio</a></li>
-        <li><a href="#servicios">Servicios</a></li>
-        <li><a href="#planes">Planes</a></li>
-        <li><a href="#contacto">Contacto</a></li>
-      </ul>
+    <ul class="menu">
+      <li><a href="#inicio">Inicio</a></li>
+      <li><a href="#servicios">Servicios</a></li>
+      <li><a href="#planes">Planes</a></li>
+      <li><a href="#contacto">Contacto</a></li>
+    </ul>
 
-      <a href="#contacto" class="btn-contacto">Contáctanos</a>
+    <!-- Language Switch -->
+    <div class="lang-switch" role="navigation" aria-label="Cambiar idioma">
+      <a class="lang-btn is-active" href="index.html" hreflang="es">ES</a>
+      <a class="lang-btn" href="en.html" hreflang="en">EN</a>
+    </div>
 
-      <button id="menuBtn" class="menu-btn" aria-label="Abrir menú">☰</button>
-    </nav>
-  </header>
+    <a href="#contacto" class="btn-contacto">Contáctanos</a>
 
-  <!-- MOBILE MENU -->
-  <div id="mobileMenu" class="mobile-menu hidden">
-    <a href="#inicio">Inicio</a>
-    <a href="#servicios">Servicios</a>
-    <a href="#planes">Planes</a>
-    <a href="#contacto">Contacto</a>
+    <button id="menuBtn" class="menu-btn" aria-label="Abrir menú">☰</button>
+  </nav>
+</header>
+
+<!-- MOBILE MENU -->
+<div id="mobileMenu" class="mobile-menu hidden">
+  <a href="#inicio">Inicio</a>
+  <a href="#servicios">Servicios</a>
+  <a href="#planes">Planes</a>
+  <a href="#contacto">Contacto</a>
+
+  <!-- Language Switch (Mobile) -->
+  <div class="lang-switch mobile-lang" role="navigation" aria-label="Cambiar idioma">
+    <a class="lang-btn is-active" href="index.html" hreflang="es">ES</a>
+    <a class="lang-btn" href="en.html" hreflang="en">EN</a>
   </div>
+</div>
+
 
   <!-- HERO -->
   <section id="inicio" class="hero hero-bg hero-section">

@@ -712,3 +712,50 @@ body {
   margin-bottom: 1.25rem;
   text-shadow: 0 0 18px rgba(56,216,78,0.18);
 }
+/* === LANGUAGE SWITCH (ES/EN) === */
+.lang-switch{
+  display: inline-flex;
+  gap: 8px;
+  padding: 6px;
+  border-radius: 999px;
+  border: 1px solid rgba(56,216,78,0.25);
+  background: rgba(0,0,0,0.35);
+  backdrop-filter: blur(8px);
+}
+
+.lang-btn{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.75);
+  border: 1px solid transparent;
+  transition: 0.25s ease;
+}
+
+.lang-btn:hover{
+  color: #fff;
+  border-color: rgba(56,216,78,0.45);
+  box-shadow: 0 0 16px rgba(56,216,78,0.15);
+}
+
+.lang-btn.is-active{
+  color: #0a0a0a;
+  background: #38d84e;
+  border-color: rgba(56,216,78,0.9);
+  box-shadow:
+    0 0 18px rgba(56,216,78,0.35),
+    0 0 42px rgba(56,216,78,0.15);
+}
+
+.mobile-lang{
+  margin-top: 12px;
+  justify-content: center;
+}
