@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mirmibug IT Solutions</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="img/mirmibug-logo.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="img/mirmibug-logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="img/hexagon_logo.svg">
+
+  <!-- SEO language alternates -->
+  <link rel="alternate" hreflang="es" href="index.html">
+  <link rel="alternate" hreflang="en" href="en.html">
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet" />
+</head>
+
+<body class="bg-black text-white font-inter overflow-x-hidden">
+
+  <!-- NAVBAR -->
+  <header class="navbar">
+    <nav class="nav-content">
+      <div class="logo">
+        <img src="img/hexagon_logo.svg" class="w-10" alt="Mirmibug Logo">
+        <span class="brand-name">MIRMIBUG</span>
+      </div>
+
+      <ul class="menu">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#pricing">Estimator</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+
+      <!-- Language Switch -->
+      <div class="lang-switch" role="navigation" aria-label="Language switch">
+        <a class="lang-btn" href="index.html" hreflang="es">ES</a>
+        <a class="lang-btn is-active" href="en.html" hreflang="en">EN</a>
+      </div>
+
+      <a href="#contact" class="btn-contacto">Contact Us</a>
+
+      <button id="menuBtn" class="menu-btn" aria-label="Open menu">☰</button>
+    </nav>
+  </header>
+
+  <!-- MOBILE MENU -->
+  <div id="mobileMenu" class="mobile-menu hidden">
+    <a href="#home">Home</a>
+    <a href="#services">Services</a>
+    <a href="#pricing">Estimator</a>
+    <a href="#contact">Contact</a>
+
+    <div class="lang-switch mobile-lang" role="navigation" aria-label="Language switch">
+      <a class="lang-btn" href="index.html" hreflang="es">ES</a>
+      <a class="lang-btn is-active" href="en.html" hreflang="en">EN</a>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <section id="home" class="hero hero-bg hero-section">
+    <h1 class="hero-title">Professional, clear, and reliable IT management</h1>
+    <p class="hero-subtitle">
+      Support, infrastructure, and automation delivered through a controlled, documented, and measurable operating model,
+      built for organizations that require stability, accountability, and operational order.
+    </p>
+
+    <a href="#services" class="hero-btn">View Services</a>
+  </section>
+
+  <div class="section-divider" aria-hidden="true"></div>
+
+  <!-- ABOUT -->
+  <section id="about" class="section section-block">
+    <h2 class="section-title">Who We Are</h2>
+
+    <p class="max-w-3xl mx-auto text-gray-300 text-center leading-relaxed">
+      At Mirmibug IT Solutions, we manage, strengthen, and modernize IT operations for small and mid-sized businesses.
+      We become your external IT team—structured, responsive, and focused on continuity and measurable results.
+    </p>
+
+    <div class="pillars">
+      <div class="pillar-item">8+ years of experience</div>
+      <div class="pillar-item">Fast response</div>
+      <div class="pillar-item">Modern infrastructure</div>
+      <div class="pillar-item">Tailored solutions</div>
+    </div>
+  </section>
+
+  <div class="section-divider" aria-hidden="true"></div>
+
+  <!-- SERVICES -->
+  <section id="services" class="section section-block">
+    <h2 class="section-title">IT Services</h2>
+
+    <p class="max-w-3xl mx-auto text-gray-300 text-center mb-8">
+      We manage, migrate, and modernize your technology stack with clear processes, continuous monitoring,
+      and smart automation (AI)—from on-prem servers to cloud solutions and custom development.
+    </p>
+
+    <!-- 24/7 BLOCK -->
+    <div class="pillars mb-12">
+      <div class="pillar-item">24/7 IT Support</div>
+      <div class="pillar-item">AI-Assisted Proactive Monitoring</div>
+      <div class="pillar-item">Critical Incident Response</div>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <h3>Infrastructure & On-Prem Servers</h3>
+        <p>
+          Deployment and administration of on-prem servers (Windows Server and Linux),
+          Active Directory, file servers, backups, RAID, and high availability—enhanced with intelligent monitoring
+          for early fault detection and resource optimization.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>Cloud Computing & Virtualization</h3>
+        <p>
+          Migrations and administration across AWS, Azure, and Google Cloud;
+          hybrid infrastructure, virtualization, snapshots, and scalability—optimized through usage analysis
+          and AI-assisted automation.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>Business Networks & Security</h3>
+        <p>
+          Design and implementation of LAN/WAN, business Wi-Fi, VPNs, firewalls, network segmentation,
+          and access control—supported by intelligent traffic analysis and anomaly-based alerts.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>Migrations & IT Modernization</h3>
+        <p>
+          Technology modernization, planned cloud migration, and legacy system upgrades—backed by predictive analysis
+          and automation to reduce risk and ensure operational continuity.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>Custom Development & Automation</h3>
+        <p>
+          Internal systems, web platforms, and dashboards; process automation, integrations, and APIs—leveraging AI
+          to streamline workflows, reduce errors, and improve operational efficiency.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>Managed IT Operations (MSP)</h3>
+        <p>
+          Continuous operation of your IT environment with 24/7 support, AI-assisted proactive monitoring,
+          critical incident response, user management, and executive reporting based on real operational data.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider" aria-hidden="true"></div>
+
+  <!-- ESTIMATOR -->
+  <section id="pricing" class="section section-block">
+    <h2 class="section-title">Company Service Estimator</h2>
+
+    <p class="max-w-3xl mx-auto text-gray-300 text-center mb-10">
+      Build your package in minutes. Select what you need and get a monthly estimate instantly.
+    </p>
+
+    <div class="quote-grid">
+      <!-- FORM -->
+      <div class="quote-card">
+        <h3 class="quote-title">Configure your service</h3>
+
+        <div class="quote-row">
+          <label class="quote-label" for="q_users">Users to support</label>
+          <input id="q_users" type="range" min="5" max="300" value="25" />
+          <div class="quote-hint"><span id="q_users_val">25</span> users</div>
+        </div>
+
+        <div class="quote-row">
+          <label class="quote-label" for="q_sites">Sites / Locations</label>
+          <select id="q_sites">
+            <option value="1" selected>1 site</option>
+            <option value="2">2 sites</option>
+            <option value="3">3 sites</option>
+            <option value="4">4+ sites</option>
+          </select>
+        </div>
+
+        <div class="quote-row">
+          <label class="quote-label" for="q_support">Support model</label>
+          <select id="q_support">
+            <option value="remote" selected>100% Remote</option>
+            <option value="hybrid">Hybrid (scheduled visits)</option>
+            <option value="onsite">On-site (recurring)</option>
+          </select>
+        </div>
+
+        <div class="quote-row">
+          <label class="quote-label" for="q_hours">Coverage</label>
+          <select id="q_hours">
+            <option value="buss" selected>8x5 (business hours)</option>
+            <option value="plus">12x6 (extended)</option>
+            <option value="247">24/7 (critical)</option>
+          </select>
+        </div>
+
+        <div class="quote-divider"></div>
+
+        <div class="quote-row">
+          <label class="quote-label">Modules</label>
+
+          <div class="quote-checks">
+            <label class="check">
+              <input type="checkbox" id="m_helpdesk" checked />
+              <span>Help Desk & Tickets</span>
+            </label>
+
+            <label class="check">
+              <input type="checkbox" id="m_m365" />
+              <span>Email & Microsoft 365 / Google Workspace</span>
+            </label>
+
+            <label class="check">
+              <input type="checkbox" id="m_monitor" checked />
+              <span>Monitoring (endpoints/servers/network)</span>
+            </label>
+
+            <label class="check">
+              <input type="checkbox" id="m_backup" />
+              <span>Backups & Recovery</span>
+            </label>
+
+            <label class="check">
+              <input type="checkbox" id="m_security" />
+              <span>Security (hardening, MFA, EDR/AV)</span>
+            </label>
+
+            <label class="check">
+              <input type="checkbox" id="m_network" />
+              <span>Networking (Wi-Fi, switches, firewall, VPN)</span>
+            </label>
+
+            <label class="check">
+              <input type="checkbox" id="m_servers" />
+              <span>Servers & Virtualization</span>
+            </label>
+
+            <label class="check">
+              <input type="checkbox" id="m_projects" />
+              <span>Change / Projects bucket</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="quote-row">
+          <label class="quote-label" for="q_servers">Servers to manage (if applicable)</label>
+          <input id="q_servers" type="number" min="0" max="50" value="0" />
+          <div class="quote-hint">0 = no servers</div>
+        </div>
+
+        <div class="quote-row">
+          <label class="quote-label" for="q_urgency">Response urgency</label>
+          <select id="q_urgency">
+            <option value="std" selected>Standard (basic SLA)</option>
+            <option value="prio">Priority (enhanced SLA)</option>
+            <option value="crit">Critical (high SLA)</option>
+          </select>
+        </div>
+
+        <div class="quote-actions">
+          <button type="button" class="btn-cta" id="q_btn_calc">Calculate</button>
+          <button type="button" class="btn-secondary" id="q_btn_reset">Reset</button>
+        </div>
+
+        <!-- Hidden summary for contact form -->
+        <textarea id="quote_summary" class="hidden" readonly></textarea>
+      </div>
+
+      <!-- RESULT -->
+      <div class="quote-card quote-result">
+        <h3 class="quote-title">Monthly estimate</h3>
+
+        <div class="quote-price">
+          <div class="quote-price-main" id="q_price">$0 MXN</div>
+          <div class="quote-price-sub" id="q_price_note">
+            This is an estimate. Final pricing depends on scope, inventory, and SLA requirements.
+          </div>
+        </div>
+
+        <div class="quote-breakdown" id="q_breakdown"></div>
+
+        <div class="quote-cta">
+          <a class="btn-cta w-full text-center" id="q_btn_whatsapp" href="#" target="_blank" rel="noopener">
+            Quote via WhatsApp
+          </a>
+          <a class="btn-secondary w-full text-center" href="#contact" id="q_btn_to_contact">
+            Send via form
+          </a>
+        </div>
+
+        <div class="quote-mini">
+          <p class="text-gray-300">
+            If you’d like, we can also send a proposal including:
+            inventory, response times, module scope, and a recommended improvement roadmap.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider" aria-hidden="true"></div>
+
+  <!-- CONTACT -->
+  <section id="contact" class="section section-block">
+    <h2 class="section-title">Contact</h2>
+
+    <form class="contact-form">
+      <input type="text" placeholder="Name">
+      <input type="email" placeholder="Email">
+      <input type="text" placeholder="Company">
+      <textarea placeholder="Message"></textarea>
+
+      <button>Send message</button>
+    </form>
+  </section>
+
+  <!-- WhatsApp Floating Button -->
+  <a
+    href="https://wa.me/525527970496?text=Hello,%20I%20would%20like%20more%20information%20about%20your%20IT%20services"
+    class="whatsapp-float"
+    target="_blank"
+    rel="noopener"
+    aria-label="Contact via WhatsApp"
+  >
+    <svg viewBox="0 0 32 32" width="26" height="26" fill="currentColor" aria-hidden="true">
+      <path d="M19.11 17.21c-.27-.14-1.6-.79-1.85-.88-.25-.09-.43-.14-.61.14-.18.27-.7.88-.86 1.06-.16.18-.32.2-.59.07-.27-.14-1.14-.42-2.17-1.33-.8-.71-1.34-1.6-1.5-1.87-.16-.27-.02-.42.12-.55.12-.12.27-.32.41-.48.14-.16.18-.27.27-.45.09-.18.05-.34-.02-.48-.07-.14-.61-1.47-.84-2.01-.22-.53-.45-.46-.61-.47h-.52c-.18 0-.48.07-.73.34-.25.27-.96.94-.96 2.29 0 1.35.98 2.65 1.12 2.83.14.18 1.93 2.95 4.68 4.13.65.28 1.15.45 1.54.57.65.21 1.24.18 1.7.11.52-.08 1.6-.65 1.83-1.27.23-.61.23-1.13.16-1.24-.07-.11-.25-.18-.52-.32z"/>
+      <path d="M16 2.67c-7.36 0-13.33 5.97-13.33 13.33 0 2.35.62 4.64 1.79 6.65L2.67 29.33l6.86-1.76c1.94 1.06 4.12 1.61 6.47 1.61 7.36 0 13.33-5.97 13.33-13.33S23.36 2.67 16 2.67z"/>
+    </svg>
+  </a>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <p>© 2025 Mirmibug IT Solutions — Your external IT department</p>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

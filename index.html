@@ -9,7 +9,6 @@
   <link rel="icon" type="image/svg+xml" href="img/mirmibug-logo.svg">
   <link rel="icon" type="image/png" sizes="32x32" href="img/mirmibug-logo.png">
 
-
   <!-- Optional PNG fallback -->
   <link rel="icon" type="image/png" sizes="32x32" href="img/hexagon_logo.svg">
 
@@ -29,7 +28,7 @@
   <header class="navbar">
     <nav class="nav-content">
       <div class="logo">
-        <img src="img/hexagon_logo.svg" class="w-10">
+        <img src="img/hexagon_logo.svg" class="w-10" alt="Mirmibug Logo">
         <span class="brand-name">MIRMIBUG</span>
       </div>
 
@@ -42,7 +41,7 @@
 
       <a href="#contacto" class="btn-contacto">Contáctanos</a>
 
-      <button id="menuBtn" class="menu-btn">☰</button>
+      <button id="menuBtn" class="menu-btn" aria-label="Abrir menú">☰</button>
     </nav>
   </header>
 
@@ -55,18 +54,20 @@
   </div>
 
   <!-- HERO -->
-  <section id="inicio" class="hero hero-bg">
-    <h1 class="hero-title">Somos tu Departamento de IT Externo</h1>
+  <section id="inicio" class="hero hero-bg hero-section">
+
+    <h1 class="hero-title">Gestión IT profesional, clara y confiable</h1>
     <p class="hero-subtitle">
-      Soporte técnico, infraestructura, automatización y servicios tecnológicos para empresas pequeñas y medianas.
-      La innovación IT al estilo Mirmibug.
+      Soporte, infraestructura y automatización bajo un modelo de operación controlado, documentado y medible, diseñado para empresas que requieren confiabilidad y orden tecnológico.
     </p>
 
     <a href="#servicios" class="hero-btn">Ver Servicios</a>
   </section>
 
+  <div class="section-divider" aria-hidden="true"></div>
+
   <!-- QUIÉNES SOMOS -->
-  <section class="section">
+  <section id="quienes" class="section section-block">
     <h2 class="section-title">¿Quiénes Somos?</h2>
 
     <p class="max-w-3xl mx-auto text-gray-300 text-center leading-relaxed">
@@ -82,230 +83,240 @@
     </div>
   </section>
 
-<!-- SERVICIOS -->
-<section id="servicios" class="section">
-  <h2 class="section-title">Servicios IT</h2>
+  <div class="section-divider" aria-hidden="true"></div>
 
-  <p class="max-w-3xl mx-auto text-gray-300 text-center mb-8">
-    Administramos, migramos y modernizamos la infraestructura tecnológica de tu empresa,
-    desde servidores físicos hasta soluciones cloud y desarrollos a la medida.
-  </p>
+  <!-- SERVICIOS -->
+  <section id="servicios" class="section section-block">
+    <h2 class="section-title">Servicios IT</h2>
 
-  <!-- BLOQUE 24/7 -->
-  <div class="pillars mb-12">
-    <div class="pillar-item">Soporte IT 24/7</div>
-    <div class="pillar-item">Monitoreo Proactivo</div>
-    <div class="pillar-item">Atención a Incidentes Críticos</div>
-  </div>
+    <p class="max-w-3xl mx-auto text-gray-300 text-center mb-8">
+      Administramos, migramos y modernizamos la infraestructura tecnológica de tu empresa
+      con procesos claros, monitoreo constante y automatización inteligente (IA),
+      desde servidores físicos hasta soluciones cloud y desarrollos a la medida.
+    </p>
 
-  <div class="cards">
-    <div class="card">
-      <h3>Infraestructura & Servidores Físicos</h3>
-      <p>
-        Implementación y administración de servidores on-premise, Windows Server y Linux,
-        Active Directory, file servers, respaldos, RAID y alta disponibilidad.
-      </p>
+    <!-- BLOQUE 24/7 -->
+    <div class="pillars mb-12">
+      <div class="pillar-item">Soporte IT 24/7</div>
+      <div class="pillar-item">Monitoreo Proactivo con IA</div>
+      <div class="pillar-item">Atención a Incidentes Críticos</div>
     </div>
 
-    <div class="card">
-      <h3>Cloud Computing & Virtualización</h3>
-      <p>
-        Migraciones y administración en AWS, Azure y Google Cloud,
-        infraestructura híbrida, virtualización, snapshots y escalabilidad.
-      </p>
-    </div>
-
-    <div class="card">
-      <h3>Redes Empresariales & Seguridad</h3>
-      <p>
-        Diseño e implementación de redes LAN/WAN, WiFi empresarial,
-        VPNs, firewalls, segmentación de red y control de accesos.
-      </p>
-    </div>
-
-    <div class="card">
-      <h3>Migraciones & Modernización IT</h3>
-      <p>
-        Migración de infraestructura física a cloud, actualización de sistemas obsoletos,
-        consolidación de servicios y planes de contingencia.
-      </p>
-    </div>
-
-    <div class="card">
-      <h3>Desarrollo a la Medida & Automatización</h3>
-      <p>
-        Desarrollo de sistemas internos, plataformas web, dashboards,
-        automatización de procesos, integraciones y APIs.
-      </p>
-    </div>
-
-    <div class="card">
-      <h3>Administración IT Gestionada (MSP)</h3>
-      <p>
-        Operación continua de tu infraestructura IT con soporte 24/7,
-        monitoreo proactivo, atención a incidentes críticos,
-        gestión de usuarios y reportes ejecutivos.
-      </p>
-    </div>
-  </div>
-</section>
-
-<!-- COTIZADOR -->
-<section id="planes" class="section">
-  <h2 class="section-title">Cotizador para Empresas</h2>
-
-  <p class="max-w-3xl mx-auto text-gray-300 text-center mb-10">
-    Arma tu paquete a la medida. Selecciona lo que necesitas y obtén un estimado mensual en segundos.
-  </p>
-
-  <div class="quote-grid">
-    <!-- FORM -->
-    <div class="quote-card">
-      <h3 class="quote-title">Configura tu servicio</h3>
-
-      <div class="quote-row">
-        <label class="quote-label" for="q_users">Usuarios a soportar</label>
-        <input id="q_users" type="range" min="5" max="300" value="25" />
-        <div class="quote-hint"><span id="q_users_val">25</span> usuarios</div>
+    <div class="cards">
+      <div class="card">
+        <h3>Infraestructura & Servidores Físicos</h3>
+        <p>
+          Implementación y administración de servidores on-premise, Windows Server y Linux,
+          Active Directory, file servers, respaldos, RAID y alta disponibilidad,
+          con monitoreo inteligente para detección temprana de fallos y optimización de recursos.
+        </p>
       </div>
 
-      <div class="quote-row">
-        <label class="quote-label" for="q_sites">Sedes / Ubicaciones</label>
-        <select id="q_sites">
-          <option value="1" selected>1 sede</option>
-          <option value="2">2 sedes</option>
-          <option value="3">3 sedes</option>
-          <option value="4">4+ sedes</option>
-        </select>
+      <div class="card">
+        <h3>Cloud Computing & Virtualización</h3>
+        <p>
+          Migraciones y administración en AWS, Azure y Google Cloud,
+          infraestructura híbrida, virtualización, snapshots y escalabilidad,
+          optimizados mediante análisis de uso y automatización asistida por IA.
+        </p>
       </div>
 
-      <div class="quote-row">
-        <label class="quote-label" for="q_support">Tipo de soporte</label>
-        <select id="q_support">
-          <option value="remote" selected>100% Remoto</option>
-          <option value="hybrid">Híbrido (visitas programadas)</option>
-          <option value="onsite">On-site (presencial recurrente)</option>
-        </select>
+      <div class="card">
+        <h3>Redes Empresariales & Seguridad</h3>
+        <p>
+          Diseño e implementación de redes LAN/WAN, WiFi empresarial,
+          VPNs, firewalls, segmentación de red y control de accesos,
+          con análisis inteligente de tráfico y alertas por comportamientos anómalos.
+        </p>
       </div>
 
-      <div class="quote-row">
-        <label class="quote-label" for="q_hours">Horario</label>
-        <select id="q_hours">
-          <option value="buss" selected>8x5 (Horario laboral)</option>
-          <option value="plus">12x6 (Extendido)</option>
-          <option value="247">24/7 (Crítico)</option>
-        </select>
+      <div class="card">
+        <h3>Migraciones & Modernización IT</h3>
+        <p>
+          Modernización de infraestructura tecnológica, migración planificada a cloud
+          y actualización de sistemas obsoletos,
+          apoyados en análisis predictivo y automatización para minimizar riesgos
+          y asegurar continuidad operativa.
+        </p>
       </div>
 
-      <div class="quote-divider"></div>
-
-      <div class="quote-row">
-        <label class="quote-label">Módulos</label>
-
-        <div class="quote-checks">
-          <label class="check">
-            <input type="checkbox" id="m_helpdesk" checked />
-            <span>Help Desk & Tickets</span>
-          </label>
-
-          <label class="check">
-            <input type="checkbox" id="m_m365" />
-            <span>Correo & Microsoft 365 / Google Workspace</span>
-          </label>
-
-          <label class="check">
-            <input type="checkbox" id="m_monitor" checked />
-            <span>Monitoreo (equipos/servidores/red)</span>
-          </label>
-
-          <label class="check">
-            <input type="checkbox" id="m_backup" />
-            <span>Backups & Recuperación</span>
-          </label>
-
-          <label class="check">
-            <input type="checkbox" id="m_security" />
-            <span>Seguridad (hardening, MFA, EDR/AV)</span>
-          </label>
-
-          <label class="check">
-            <input type="checkbox" id="m_network" />
-            <span>Redes (WiFi, switches, firewall, VPN)</span>
-          </label>
-
-          <label class="check">
-            <input type="checkbox" id="m_servers" />
-            <span>Servidores & Virtualización</span>
-          </label>
-
-          <label class="check">
-            <input type="checkbox" id="m_projects" />
-            <span>Bolsa de cambios / Proyectos</span>
-          </label>
-        </div>
+      <div class="card">
+        <h3>Desarrollo a la Medida & Automatización</h3>
+        <p>
+          Desarrollo de sistemas internos, plataformas web y dashboards,
+          automatización de procesos, integraciones y APIs,
+          incorporando IA para optimizar flujos, reducir errores y mejorar la eficiencia operativa.
+        </p>
       </div>
 
-      <div class="quote-row">
-        <label class="quote-label" for="q_servers">Servidores a administrar (si aplica)</label>
-        <input id="q_servers" type="number" min="0" max="50" value="0" />
-        <div class="quote-hint">0 = sin servidores</div>
-      </div>
-
-      <div class="quote-row">
-        <label class="quote-label" for="q_urgency">Urgencia de respuesta</label>
-        <select id="q_urgency">
-          <option value="std" selected>Estándar (SLA básico)</option>
-          <option value="prio">Prioridad (SLA mejorado)</option>
-          <option value="crit">Crítico (SLA alto)</option>
-        </select>
-      </div>
-
-      <div class="quote-actions">
-        <button type="button" class="btn-cta" id="q_btn_calc">Calcular</button>
-        <button type="button" class="btn-secondary" id="q_btn_reset">Reiniciar</button>
-      </div>
-
-      <!-- Resumen oculto para que lo uses en tu sección de Contacto -->
-      <textarea id="quote_summary" class="hidden" readonly></textarea>
-    </div>
-
-    <!-- RESULT -->
-    <div class="quote-card quote-result">
-      <h3 class="quote-title">Estimado mensual</h3>
-
-      <div class="quote-price">
-        <div class="quote-price-main" id="q_price">$0 MXN</div>
-        <div class="quote-price-sub" id="q_price_note">
-          Este es un estimado. La cotización final depende de alcance, inventario y SLA.
-        </div>
-      </div>
-
-      <div class="quote-breakdown" id="q_breakdown"></div>
-
-      <div class="quote-cta">
-        <a class="btn-cta w-full text-center" id="q_btn_whatsapp" href="#" target="_blank" rel="noopener">
-          Cotizar por WhatsApp
-        </a>
-        <a class="btn-secondary w-full text-center" href="#contacto" id="q_btn_to_contact">
-          Enviar por formulario
-        </a>
-      </div>
-
-      <div class="quote-mini">
-        <p class="text-gray-300">
-          Si quieres, también podemos enviarte una propuesta con:
-          inventario, tiempos de respuesta, alcance por módulo y roadmap de mejoras.
+      <div class="card">
+        <h3>Administración IT Gestionada (MSP)</h3>
+        <p>
+          Operación continua de tu infraestructura IT con soporte 24/7,
+          monitoreo proactivo asistido por IA, atención a incidentes críticos,
+          gestión de usuarios y reportes ejecutivos basados en datos reales.
         </p>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
+  <div class="section-divider" aria-hidden="true"></div>
 
+  <!-- COTIZADOR -->
+  <section id="planes" class="section section-block">
+    <h2 class="section-title">Cotizador para Empresas</h2>
 
+    <p class="max-w-3xl mx-auto text-gray-300 text-center mb-10">
+      Arma tu paquete a la medida. Selecciona lo que necesitas y obtén un estimado mensual en segundos.
+    </p>
+
+    <div class="quote-grid">
+      <!-- FORM -->
+      <div class="quote-card">
+        <h3 class="quote-title">Configura tu servicio</h3>
+
+        <div class="quote-row">
+          <label class="quote-label" for="q_users">Usuarios a soportar</label>
+          <input id="q_users" type="range" min="5" max="300" value="25" />
+          <div class="quote-hint"><span id="q_users_val">25</span> usuarios</div>
+        </div>
+
+        <div class="quote-row">
+          <label class="quote-label" for="q_sites">Sedes / Ubicaciones</label>
+          <select id="q_sites">
+            <option value="1" selected>1 sede</option>
+            <option value="2">2 sedes</option>
+            <option value="3">3 sedes</option>
+            <option value="4">4+ sedes</option>
+          </select>
+        </div>
+
+        <div class="quote-row">
+          <label class="quote-label" for="q_support">Tipo de soporte</label>
+          <select id="q_support">
+            <option value="remote" selected>100% Remoto</option>
+            <option value="hybrid">Híbrido (visitas programadas)</option>
+            <option value="onsite">On-site (presencial recurrente)</option>
+          </select>
+        </div>
+
+        <div class="quote-row">
+          <label class="quote-label" for="q_hours">Horario</label>
+          <select id="q_hours">
+            <option value="buss" selected>8x5 (Horario laboral)</option>
+            <option value="plus">12x6 (Extendido)</option>
+            <option value="247">24/7 (Crítico)</option>
+          </select>
+        </div>
+
+        <div class="quote-divider"></div>
+
+        <div class="quote-row">
+          <label class="quote-label">Módulos</label>
+
+          <div class="quote-checks">
+            <label class="check">
+              <input type="checkbox" id="m_helpdesk" checked />
+              <span>Help Desk & Tickets</span>
+            </label>
+
+            <label class="check">
+              <input type="checkbox" id="m_m365" />
+              <span>Correo & Microsoft 365 / Google Workspace</span>
+            </label>
+
+            <label class="check">
+              <input type="checkbox" id="m_monitor" checked />
+              <span>Monitoreo (equipos/servidores/red)</span>
+            </label>
+
+            <label class="check">
+              <input type="checkbox" id="m_backup" />
+              <span>Backups & Recuperación</span>
+            </label>
+
+            <label class="check">
+              <input type="checkbox" id="m_security" />
+              <span>Seguridad (hardening, MFA, EDR/AV)</span>
+            </label>
+
+            <label class="check">
+              <input type="checkbox" id="m_network" />
+              <span>Redes (WiFi, switches, firewall, VPN)</span>
+            </label>
+
+            <label class="check">
+              <input type="checkbox" id="m_servers" />
+              <span>Servidores & Virtualización</span>
+            </label>
+
+            <label class="check">
+              <input type="checkbox" id="m_projects" />
+              <span>Bolsa de cambios / Proyectos</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="quote-row">
+          <label class="quote-label" for="q_servers">Servidores a administrar (si aplica)</label>
+          <input id="q_servers" type="number" min="0" max="50" value="0" />
+          <div class="quote-hint">0 = sin servidores</div>
+        </div>
+
+        <div class="quote-row">
+          <label class="quote-label" for="q_urgency">Urgencia de respuesta</label>
+          <select id="q_urgency">
+            <option value="std" selected>Estándar (SLA básico)</option>
+            <option value="prio">Prioridad (SLA mejorado)</option>
+            <option value="crit">Crítico (SLA alto)</option>
+          </select>
+        </div>
+
+        <div class="quote-actions">
+          <button type="button" class="btn-cta" id="q_btn_calc">Calcular</button>
+          <button type="button" class="btn-secondary" id="q_btn_reset">Reiniciar</button>
+        </div>
+
+        <!-- Resumen oculto para que lo uses en tu sección de Contacto -->
+        <textarea id="quote_summary" class="hidden" readonly></textarea>
+      </div>
+
+      <!-- RESULT -->
+      <div class="quote-card quote-result">
+        <h3 class="quote-title">Estimado mensual</h3>
+
+        <div class="quote-price">
+          <div class="quote-price-main" id="q_price">$0 MXN</div>
+          <div class="quote-price-sub" id="q_price_note">
+            Este es un estimado. La cotización final depende de alcance, inventario y SLA.
+          </div>
+        </div>
+
+        <div class="quote-breakdown" id="q_breakdown"></div>
+
+        <div class="quote-cta">
+          <a class="btn-cta w-full text-center" id="q_btn_whatsapp" href="#" target="_blank" rel="noopener">
+            Cotizar por WhatsApp
+          </a>
+          <a class="btn-secondary w-full text-center" href="#contacto" id="q_btn_to_contact">
+            Enviar por formulario
+          </a>
+        </div>
+
+        <div class="quote-mini">
+          <p class="text-gray-300">
+            Si quieres, también podemos enviarte una propuesta con:
+            inventario, tiempos de respuesta, alcance por módulo y roadmap de mejoras.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider" aria-hidden="true"></div>
 
   <!-- CONTACTO -->
-  <section id="contacto" class="section">
+  <section id="contacto" class="section section-block">
     <h2 class="section-title">Contacto</h2>
 
     <form class="contact-form">
@@ -318,20 +329,19 @@
     </form>
   </section>
 
-<!-- WhatsApp Floating Button -->
-<a
-  href="https://wa.me/525527970496?text=Hola,%20me%20gustaría%20información%20sobre%20sus%20servicios%20IT"
-  class="whatsapp-float"
-  target="_blank"
-  rel="noopener"
-  aria-label="Contactar por WhatsApp"
->
-  <svg viewBox="0 0 32 32" width="26" height="26" fill="currentColor">
-    <path d="M19.11 17.21c-.27-.14-1.6-.79-1.85-.88-.25-.09-.43-.14-.61.14-.18.27-.7.88-.86 1.06-.16.18-.32.2-.59.07-.27-.14-1.14-.42-2.17-1.33-.8-.71-1.34-1.6-1.5-1.87-.16-.27-.02-.42.12-.55.12-.12.27-.32.41-.48.14-.16.18-.27.27-.45.09-.18.05-.34-.02-.48-.07-.14-.61-1.47-.84-2.01-.22-.53-.45-.46-.61-.47h-.52c-.18 0-.48.07-.73.34-.25.27-.96.94-.96 2.29 0 1.35.98 2.65 1.12 2.83.14.18 1.93 2.95 4.68 4.13.65.28 1.15.45 1.54.57.65.21 1.24.18 1.7.11.52-.08 1.6-.65 1.83-1.27.23-.61.23-1.13.16-1.24-.07-.11-.25-.18-.52-.32z"/>
-    <path d="M16 2.67c-7.36 0-13.33 5.97-13.33 13.33 0 2.35.62 4.64 1.79 6.65L2.67 29.33l6.86-1.76c1.94 1.06 4.12 1.61 6.47 1.61 7.36 0 13.33-5.97 13.33-13.33S23.36 2.67 16 2.67z"/>
-  </svg>
-</a>
-
+  <!-- WhatsApp Floating Button -->
+  <a
+    href="https://wa.me/525527970496?text=Hola,%20me%20gustaría%20información%20sobre%20sus%20servicios%20IT"
+    class="whatsapp-float"
+    target="_blank"
+    rel="noopener"
+    aria-label="Contactar por WhatsApp"
+  >
+    <svg viewBox="0 0 32 32" width="26" height="26" fill="currentColor" aria-hidden="true">
+      <path d="M19.11 17.21c-.27-.14-1.6-.79-1.85-.88-.25-.09-.43-.14-.61.14-.18.27-.7.88-.86 1.06-.16.18-.32.2-.59.07-.27-.14-1.14-.42-2.17-1.33-.8-.71-1.34-1.6-1.5-1.87-.16-.27-.02-.42.12-.55.12-.12.27-.32.41-.48.14-.16.18-.27.27-.45.09-.18.05-.34-.02-.48-.07-.14-.61-1.47-.84-2.01-.22-.53-.45-.46-.61-.47h-.52c-.18 0-.48.07-.73.34-.25.27-.96.94-.96 2.29 0 1.35.98 2.65 1.12 2.83.14.18 1.93 2.95 4.68 4.13.65.28 1.15.45 1.54.57.65.21 1.24.18 1.7.11.52-.08 1.6-.65 1.83-1.27.23-.61.23-1.13.16-1.24-.07-.11-.25-.18-.52-.32z"/>
+      <path d="M16 2.67c-7.36 0-13.33 5.97-13.33 13.33 0 2.35.62 4.64 1.79 6.65L2.67 29.33l6.86-1.76c1.94 1.06 4.12 1.61 6.47 1.61 7.36 0 13.33-5.97 13.33-13.33S23.36 2.67 16 2.67z"/>
+    </svg>
+  </a>
 
   <!-- FOOTER -->
   <footer class="footer">
@@ -339,7 +349,6 @@
   </footer>
 
   <script src="js/app.js"></script>
-
-  
 </body>
 </html>
+
