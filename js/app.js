@@ -287,3 +287,16 @@ document.querySelectorAll("#mobileMenu a").forEach(a => {
     document.getElementById("mobileMenu")?.classList.add("hidden");
   });
 });
+// Politica Cookies
+document.addEventListener("DOMContentLoaded", () => {
+  const cookiesAccepted = localStorage.getItem("cookiesAccepted");
+
+  if (!cookiesAccepted) {
+    document.getElementById("cookie-banner").classList.remove("hidden");
+  }
+});
+
+function acceptCookies() {
+  localStorage.setItem("cookiesAccepted", "true");
+  document.getElementById("cookie-banner").classList.add("hidden");
+}
