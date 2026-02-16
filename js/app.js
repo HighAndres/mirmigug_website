@@ -1,9 +1,10 @@
 /**
- * app.js (corregido y robusto) - FULL REPLACE
- * - Evita errores por elementos inexistentes (IDs faltantes)
- * - Corre cuando el DOM está listo
- * - Mantiene tu lógica (menú, cookies, animación cards, cotizador)
- * - Agrega: Year footer + WhatsApp real
+ * app.js (FULL REPLACE) - Mirmibug
+ * - Menú móvil robusto
+ * - Cookies banner + acceptCookies()
+ * - Glow de cards (Servicios)
+ * - Footer year
+ * - Cotizador PRO (validaciones + resumen claro + WhatsApp)
  */
 
 /* =========================
@@ -18,13 +19,31 @@ const money = (n) =>
     maximumFractionDigits: 0,
   });
 
+const clamp = (n, min, max) => Math.min(max, Math.max(min, n));
+
+const safeInt = (value, fallback = 0) => {
+  const n = parseInt(value, 10);
+  return Number.isFinite(n) ? n : fallback;
+};
+
+const textOfSelect = (sel) =>
+  sel?.options?.[sel.selectedIndex]?.text || sel?.value || "";
+
 /* =========================
    DOM READY
 ========================= */
 document.addEventListener("DOMContentLoaded", () => {
-  /* =========================
-     MENU MÓVIL
-  ========================= */
+  initMobileMenu();
+  initFooterYear();
+  initCookies();
+  initServiceCardsGlow();
+  initCotizador(); // si no existe, no hace nada
+});
+
+/* =========================
+   MENU MÓVIL
+========================= */
+function initMobileMenu() {
   const menuBtn = $("menuBtn");
   const mobileMenu = $("mobileMenu");
 
@@ -32,35 +51,52 @@ document.addEventListener("DOMContentLoaded", () => {
     mobileMenu?.classList.toggle("hidden");
   });
 
-  // Close mobile menu when clicking a link
+  // Cerrar menú al dar click en links
   document.querySelectorAll("#mobileMenu a").forEach((a) => {
     a.addEventListener("click", () => {
-      $("mobileMenu")?.classList.add("hidden");
+      mobileMenu?.classList.add("hidden");
     });
   });
 
-  // Cerrar menú con ESC (opcional, pero pro)
+  // Cerrar menú con ESC
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") $("mobileMenu")?.classList.add("hidden");
+    if (e.key === "Escape") mobileMenu?.classList.add("hidden");
   });
+}
 
-  /* =========================
-     FOOTER YEAR
-  ========================= */
+/* =========================
+   FOOTER YEAR
+========================= */
+function initFooterYear() {
   const yearEl = $("year");
   if (yearEl) yearEl.textContent = new Date().getFullYear();
+}
 
-  /* =========================
-     POLÍTICA DE COOKIES
-  ========================= */
+/* =========================
+   COOKIES
+========================= */
+function initCookies() {
   const COOKIE_KEY = "cookiesAccepted";
-  const cookiesAccepted = localStorage.getItem(COOKIE_KEY);
   const cookieBanner = $("cookie-banner");
-  if (!cookiesAccepted) cookieBanner?.classList.remove("hidden");
+  const cookiesAccepted = localStorage.getItem(COOKIE_KEY);
 
-  /* =========================
-     SERVICIOS - ANIMACIÓN TARJETAS
-  ========================= */
+  if (!cookiesAccepted) cookieBanner?.classList.remove("hidden");
+}
+
+/**
+ * Función global para botón HTML:
+ * onclick="acceptCookies()"
+ */
+function acceptCookies() {
+  localStorage.setItem("cookiesAccepted", "true");
+  $("cookie-banner")?.classList.add("hidden");
+}
+window.acceptCookies = acceptCookies;
+
+/* =========================
+   SERVICIOS - GLOW EN TARJETAS
+========================= */
+function initServiceCardsGlow() {
   document.querySelectorAll(".card").forEach((card) => {
     card.addEventListener("mousemove", (e) => {
       const rect = card.getBoundingClientRect();
@@ -68,24 +104,10 @@ document.addEventListener("DOMContentLoaded", () => {
       card.style.setProperty("--y", `${e.clientY - rect.top}px`);
     });
   });
-
-  /* =========================
-     COTIZADOR MIRMIBUG - PRICING LOGIC
-  ========================= */
-  initCotizador();
-});
-
-/* =========================
-   FUNCIÓN GLOBAL PARA BOTÓN HTML
-   (onclick="acceptCookies()")
-========================= */
-function acceptCookies() {
-  localStorage.setItem("cookiesAccepted", "true");
-  $("cookie-banner")?.classList.add("hidden");
 }
 
 /* =========================
-   COTIZADOR
+   COTIZADOR PRO
 ========================= */
 function initCotizador() {
   // Inputs
@@ -111,13 +133,15 @@ function initCotizador() {
   const qPrice = $("q_price");
   const qBreakdown = $("q_breakdown");
   const quoteSummary = $("quote_summary");
+  const qBadgePlan = $("q_badge_plan"); // opcional en HTML PRO
+  const qPriceNote = $("q_price_note"); // opcional
 
   // Buttons
   const btnCalc = $("q_btn_calc");
   const btnReset = $("q_btn_reset");
   const btnWhatsapp = $("q_btn_whatsapp");
 
-  // Si esta página no tiene cotizador, salimos sin romper nada
+  // Guard: si no existe cotizador, salir sin romper nada
   const required = [
     qUsers,
     qSites,
@@ -130,172 +154,53 @@ function initCotizador() {
     quoteSummary,
     btnWhatsapp,
   ];
-  const missing = required.some((el) => !el);
-  if (missing) return;
+  if (required.some((el) => !el)) return;
 
   // -------------------------------
-  // Configuración de precios
+  // PRICING (reglas claras)
   // -------------------------------
   const PRICING = {
     plans: [
       { name: "Plan Esencial", base: 2500, includedUsers: 5, extraUser: 250 },
       { name: "Plan Profesional", base: 5500, includedUsers: 15, extraUser: 220 },
       { name: "Plan Empresarial", base: 9500, includedUsers: 30, extraUser: 200 },
-      // Para 31+ usuarios seguimos con piso Empresarial + extraUser
     ],
-
-    // Sedes adicionales (1 sede incluida)
-    extraSite: 800, // por sede extra
-
-    // Tipo de soporte
-    supportMultiplier: {
-      remote: 1.0,
-      hybrid: 1.15,
-      onsite: 1.35,
-    },
-
-    // Horario
-    hoursMultiplier: {
-      buss: 1.0, // 8x5
-      plus: 1.2, // 12x6
-      247: 1.6, // 24/7
-    },
-
-    // Urgencia / SLA
-    urgencyMultiplier: {
-      std: 1.0,
-      prio: 1.12,
-      crit: 1.25,
-    },
-
-    // Servidores (si aplica)
-    serverMonthly: 900, // por servidor/mes (administración base)
-
-    // Módulos (sumas mensuales)
+    extraSite: 800,
+    serverMonthly: 900,
+    supportMultiplier: { remote: 1.0, hybrid: 1.15, onsite: 1.35 },
+    hoursMultiplier: { buss: 1.0, plus: 1.2, 247: 1.6 },
+    urgencyMultiplier: { std: 1.0, prio: 1.12, crit: 1.25 },
     modules: {
-      helpdesk: { label: "Help Desk & Tickets", monthly: 0 }, // base por defecto
+      helpdesk: { label: "Help Desk & Tickets", monthly: 0, included: true },
+      monitor: { label: "Monitoreo (equipos/servidores/red)", monthly: 0, included: true },
       m365: { label: "Correo & M365 / Workspace", monthly: 600 },
-      monitor: { label: "Monitoreo (equipos/servidores/red)", monthly: 0 }, // incluido
       backup: { label: "Backups & Recuperación", monthly: 900 },
       security: { label: "Seguridad (hardening, MFA, EDR/AV)", monthly: 1200 },
       network: { label: "Redes (WiFi, switches, firewall, VPN)", monthly: 900 },
       servers: { label: "Servidores & Virtualización", monthly: 1200 },
       projects: { label: "Bolsa de cambios / Proyectos", monthly: 1500 },
     },
-
-    note: "Estimado mensual. La cotización final depende de alcance, inventario y SLA.",
+    note:
+      "Estimado mensual. No incluye licencias (M365/EDR/Backup cloud), hardware, ni proyectos one-time fuera de la bolsa.",
   };
 
-  // -------------------------------
-  // Lógica de selección de plan
-  // -------------------------------
+  // Forzar módulos base como incluidos (anti malentendido)
+  if (mHelpdesk) {
+    mHelpdesk.checked = true;
+    mHelpdesk.disabled = true;
+  }
+  if (mMonitor) {
+    mMonitor.checked = true;
+    mMonitor.disabled = true;
+  }
+
   function pickPlan(users) {
     if (users <= PRICING.plans[0].includedUsers) return PRICING.plans[0];
     if (users <= PRICING.plans[1].includedUsers) return PRICING.plans[1];
     return PRICING.plans[2];
   }
 
-  function safeInt(value, fallback = 0) {
-    const n = parseInt(value, 10);
-    return Number.isFinite(n) ? n : fallback;
-  }
-
-  function calc() {
-    const users = safeInt(qUsers.value, 0);
-    const sites = safeInt(qSites.value, 1);
-    const support = qSupport.value;
-    const hours = qHours.value;
-    const urgency = qUrgency.value;
-    const serversCount = Math.max(0, safeInt(qServers.value || "0", 0));
-
-    const plan = pickPlan(users);
-
-    // 1) Base plan
-    let subtotal = plan.base;
-    const breakdown = [];
-    breakdown.push({
-      label: `${plan.name} (incluye hasta ${plan.includedUsers} usuarios)`,
-      value: plan.base,
-    });
-
-    // 2) Usuarios extra
-    const extraUsers = Math.max(0, users - plan.includedUsers);
-    if (extraUsers > 0) {
-      const extraUsersCost = extraUsers * plan.extraUser;
-      subtotal += extraUsersCost;
-      breakdown.push({
-        label: `Usuarios adicionales (${extraUsers} × ${money(plan.extraUser)})`,
-        value: extraUsersCost,
-      });
-    }
-
-    // 3) Sedes extra (1 incluida)
-    const extraSites = Math.max(0, sites - 1);
-    if (extraSites > 0) {
-      const extraSitesCost = extraSites * PRICING.extraSite;
-      subtotal += extraSitesCost;
-      breakdown.push({
-        label: `Sedes adicionales (${extraSites} × ${money(PRICING.extraSite)})`,
-        value: extraSitesCost,
-      });
-    }
-
-    // 4) Servidores
-    if (serversCount > 0) {
-      const serverCost = serversCount * PRICING.serverMonthly;
-      subtotal += serverCost;
-      breakdown.push({
-        label: `Administración de servidores (${serversCount} × ${money(PRICING.serverMonthly)})`,
-        value: serverCost,
-      });
-    }
-
-    // 5) Módulos
-    const modulesSelected = [];
-    const addModule = (checked, key) => {
-      if (!checked) return;
-      const m = PRICING.modules[key];
-      modulesSelected.push(m.label);
-      subtotal += m.monthly || 0;
-      breakdown.push({
-        label: `Módulo: ${m.label}`,
-        value: m.monthly || 0,
-      });
-    };
-
-    addModule(!!mHelpdesk?.checked, "helpdesk");
-    addModule(!!mM365?.checked, "m365");
-    addModule(!!mMonitor?.checked, "monitor");
-    addModule(!!mBackup?.checked, "backup");
-    addModule(!!mSecurity?.checked, "security");
-    addModule(!!mNetwork?.checked, "network");
-    addModule(!!mServers?.checked, "servers");
-    addModule(!!mProjects?.checked, "projects");
-
-    // 6) Multiplicadores
-    const multSupport = PRICING.supportMultiplier[support] ?? 1.0;
-    const multHours = PRICING.hoursMultiplier[hours] ?? 1.0;
-    const multUrgency = PRICING.urgencyMultiplier[urgency] ?? 1.0;
-
-    const multiplier = multSupport * multHours * multUrgency;
-    const total = Math.round(subtotal * multiplier);
-
-    const multLines = [];
-    if (multSupport > 1)
-      multLines.push(
-        `Soporte (${qSupport.options[qSupport.selectedIndex]?.text ?? support}) × ${multSupport}`
-      );
-    if (multHours > 1)
-      multLines.push(
-        `Horario (${qHours.options[qHours.selectedIndex]?.text ?? hours}) × ${multHours}`
-      );
-    if (multUrgency > 1)
-      multLines.push(
-        `SLA (${qUrgency.options[qUrgency.selectedIndex]?.text ?? urgency}) × ${multUrgency}`
-      );
-
-    // Render
-    qPrice.textContent = `${money(total)} / mes`;
+  function renderBreakdown(breakdown, multLines) {
     qBreakdown.innerHTML = `
       <div class="break-items">
         ${breakdown
@@ -315,45 +220,150 @@ function initCotizador() {
       }
       <div class="break-note">${PRICING.note}</div>
     `;
+  }
 
-    // Summary (formulario / whatsapp)
+  function calc() {
+    // Normaliza inputs
+    const users = clamp(safeInt(qUsers.value, 5), 5, 300);
+    qUsers.value = String(users);
+
+    const sitesRaw = safeInt(qSites.value, 1);
+    const sites = clamp(sitesRaw, 1, 4);
+
+    const support = qSupport.value;
+    const hours = qHours.value;
+    const urgency = qUrgency.value;
+
+    const serversCount = clamp(safeInt(qServers.value || "0", 0), 0, 50);
+    qServers.value = String(serversCount);
+
+    // UI slider
+    if (qUsersVal) qUsersVal.textContent = String(users);
+
+    // Plan
+    const plan = pickPlan(users);
+    if (qBadgePlan) qBadgePlan.textContent = plan.name;
+
+    // Base
+    let subtotal = plan.base;
+    const breakdown = [];
+    breakdown.push({
+      label: `${plan.name} (incluye hasta ${plan.includedUsers} usuarios)`,
+      value: plan.base,
+    });
+
+    // Extra users
+    const extraUsers = Math.max(0, users - plan.includedUsers);
+    if (extraUsers > 0) {
+      const extraUsersCost = extraUsers * plan.extraUser;
+      subtotal += extraUsersCost;
+      breakdown.push({
+        label: `Usuarios adicionales (${extraUsers} × ${money(plan.extraUser)})`,
+        value: extraUsersCost,
+      });
+    }
+
+    // Extra sites
+    const extraSites = Math.max(0, sites - 1);
+    if (extraSites > 0) {
+      const extraSitesCost = extraSites * PRICING.extraSite;
+      subtotal += extraSitesCost;
+      breakdown.push({
+        label: `Sedes adicionales (${extraSites} × ${money(PRICING.extraSite)})`,
+        value: extraSitesCost,
+      });
+    }
+
+    // Servers
+    if (serversCount > 0) {
+      const serverCost = serversCount * PRICING.serverMonthly;
+      subtotal += serverCost;
+      breakdown.push({
+        label: `Administración de servidores (${serversCount} × ${money(PRICING.serverMonthly)})`,
+        value: serverCost,
+      });
+    }
+
+    // Modules (incluidos primero)
+    const modulesSelected = [];
+    const addModule = (checked, key) => {
+      if (!checked) return;
+      const m = PRICING.modules[key];
+      modulesSelected.push(m.label);
+      subtotal += m.monthly || 0;
+      breakdown.push({
+        label: `Módulo: ${m.label}${m.included ? " (Incluido)" : ""}`,
+        value: m.monthly || 0,
+      });
+    };
+
+    addModule(true, "helpdesk");
+    addModule(true, "monitor");
+
+    addModule(!!mM365?.checked, "m365");
+    addModule(!!mBackup?.checked, "backup");
+    addModule(!!mSecurity?.checked, "security");
+    addModule(!!mNetwork?.checked, "network");
+    addModule(!!mServers?.checked, "servers");
+    addModule(!!mProjects?.checked, "projects");
+
+    // Multipliers
+    const multSupport = PRICING.supportMultiplier[support] ?? 1.0;
+    const multHours = PRICING.hoursMultiplier[hours] ?? 1.0;
+    const multUrgency = PRICING.urgencyMultiplier[urgency] ?? 1.0;
+    const multiplier = multSupport * multHours * multUrgency;
+
+    // Redondeo consistente (decenas)
+    const total = Math.round((subtotal * multiplier) / 10) * 10;
+
+    // Ajustes operativos visibles
+    const multLines = [];
+    if (multSupport !== 1) multLines.push(`Soporte (${textOfSelect(qSupport)}) × ${multSupport}`);
+    if (multHours !== 1) multLines.push(`Horario (${textOfSelect(qHours)}) × ${multHours}`);
+    if (multUrgency !== 1) multLines.push(`SLA (${textOfSelect(qUrgency)}) × ${multUrgency}`);
+
+    // Render price
+    qPrice.textContent = `${money(total)} / mes`;
+    if (qPriceNote) qPriceNote.textContent = PRICING.note;
+
+    renderBreakdown(breakdown, multLines);
+
+    // Summary anti-malentendido (para WhatsApp y formulario)
     const summary = [
       `Cotización Mirmibug (Estimado mensual)`,
       `Plan base: ${plan.name}`,
       `Usuarios: ${users} (incluye ${plan.includedUsers}, extra: ${extraUsers})`,
-      `Sedes: ${sites} (extra: ${extraSites})`,
-      `Soporte: ${qSupport.options[qSupport.selectedIndex]?.text ?? support}`,
-      `Horario: ${qHours.options[qHours.selectedIndex]?.text ?? hours}`,
-      `SLA: ${qUrgency.options[qUrgency.selectedIndex]?.text ?? urgency}`,
+      `Sedes: ${sites === 4 ? "4+ sedes" : sites} (extra: ${extraSites})`,
+      `Soporte: ${textOfSelect(qSupport)}`,
+      `Horario: ${textOfSelect(qHours)}`,
+      `SLA: ${textOfSelect(qUrgency)}`,
       `Servidores: ${serversCount}`,
-      `Módulos: ${modulesSelected.length ? modulesSelected.join(", ") : "Ninguno"}`,
+      `Módulos: ${modulesSelected.join(", ")}`,
       `Total estimado: ${money(total)} / mes`,
       ``,
-      `Nota: La cotización final depende de alcance, inventario y SLA.`,
+      `Incluye: Help Desk & Tickets + Monitoreo base.`,
+      `No incluye: licencias (M365/EDR/Backup cloud), hardware, ni proyectos one-time fuera de la bolsa.`,
+      `Sujeto a inventario y SLA final.`,
     ].join("\n");
 
     quoteSummary.value = summary;
 
-    // WhatsApp link (tu número real)
+    // WhatsApp
     const phone = "525527970496";
-    const text = encodeURIComponent(summary);
-    btnWhatsapp.href = `https://wa.me/${phone}?text=${text}`;
+    btnWhatsapp.href = `https://wa.me/${phone}?text=${encodeURIComponent(summary)}`;
   }
 
   function reset() {
-    qUsers.value = 25;
+    qUsers.value = "25";
     if (qUsersVal) qUsersVal.textContent = "25";
 
     qSites.value = "1";
     qSupport.value = "remote";
     qHours.value = "buss";
-    qServers.value = 0;
+    qServers.value = "0";
     qUrgency.value = "std";
 
-    // Defaults módulos
-    if (mHelpdesk) mHelpdesk.checked = true;
     if (mM365) mM365.checked = false;
-    if (mMonitor) mMonitor.checked = true;
     if (mBackup) mBackup.checked = false;
     if (mSecurity) mSecurity.checked = false;
     if (mNetwork) mNetwork.checked = false;
@@ -364,52 +374,20 @@ function initCotizador() {
     qBreakdown.innerHTML = "";
     quoteSummary.value = "";
     btnWhatsapp.href = "#";
-  }
 
-  // UI: mostrar valor del slider
-  if (qUsers && qUsersVal) {
-    qUsersVal.textContent = qUsers.value;
-    qUsers.addEventListener("input", () => {
-      qUsersVal.textContent = qUsers.value;
-      calc(); // recalcula mientras mueves el slider
-    });
-  }
-
-  // Actions
-  btnCalc?.addEventListener("click", (e) => {
-    e.preventDefault?.();
     calc();
-  });
+  }
 
-  btnReset?.addEventListener("click", (e) => {
-    e.preventDefault?.();
-    reset();
-  });
-
-  // Recalcular al cambiar campos (input + change para máxima compatibilidad)
-  const autoRecalcIds = [
-    "q_users",
-    "q_sites",
-    "q_support",
-    "q_hours",
-    "q_servers",
-    "q_urgency",
-    "m_helpdesk",
-    "m_m365",
-    "m_monitor",
-    "m_backup",
-    "m_security",
-    "m_network",
-    "m_servers",
-    "m_projects",
-  ];
-
-  autoRecalcIds.forEach((id) => {
-    const el = $(id);
+  // Events
+  qUsers.addEventListener("input", calc);
+  [qSites, qSupport, qHours, qServers, qUrgency, mM365, mBackup, mSecurity, mNetwork, mServers, mProjects].forEach((el) => {
     el?.addEventListener("change", calc);
     el?.addEventListener("input", calc);
   });
 
-  // Cálculo inicial
+  btnCalc?.addEventListener("click", (e) => { e.preventDefault?.(); calc(); });
+  btnReset?.addEventListener("click", (e) => { e.preventDefault?.(); reset(); });
+
+  // Init
   calc();
 }
