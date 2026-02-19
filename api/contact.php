@@ -5,12 +5,12 @@ header('Content-Type: application/json; charset=utf-8');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
   http_response_code(405);
-  echo json_encode(['ok' => false, 'error' => 'Method not allowed']);
+  echo json_encode(['ok' => false, 'error' => 'Method not allowed'], JSON_UNESCAPED_UNICODE);
   exit;
 }
 
 /* =========================
-   CONFIG DB (Pega tus datos)
+   CONFIG DB (TU DATA)
 ========================= */
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'andres63_mirmibug_web');
@@ -18,34 +18,33 @@ define('DB_USER', 'andres63_adminmirmibug');
 define('DB_PASS', 'ygKtYLN.I1g)');
 
 /* =========================
-   CONFIG EMAIL
+   CONFIG EMAIL (TITAN SMTP)
 ========================= */
-$TO_EMAIL = 'contacto@mirmibug.com';
-$FROM_EMAIL = 'contacto@mirmibug.com'; // debe existir como cuenta en tu hosting para mejor deliverability
+define('SMTP_HOST', 'smtp.titan.email');
+define('SMTP_PORT', 587);                 // 587 STARTTLS (recomendado)
+define('SMTP_SECURE', 'tls');             // 'tls' para 587, 'ssl' para 465
+define('SMTP_USER', 'contacto@mirmibug.com');
+define('SMTP_PASS', 'PON_AQUI_TU_PASSWORD_REAL'); // <-- CAMBIA ESTO
+define('MAIL_TO',   'contacto@mirmibug.com');     // donde recibirás los leads
+
+// Log simple para debug (se crea en /api/contact.log)
+define('LOG_FILE', __DIR__ . '/contact.log');
 
 /* =========================
    HELPERS
 ========================= */
 function clean($s): string { return trim((string)$s); }
 function is_email($s): bool { return filter_var($s, FILTER_VALIDATE_EMAIL) !== false; }
-
-function json_out(int $code, array $payload): void {
-  http_response_code($code);
-  echo json_encode($payload, JSON_UNESCAPED_UNICODE);
-  exit;
+function log_line(string $msg): void {
+  @file_put_contents(LOG_FILE, '['.date('Y-m-d H:i:s').'] '.$msg.PHP_EOL, FILE_APPEND);
 }
 
 /* =========================
-   INPUT (FormData primero)
+   INPUT
 ========================= */
-$data = $_POST;
-
-// Si viniera JSON (por si acaso), también lo soportamos:
-if (empty($data)) {
-  $raw = file_get_contents('php://input');
-  $json = json_decode($raw, true);
-  if (is_array($json)) $data = $json;
-}
+$raw = file_get_contents('php://input') ?: '';
+$data = json_decode($raw, true);
+if (!is_array($data)) $data = $_POST;
 
 $nombre = clean($data['nombre'] ?? '');
 $email  = clean($data['email'] ?? '');
@@ -55,16 +54,18 @@ $mensaje  = clean($data['mensaje'] ?? '');
 $consentimiento = !empty($data['consentimiento']) ? 1 : 0;
 $origen = clean($data['origen'] ?? '');
 $honeypot = clean($data['website'] ?? ''); // anti-spam
-$quote_summary = clean($data['quote_summary'] ?? ''); // opcional
 
-// Honeypot: bots
+// Honeypot: bots -> ok silencioso
 if ($honeypot !== '') {
-  json_out(200, ['ok' => true]);
+  echo json_encode(['ok' => true], JSON_UNESCAPED_UNICODE);
+  exit;
 }
 
 // Validación mínima
 if ($nombre === '' || !is_email($email) || $mensaje === '') {
-  json_out(400, ['ok' => false, 'error' => 'Invalid data']);
+  http_response_code(400);
+  echo json_encode(['ok' => false, 'error' => 'Invalid data'], JSON_UNESCAPED_UNICODE);
+  exit;
 }
 
 // IP / UA
@@ -75,13 +76,11 @@ $user_agent = $user_agent !== '' ? substr($user_agent, 0, 255) : null;
 
 /* =========================
    DB INSERT
-   Tabla esperada: contact_leads
 ========================= */
 try {
   $dsn = 'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME . ';charset=utf8mb4';
   $pdo = new PDO($dsn, DB_USER, DB_PASS, [
-    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
   ]);
 
   $stmt = $pdo->prepare("
@@ -104,35 +103,77 @@ try {
   ]);
 
 } catch (Throwable $e) {
-  // Para debug real, revisa error_log del hosting
-  // error_log("DB error: " . $e->getMessage());
-  json_out(500, ['ok' => false, 'error' => 'DB error']);
+  log_line('DB ERROR: ' . $e->getMessage());
+  http_response_code(500);
+  echo json_encode(['ok' => false, 'error' => 'DB error'], JSON_UNESCAPED_UNICODE);
+  exit;
 }
 
 /* =========================
-   EMAIL NOTIFY
-   (Si falla mail(), igual ya se guardó en DB)
+   EMAIL VIA SMTP (PHPMailer)
 ========================= */
-$subject = "Nuevo contacto - {$nombre}";
+$email_ok = false;
+$email_error = null;
 
-$body = "Nuevo contacto recibido:\n\n" .
-  "Nombre: {$nombre}\n" .
-  "Email: {$email}\n" .
-  "Teléfono: " . ($telefono ?: '-') . "\n" .
-  "Empresa: " . ($empresa ?: '-') . "\n\n" .
-  "Mensaje:\n{$mensaje}\n\n" .
-  "Origen: " . ($origen ?: '-') . "\n" .
-  "IP: " . ($ip ?: '-') . "\n";
+try {
+  // Cargar PHPMailer (solo 3 archivos)
+  require_once __DIR__ . '/PHPMailer/src/Exception.php';
+  require_once __DIR__ . '/PHPMailer/src/PHPMailer.php';
+  require_once __DIR__ . '/PHPMailer/src/SMTP.php';
 
-if ($quote_summary !== '') {
-  $body .= "\n\n--- Resumen Cotizador ---\n" . $quote_summary . "\n";
+  $mail = new PHPMailer\PHPMailer\PHPMailer(true);
+  $mail->CharSet = 'UTF-8';
+
+  // SMTP
+  $mail->isSMTP();
+  $mail->Host = SMTP_HOST;
+  $mail->SMTPAuth = true;
+  $mail->Username = SMTP_USER;
+  $mail->Password = SMTP_PASS;
+  $mail->Port = SMTP_PORT;
+
+  if (SMTP_SECURE === 'ssl') {
+    $mail->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_SMTPS; // 465
+  } else {
+    $mail->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS; // 587
+  }
+
+  // Remitente real (debe existir en Titan)
+  $mail->setFrom(SMTP_USER, 'Mirmibug Web');
+  $mail->addAddress(MAIL_TO, 'Contacto Mirmibug');
+
+  // Reply-To al cliente
+  $mail->addReplyTo($email, $nombre);
+
+  $subject = "Nuevo contacto web - {$nombre}";
+  $mail->Subject = $subject;
+
+  $body =
+    "Nuevo contacto recibido:\n\n" .
+    "Nombre: {$nombre}\n" .
+    "Email: {$email}\n" .
+    "Teléfono: " . ($telefono ?: '-') . "\n" .
+    "Empresa: " . ($empresa ?: '-') . "\n\n" .
+    "Mensaje:\n{$mensaje}\n\n" .
+    "Origen: " . ($origen ?: '-') . "\n" .
+    "IP: " . ($ip ?: '-') . "\n";
+
+  $mail->Body = $body;
+  $mail->AltBody = $body;
+
+  $mail->send();
+  $email_ok = true;
+
+} catch (Throwable $e) {
+  $email_ok = false;
+  $email_error = $e->getMessage();
+  log_line('MAIL ERROR: ' . $email_error);
 }
 
-$headers = "From: Mirmibug <{$FROM_EMAIL}>\r\n";
-$headers .= "Reply-To: {$email}\r\n";
-$headers .= "MIME-Version: 1.0\r\n";
-$headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
-
-$mail_sent = @mail($TO_EMAIL, $subject, $body, $headers);
-
-json_out(200, ['ok' => true, 'mail_sent' => (bool)$mail_sent]);
+// Respuesta JSON (aunque email falle, ya guardó en DB)
+echo json_encode([
+  'ok' => true,
+  'saved' => true,
+  'email_ok' => $email_ok,
+  'email_error' => $email_ok ? null : $email_error
+], JSON_UNESCAPED_UNICODE);
