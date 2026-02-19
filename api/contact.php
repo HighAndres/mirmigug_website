@@ -1,6 +1,5 @@
 <?php
 declare(strict_types=1);
-
 header('Content-Type: application/json; charset=utf-8');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -10,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 /* =========================
-   CONFIG DB (TU HOSTING)
+   CONFIG DB (TU DATA)
 ========================= */
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'andres63_mirmibug_web');
@@ -18,45 +17,67 @@ define('DB_USER', 'andres63_adminmirmibug');
 define('DB_PASS', 'ygKtYLN.I1g)');
 
 /* =========================
-   HELPERS
+   CONFIG EMAIL (TITAN SMTP)
 ========================= */
-function clean($s){ return trim((string)$s); }
-function is_email($s){ return filter_var($s, FILTER_VALIDATE_EMAIL) !== false; }
+define('MAIL_TO', 'contacto@mirmibug.com');
+define('MAIL_FROM', 'contacto@mirmibug.com');          // Debe existir
+define('MAIL_FROM_NAME', 'Mirmibug');
+define('SMTP_HOST', 'smtp.titan.email');
+define('SMTP_USER', 'contacto@mirmibug.com');
+define('SMTP_PASS', '67]}GI[?gH05');  
+
+// 465 = SSL, 587 = STARTTLS
+define('SMTP_PORT', 465);
+define('SMTP_SECURE', 'ssl'); // 'ssl' (465) o 'tls' (587)
 
 /* =========================
-   READ JSON (o fallback POST)
+   PHPMailer includes
 ========================= */
+$baseDir = __DIR__; // /public_html/api
+require_once $baseDir . '/mailer/Exception.php';
+require_once $baseDir . '/mailer/PHPMailer.php';
+require_once $baseDir . '/mailer/SMTP.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+/* =========================
+   HELPERS
+========================= */
+function clean($s): string { return trim((string)$s); }
+function is_email($s): bool { return filter_var($s, FILTER_VALIDATE_EMAIL) !== false; }
+
 $raw = file_get_contents('php://input');
 $data = json_decode($raw, true);
 if (!is_array($data)) $data = $_POST;
 
-/* Honeypot anti-spam */
-$honeypot = clean($data['website'] ?? '');
-if ($honeypot !== '') { echo json_encode(['ok' => true]); exit; }
-
-/* Inputs */
-$nombre   = clean($data['nombre'] ?? '');
-$email    = clean($data['email'] ?? '');
+$nombre = clean($data['nombre'] ?? '');
+$email  = clean($data['email'] ?? '');
 $telefono = clean($data['telefono'] ?? '');
 $empresa  = clean($data['empresa'] ?? '');
 $mensaje  = clean($data['mensaje'] ?? '');
-$origen   = clean($data['origen'] ?? '');
+$consentimiento = !empty($data['consentimiento']) ? 1 : 0;
+$origen = clean($data['origen'] ?? '');
+$honeypot = clean($data['website'] ?? ''); // anti-spam
 
-/* Validate */
+// Honeypot
+if ($honeypot !== '') { echo json_encode(['ok'=>true]); exit; }
+
+// Validación mínima
 if ($nombre === '' || !is_email($email) || $mensaje === '') {
   http_response_code(400);
-  echo json_encode(['ok' => false, 'error' => 'Datos inválidos']);
+  echo json_encode(['ok' => false, 'error' => 'Invalid data']);
   exit;
 }
 
-/* Meta */
-$ip = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? ($_SERVER['REMOTE_ADDR'] ?? '');
+// IP / UA
+$ip = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'] ?? '';
 if (strpos($ip, ',') !== false) $ip = trim(explode(',', $ip)[0]);
-$user_agent = (string)($_SERVER['HTTP_USER_AGENT'] ?? '');
-$user_agent = $user_agent !== '' ? mb_substr($user_agent, 0, 255) : '';
+$user_agent = $_SERVER['HTTP_USER_AGENT'] ?? '';
+$user_agent = $user_agent !== '' ? substr($user_agent, 0, 255) : null;
 
 /* =========================
-   INSERT DB (contact_leads)
+   DB INSERT
 ========================= */
 try {
   $dsn = 'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME . ';charset=utf8mb4';
@@ -65,19 +86,22 @@ try {
   ]);
 
   $stmt = $pdo->prepare("
-    INSERT INTO contact_leads (nombre, email, telefono, empresa, mensaje, origen, ip, user_agent)
-    VALUES (:nombre, :email, :telefono, :empresa, :mensaje, :origen, :ip, :user_agent)
+    INSERT INTO contact_leads
+      (nombre, email, telefono, empresa, mensaje, origen, ip, user_agent, consentimiento)
+    VALUES
+      (:nombre, :email, :telefono, :empresa, :mensaje, :origen, :ip, :user_agent, :consentimiento)
   ");
 
   $stmt->execute([
-    ':nombre' => mb_substr($nombre, 0, 120),
-    ':email' => mb_substr(strtolower($email), 0, 180),
-    ':telefono' => ($telefono !== '' ? mb_substr($telefono, 0, 40) : null),
-    ':empresa' => ($empresa !== '' ? mb_substr($empresa, 0, 160) : null),
+    ':nombre' => $nombre,
+    ':email' => strtolower($email),
+    ':telefono' => ($telefono !== '' ? $telefono : null),
+    ':empresa' => ($empresa !== '' ? $empresa : null),
     ':mensaje' => $mensaje,
-    ':origen' => ($origen !== '' ? mb_substr($origen, 0, 255) : null),
-    ':ip' => ($ip !== '' ? mb_substr($ip, 0, 45) : null),
-    ':user_agent' => ($user_agent !== '' ? $user_agent : null),
+    ':origen' => ($origen !== '' ? $origen : null),
+    ':ip' => ($ip !== '' ? $ip : null),
+    ':user_agent' => $user_agent,
+    ':consentimiento' => $consentimiento
   ]);
 
 } catch (Throwable $e) {
@@ -87,28 +111,61 @@ try {
 }
 
 /* =========================
-   EMAIL (mail)
+   EMAIL NOTIFY (SMTP)
 ========================= */
-$to = 'contacto@mirmibug.com';
-$from = 'no-reply@mirmibug.com';
-$subjectPlain = "Nuevo contacto - $nombre";
-$subject = '=?UTF-8?B?' . base64_encode($subjectPlain) . '?=';
+$mailOk = false;
+$mailErr = null;
 
-$body = "Nuevo mensaje desde el formulario:\n\n"
-  . "Nombre: $nombre\n"
-  . "Email: $email\n"
-  . "Teléfono: " . ($telefono ?: '-') . "\n"
-  . "Empresa: " . ($empresa ?: '-') . "\n\n"
-  . "Mensaje:\n$mensaje\n\n"
-  . "Origen: " . ($origen ?: '-') . "\n"
-  . "IP: " . ($ip ?: '-') . "\n";
+try {
+  $mail = new PHPMailer(true);
+  $mail->CharSet = 'UTF-8';
 
-$headers = "MIME-Version: 1.0\r\n";
-$headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
-$headers .= "From: Mirmibug <{$from}>\r\n";
-$headers .= "Reply-To: {$nombre} <{$email}>\r\n";
+  $mail->isSMTP();
+  $mail->Host = SMTP_HOST;
+  $mail->SMTPAuth = true;
+  $mail->Username = SMTP_USER;
+  $mail->Password = SMTP_PASS;
+  $mail->Port = SMTP_PORT;
+  $mail->SMTPSecure = SMTP_SECURE;
 
-$sent = @mail($to, $subject, $body, $headers);
+  // Si HostGator tiene problemas de SSL, descomenta esto (solo como último recurso):
+  // $mail->SMTPOptions = [
+  //   'ssl' => [
+  //     'verify_peer' => false,
+  //     'verify_peer_name' => false,
+  //     'allow_self_signed' => true,
+  //   ]
+  // ];
 
-/* OK */
-echo json_encode(['ok' => true, 'mail_sent' => (bool)$sent]);
+  $mail->setFrom(MAIL_FROM, MAIL_FROM_NAME);
+  $mail->addAddress(MAIL_TO);
+
+  // Reply-To al cliente
+  $mail->addReplyTo($email, $nombre);
+
+  $mail->Subject = "New contact - {$nombre}";
+  $mail->Body =
+    "New contact received:\n\n" .
+    "Name: {$nombre}\n" .
+    "Email: {$email}\n" .
+    "Phone: " . ($telefono ?: '-') . "\n" .
+    "Company: " . ($empresa ?: '-') . "\n\n" .
+    "Message:\n{$mensaje}\n\n" .
+    "Origin: " . ($origen ?: '-') . "\n" .
+    "IP: " . ($ip ?: '-') . "\n";
+
+  $mail->send();
+  $mailOk = true;
+
+} catch (Throwable $e) {
+  // Ojo: NO tumbamos el endpoint, porque ya guardó en DB.
+  $mailErr = $e->getMessage();
+}
+
+echo json_encode([
+  'ok' => true,
+  'saved' => true,
+  'mail_ok' => $mailOk,
+  // Puedes ocultar esto en producción si no quieres filtrar detalles:
+  'mail_error' => $mailOk ? null : $mailErr
+]);
