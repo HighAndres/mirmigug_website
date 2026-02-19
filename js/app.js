@@ -4,8 +4,8 @@
  * - Cookies banner + acceptCookies()
  * - Glow de cards (Servicios)
  * - Footer year
- * - Cotizador PRO
- * - Contact Form: envía FormData (evita 409 ModSecurity)
+ * - Cotizador PRO (validaciones + resumen claro + WhatsApp)
+ * - Contact Form (POST a /api/contact.php + guarda en DB + email)
  */
 
 /* =========================
@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initCookies();
   initServiceCardsGlow();
   initCotizador();     // si no existe, no hace nada
-  initContactForm();   // ✅ ahora usa FormData (evita 409)
+  initContactForm();   // ✅ ahora manda x-www-form-urlencoded (evita 409)
 });
 
 /* =========================
@@ -53,14 +53,12 @@ function initMobileMenu() {
     mobileMenu?.classList.toggle("hidden");
   });
 
-  // Cerrar menú al dar click en links
   document.querySelectorAll("#mobileMenu a").forEach((a) => {
     a.addEventListener("click", () => {
       mobileMenu?.classList.add("hidden");
     });
   });
 
-  // Cerrar menú con ESC
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") mobileMenu?.classList.add("hidden");
   });
@@ -85,10 +83,6 @@ function initCookies() {
   if (!cookiesAccepted) cookieBanner?.classList.remove("hidden");
 }
 
-/**
- * Función global para botón HTML:
- * onclick="acceptCookies()"
- */
 function acceptCookies() {
   localStorage.setItem("cookiesAccepted", "true");
   $("cookie-banner")?.classList.add("hidden");
@@ -112,7 +106,6 @@ function initServiceCardsGlow() {
    COTIZADOR PRO
 ========================= */
 function initCotizador() {
-  // Inputs
   const qUsers = $("q_users");
   const qUsersVal = $("q_users_val");
   const qSites = $("q_sites");
@@ -121,7 +114,6 @@ function initCotizador() {
   const qServers = $("q_servers");
   const qUrgency = $("q_urgency");
 
-  // Modules
   const mHelpdesk = $("m_helpdesk");
   const mM365 = $("m_m365");
   const mMonitor = $("m_monitor");
@@ -131,22 +123,18 @@ function initCotizador() {
   const mServers = $("m_servers");
   const mProjects = $("m_projects");
 
-  // Outputs
   const qPrice = $("q_price");
   const qBreakdown = $("q_breakdown");
   const quoteSummary = $("quote_summary");
   const qBadgePlan = $("q_badge_plan");
   const qPriceNote = $("q_price_note");
 
-  // Buttons
   const btnCalc = $("q_btn_calc");
   const btnReset = $("q_btn_reset");
   const btnWhatsapp = $("q_btn_whatsapp");
 
-  // Guard
   const required = [
-    qUsers, qSites, qSupport, qHours, qServers, qUrgency,
-    qPrice, qBreakdown, quoteSummary, btnWhatsapp,
+    qUsers, qSites, qSupport, qHours, qServers, qUrgency, qPrice, qBreakdown, quoteSummary, btnWhatsapp
   ];
   if (required.some((el) => !el)) return;
 
@@ -175,7 +163,6 @@ function initCotizador() {
       "Estimado mensual. No incluye licencias (M365/EDR/Backup cloud), hardware, ni proyectos one-time fuera de la bolsa.",
   };
 
-  // Forzar módulos base
   if (mHelpdesk) { mHelpdesk.checked = true; mHelpdesk.disabled = true; }
   if (mMonitor) { mMonitor.checked = true; mMonitor.disabled = true; }
 
@@ -188,15 +175,13 @@ function initCotizador() {
   function renderBreakdown(breakdown, multLines) {
     qBreakdown.innerHTML = `
       <div class="break-items">
-        ${breakdown.map((item) => `
+        ${breakdown.map(item => `
           <div class="break-item">
             <span class="break-label">${item.label}</span>
             <span class="break-val">${money(item.value)}</span>
           </div>`).join("")}
       </div>
-      ${multLines.length
-        ? `<div class="break-mults"><strong>Ajustes operativos:</strong><br>${multLines.join("<br>")}</div>`
-        : ""}
+      ${multLines.length ? `<div class="break-mults"><strong>Ajustes operativos:</strong><br>${multLines.join("<br>")}</div>` : ""}
       <div class="break-note">${PRICING.note}</div>
     `;
   }
@@ -205,7 +190,9 @@ function initCotizador() {
     const users = clamp(safeInt(qUsers.value, 5), 5, 300);
     qUsers.value = String(users);
 
-    const sites = clamp(safeInt(qSites.value, 1), 1, 4);
+    const sitesRaw = safeInt(qSites.value, 1);
+    const sites = clamp(sitesRaw, 1, 4);
+
     const support = qSupport.value;
     const hours = qHours.value;
     const urgency = qUrgency.value;
@@ -220,39 +207,26 @@ function initCotizador() {
 
     let subtotal = plan.base;
     const breakdown = [];
-
-    breakdown.push({
-      label: `${plan.name} (incluye hasta ${plan.includedUsers} usuarios)`,
-      value: plan.base,
-    });
+    breakdown.push({ label: `${plan.name} (incluye hasta ${plan.includedUsers} usuarios)`, value: plan.base });
 
     const extraUsers = Math.max(0, users - plan.includedUsers);
     if (extraUsers > 0) {
-      const cost = extraUsers * plan.extraUser;
-      subtotal += cost;
-      breakdown.push({
-        label: `Usuarios adicionales (${extraUsers} × ${money(plan.extraUser)})`,
-        value: cost,
-      });
+      const extraUsersCost = extraUsers * plan.extraUser;
+      subtotal += extraUsersCost;
+      breakdown.push({ label: `Usuarios adicionales (${extraUsers} × ${money(plan.extraUser)})`, value: extraUsersCost });
     }
 
     const extraSites = Math.max(0, sites - 1);
     if (extraSites > 0) {
-      const cost = extraSites * PRICING.extraSite;
-      subtotal += cost;
-      breakdown.push({
-        label: `Sedes adicionales (${extraSites} × ${money(PRICING.extraSite)})`,
-        value: cost,
-      });
+      const extraSitesCost = extraSites * PRICING.extraSite;
+      subtotal += extraSitesCost;
+      breakdown.push({ label: `Sedes adicionales (${extraSites} × ${money(PRICING.extraSite)})`, value: extraSitesCost });
     }
 
     if (serversCount > 0) {
-      const cost = serversCount * PRICING.serverMonthly;
-      subtotal += cost;
-      breakdown.push({
-        label: `Administración de servidores (${serversCount} × ${money(PRICING.serverMonthly)})`,
-        value: cost,
-      });
+      const serverCost = serversCount * PRICING.serverMonthly;
+      subtotal += serverCost;
+      breakdown.push({ label: `Administración de servidores (${serversCount} × ${money(PRICING.serverMonthly)})`, value: serverCost });
     }
 
     const modulesSelected = [];
@@ -261,10 +235,7 @@ function initCotizador() {
       const m = PRICING.modules[key];
       modulesSelected.push(m.label);
       subtotal += m.monthly || 0;
-      breakdown.push({
-        label: `Módulo: ${m.label}${m.included ? " (Incluido)" : ""}`,
-        value: m.monthly || 0,
-      });
+      breakdown.push({ label: `Módulo: ${m.label}${m.included ? " (Incluido)" : ""}`, value: m.monthly || 0 });
     };
 
     addModule(true, "helpdesk");
@@ -279,8 +250,8 @@ function initCotizador() {
     const multSupport = PRICING.supportMultiplier[support] ?? 1.0;
     const multHours = PRICING.hoursMultiplier[hours] ?? 1.0;
     const multUrgency = PRICING.urgencyMultiplier[urgency] ?? 1.0;
-
     const multiplier = multSupport * multHours * multUrgency;
+
     const total = Math.round((subtotal * multiplier) / 10) * 10;
 
     const multLines = [];
@@ -319,6 +290,7 @@ function initCotizador() {
   function reset() {
     qUsers.value = "25";
     if (qUsersVal) qUsersVal.textContent = "25";
+
     qSites.value = "1";
     qSupport.value = "remote";
     qHours.value = "buss";
@@ -353,8 +325,9 @@ function initCotizador() {
 }
 
 /* =========================
-   CONTACT FORM (FIX 409)
-   - Envia FormData (no JSON)
+   CONTACT FORM (ANTI-409)
+   - envía x-www-form-urlencoded
+   - evita JSON (ModSecurity suele bloquear)
 ========================= */
 function initContactForm() {
   const form = $("contactForm");
@@ -370,30 +343,34 @@ function initContactForm() {
       btn.textContent = "Enviando...";
     }
 
+    // IMPORTANT: mandar como urlencoded para evitar 409
+    const fd = new FormData(form);
+    fd.set("origen", window.location.href);
+
+    // si quieres mandar el resumen del cotizador:
+    const qs = $("quote_summary")?.value || "";
+    if (qs) fd.set("quote_summary", qs);
+
+    const body = new URLSearchParams(fd);
+
     try {
-      // ✅ FormData evita que ModSecurity marque "application/json"
-      const fd = new FormData(form);
-      fd.set("origen", window.location.href);
-
-      // (Opcional) enviar resumen del cotizador si existe
-      const qs = $("quote_summary")?.value || "";
-      if (qs) fd.set("quote_summary", qs);
-
-      const res = await fetch("api/contact.php", {
+      const res = await fetch("/api/contact.php", {
         method: "POST",
-        body: fd,
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+          "Accept": "application/json"
+        },
+        body,
+        credentials: "same-origin"
       });
 
-      // Intentar leer JSON, si no, leer texto
-      const text = await res.text();
-      let data = {};
-      try { data = JSON.parse(text); } catch {}
+      const data = await res.json().catch(() => ({}));
 
       if (res.ok && data.ok) {
         form.reset();
-        alert("¡Mensaje enviado! 🚀");
+        alert("¡Mensaje enviado! ✅");
       } else {
-        console.log("Status:", res.status, "Response:", text);
+        console.log("Backend response:", data);
         alert("No se pudo enviar. Intenta de nuevo.");
       }
     } catch (err) {
