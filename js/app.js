@@ -4,8 +4,8 @@
  * - Cookies banner + acceptCookies()
  * - Glow de cards (Servicios)
  * - Footer year
- * - Cotizador PRO (validaciones + resumen claro + WhatsApp)
- * - Contact Form (POST a /api/contact.php + guarda en DB + email)
+ * - Cotizador PRO
+ * - Contact Form: envía FormData (evita 409 ModSecurity)
  */
 
 /* =========================
@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initCookies();
   initServiceCardsGlow();
   initCotizador();     // si no existe, no hace nada
-  initContactForm();   // ✅ robusto (no depende del orden del script)
+  initContactForm();   // ✅ ahora usa FormData (evita 409)
 });
 
 /* =========================
@@ -103,8 +103,6 @@ function initServiceCardsGlow() {
     card.addEventListener("mousemove", (e) => {
       const rect = card.getBoundingClientRect();
       card.style.setProperty("--x", `${e.clientX - rect.left}px`);
-      card.style.setProperty("--y", `${e.clientX - rect.left}px`);
-      // Nota: tu original usaba clientY, lo correcto es:
       card.style.setProperty("--y", `${e.clientY - rect.top}px`);
     });
   });
@@ -137,32 +135,21 @@ function initCotizador() {
   const qPrice = $("q_price");
   const qBreakdown = $("q_breakdown");
   const quoteSummary = $("quote_summary");
-  const qBadgePlan = $("q_badge_plan"); // opcional en HTML PRO
-  const qPriceNote = $("q_price_note"); // opcional
+  const qBadgePlan = $("q_badge_plan");
+  const qPriceNote = $("q_price_note");
 
   // Buttons
   const btnCalc = $("q_btn_calc");
   const btnReset = $("q_btn_reset");
   const btnWhatsapp = $("q_btn_whatsapp");
 
-  // Guard: si no existe cotizador, salir sin romper nada
+  // Guard
   const required = [
-    qUsers,
-    qSites,
-    qSupport,
-    qHours,
-    qServers,
-    qUrgency,
-    qPrice,
-    qBreakdown,
-    quoteSummary,
-    btnWhatsapp,
+    qUsers, qSites, qSupport, qHours, qServers, qUrgency,
+    qPrice, qBreakdown, quoteSummary, btnWhatsapp,
   ];
   if (required.some((el) => !el)) return;
 
-  // -------------------------------
-  // PRICING (reglas claras)
-  // -------------------------------
   const PRICING = {
     plans: [
       { name: "Plan Esencial", base: 2500, includedUsers: 5, extraUser: 250 },
@@ -188,15 +175,9 @@ function initCotizador() {
       "Estimado mensual. No incluye licencias (M365/EDR/Backup cloud), hardware, ni proyectos one-time fuera de la bolsa.",
   };
 
-  // Forzar módulos base como incluidos (anti malentendido)
-  if (mHelpdesk) {
-    mHelpdesk.checked = true;
-    mHelpdesk.disabled = true;
-  }
-  if (mMonitor) {
-    mMonitor.checked = true;
-    mMonitor.disabled = true;
-  }
+  // Forzar módulos base
+  if (mHelpdesk) { mHelpdesk.checked = true; mHelpdesk.disabled = true; }
+  if (mMonitor) { mMonitor.checked = true; mMonitor.disabled = true; }
 
   function pickPlan(users) {
     if (users <= PRICING.plans[0].includedUsers) return PRICING.plans[0];
@@ -207,33 +188,24 @@ function initCotizador() {
   function renderBreakdown(breakdown, multLines) {
     qBreakdown.innerHTML = `
       <div class="break-items">
-        ${breakdown
-          .map(
-            (item) => `
+        ${breakdown.map((item) => `
           <div class="break-item">
             <span class="break-label">${item.label}</span>
             <span class="break-val">${money(item.value)}</span>
-          </div>`
-          )
-          .join("")}
+          </div>`).join("")}
       </div>
-      ${
-        multLines.length
-          ? `<div class="break-mults"><strong>Ajustes operativos:</strong><br>${multLines.join("<br>")}</div>`
-          : ""
-      }
+      ${multLines.length
+        ? `<div class="break-mults"><strong>Ajustes operativos:</strong><br>${multLines.join("<br>")}</div>`
+        : ""}
       <div class="break-note">${PRICING.note}</div>
     `;
   }
 
   function calc() {
-    // Normaliza inputs
     const users = clamp(safeInt(qUsers.value, 5), 5, 300);
     qUsers.value = String(users);
 
-    const sitesRaw = safeInt(qSites.value, 1);
-    const sites = clamp(sitesRaw, 1, 4);
-
+    const sites = clamp(safeInt(qSites.value, 1), 1, 4);
     const support = qSupport.value;
     const hours = qHours.value;
     const urgency = qUrgency.value;
@@ -241,54 +213,48 @@ function initCotizador() {
     const serversCount = clamp(safeInt(qServers.value || "0", 0), 0, 50);
     qServers.value = String(serversCount);
 
-    // UI slider
     if (qUsersVal) qUsersVal.textContent = String(users);
 
-    // Plan
     const plan = pickPlan(users);
     if (qBadgePlan) qBadgePlan.textContent = plan.name;
 
-    // Base
     let subtotal = plan.base;
     const breakdown = [];
+
     breakdown.push({
       label: `${plan.name} (incluye hasta ${plan.includedUsers} usuarios)`,
       value: plan.base,
     });
 
-    // Extra users
     const extraUsers = Math.max(0, users - plan.includedUsers);
     if (extraUsers > 0) {
-      const extraUsersCost = extraUsers * plan.extraUser;
-      subtotal += extraUsersCost;
+      const cost = extraUsers * plan.extraUser;
+      subtotal += cost;
       breakdown.push({
         label: `Usuarios adicionales (${extraUsers} × ${money(plan.extraUser)})`,
-        value: extraUsersCost,
+        value: cost,
       });
     }
 
-    // Extra sites
     const extraSites = Math.max(0, sites - 1);
     if (extraSites > 0) {
-      const extraSitesCost = extraSites * PRICING.extraSite;
-      subtotal += extraSitesCost;
+      const cost = extraSites * PRICING.extraSite;
+      subtotal += cost;
       breakdown.push({
         label: `Sedes adicionales (${extraSites} × ${money(PRICING.extraSite)})`,
-        value: extraSitesCost,
+        value: cost,
       });
     }
 
-    // Servers
     if (serversCount > 0) {
-      const serverCost = serversCount * PRICING.serverMonthly;
-      subtotal += serverCost;
+      const cost = serversCount * PRICING.serverMonthly;
+      subtotal += cost;
       breakdown.push({
         label: `Administración de servidores (${serversCount} × ${money(PRICING.serverMonthly)})`,
-        value: serverCost,
+        value: cost,
       });
     }
 
-    // Modules
     const modulesSelected = [];
     const addModule = (checked, key) => {
       if (!checked) return;
@@ -310,28 +276,23 @@ function initCotizador() {
     addModule(!!mServers?.checked, "servers");
     addModule(!!mProjects?.checked, "projects");
 
-    // Multipliers
     const multSupport = PRICING.supportMultiplier[support] ?? 1.0;
     const multHours = PRICING.hoursMultiplier[hours] ?? 1.0;
     const multUrgency = PRICING.urgencyMultiplier[urgency] ?? 1.0;
-    const multiplier = multSupport * multHours * multUrgency;
 
-    // Redondeo consistente (decenas)
+    const multiplier = multSupport * multHours * multUrgency;
     const total = Math.round((subtotal * multiplier) / 10) * 10;
 
-    // Ajustes operativos visibles
     const multLines = [];
     if (multSupport !== 1) multLines.push(`Soporte (${textOfSelect(qSupport)}) × ${multSupport}`);
     if (multHours !== 1) multLines.push(`Horario (${textOfSelect(qHours)}) × ${multHours}`);
     if (multUrgency !== 1) multLines.push(`SLA (${textOfSelect(qUrgency)}) × ${multUrgency}`);
 
-    // Render price
     qPrice.textContent = `${money(total)} / mes`;
     if (qPriceNote) qPriceNote.textContent = PRICING.note;
 
     renderBreakdown(breakdown, multLines);
 
-    // Summary (para WhatsApp y posible envío)
     const summary = [
       `Cotización Mirmibug (Estimado mensual)`,
       `Plan base: ${plan.name}`,
@@ -351,7 +312,6 @@ function initCotizador() {
 
     quoteSummary.value = summary;
 
-    // WhatsApp
     const phone = "525527970496";
     btnWhatsapp.href = `https://wa.me/${phone}?text=${encodeURIComponent(summary)}`;
   }
@@ -359,7 +319,6 @@ function initCotizador() {
   function reset() {
     qUsers.value = "25";
     if (qUsersVal) qUsersVal.textContent = "25";
-
     qSites.value = "1";
     qSupport.value = "remote";
     qHours.value = "buss";
@@ -381,7 +340,6 @@ function initCotizador() {
     calc();
   }
 
-  // Events
   qUsers.addEventListener("input", calc);
   [qSites, qSupport, qHours, qServers, qUrgency, mM365, mBackup, mSecurity, mNetwork, mServers, mProjects].forEach((el) => {
     el?.addEventListener("change", calc);
@@ -391,12 +349,12 @@ function initCotizador() {
   btnCalc?.addEventListener("click", (e) => { e.preventDefault?.(); calc(); });
   btnReset?.addEventListener("click", (e) => { e.preventDefault?.(); reset(); });
 
-  // Init
   calc();
 }
 
 /* =========================
-   CONTACT FORM (ROBUSTO)
+   CONTACT FORM (FIX 409)
+   - Envia FormData (no JSON)
 ========================= */
 function initContactForm() {
   const form = $("contactForm");
@@ -412,33 +370,30 @@ function initContactForm() {
       btn.textContent = "Enviando...";
     }
 
-    const payload = {
-      nombre: form.nombre?.value || "",
-      email: form.email?.value || "",
-      telefono: form.telefono?.value || "",
-      empresa: form.empresa?.value || "",
-      mensaje: form.mensaje?.value || "",
-      consentimiento: !!form.consentimiento?.checked,
-      website: form.website?.value || "", // honeypot
-      origen: window.location.href,
-      // Si quieres enviar también el resumen del cotizador al backend:
-      // quote_summary: $("quote_summary")?.value || ""
-    };
-
     try {
+      // ✅ FormData evita que ModSecurity marque "application/json"
+      const fd = new FormData(form);
+      fd.set("origen", window.location.href);
+
+      // (Opcional) enviar resumen del cotizador si existe
+      const qs = $("quote_summary")?.value || "";
+      if (qs) fd.set("quote_summary", qs);
+
       const res = await fetch("api/contact.php", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: fd,
       });
 
-      const data = await res.json().catch(() => ({}));
+      // Intentar leer JSON, si no, leer texto
+      const text = await res.text();
+      let data = {};
+      try { data = JSON.parse(text); } catch {}
 
       if (res.ok && data.ok) {
         form.reset();
         alert("¡Mensaje enviado! 🚀");
       } else {
-        console.log("Backend response:", data);
+        console.log("Status:", res.status, "Response:", text);
         alert("No se pudo enviar. Intenta de nuevo.");
       }
     } catch (err) {

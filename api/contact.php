@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 header('Content-Type: application/json; charset=utf-8');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -9,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 /* =========================
-   CONFIG DB (TU DATA)
+   CONFIG DB (Pega tus datos)
 ========================= */
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'andres63_mirmibug_web');
@@ -17,29 +18,10 @@ define('DB_USER', 'andres63_adminmirmibug');
 define('DB_PASS', 'ygKtYLN.I1g)');
 
 /* =========================
-   CONFIG EMAIL (TITAN SMTP)
+   CONFIG EMAIL
 ========================= */
-define('MAIL_TO', 'contacto@mirmibug.com');
-define('MAIL_FROM', 'contacto@mirmibug.com');          // Debe existir
-define('MAIL_FROM_NAME', 'Mirmibug');
-define('SMTP_HOST', 'smtp.titan.email');
-define('SMTP_USER', 'contacto@mirmibug.com');
-define('SMTP_PASS', '67]}GI[?gH05');  
-
-// 465 = SSL, 587 = STARTTLS
-define('SMTP_PORT', 465);
-define('SMTP_SECURE', 'ssl'); // 'ssl' (465) o 'tls' (587)
-
-/* =========================
-   PHPMailer includes
-========================= */
-$baseDir = __DIR__; // /public_html/api
-require_once $baseDir . '/mailer/Exception.php';
-require_once $baseDir . '/mailer/PHPMailer.php';
-require_once $baseDir . '/mailer/SMTP.php';
-
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
+$TO_EMAIL = 'contacto@mirmibug.com';
+$FROM_EMAIL = 'contacto@mirmibug.com'; // debe existir como cuenta en tu hosting para mejor deliverability
 
 /* =========================
    HELPERS
@@ -47,9 +29,23 @@ use PHPMailer\PHPMailer\Exception;
 function clean($s): string { return trim((string)$s); }
 function is_email($s): bool { return filter_var($s, FILTER_VALIDATE_EMAIL) !== false; }
 
-$raw = file_get_contents('php://input');
-$data = json_decode($raw, true);
-if (!is_array($data)) $data = $_POST;
+function json_out(int $code, array $payload): void {
+  http_response_code($code);
+  echo json_encode($payload, JSON_UNESCAPED_UNICODE);
+  exit;
+}
+
+/* =========================
+   INPUT (FormData primero)
+========================= */
+$data = $_POST;
+
+// Si viniera JSON (por si acaso), también lo soportamos:
+if (empty($data)) {
+  $raw = file_get_contents('php://input');
+  $json = json_decode($raw, true);
+  if (is_array($json)) $data = $json;
+}
 
 $nombre = clean($data['nombre'] ?? '');
 $email  = clean($data['email'] ?? '');
@@ -59,15 +55,16 @@ $mensaje  = clean($data['mensaje'] ?? '');
 $consentimiento = !empty($data['consentimiento']) ? 1 : 0;
 $origen = clean($data['origen'] ?? '');
 $honeypot = clean($data['website'] ?? ''); // anti-spam
+$quote_summary = clean($data['quote_summary'] ?? ''); // opcional
 
-// Honeypot
-if ($honeypot !== '') { echo json_encode(['ok'=>true]); exit; }
+// Honeypot: bots
+if ($honeypot !== '') {
+  json_out(200, ['ok' => true]);
+}
 
 // Validación mínima
 if ($nombre === '' || !is_email($email) || $mensaje === '') {
-  http_response_code(400);
-  echo json_encode(['ok' => false, 'error' => 'Invalid data']);
-  exit;
+  json_out(400, ['ok' => false, 'error' => 'Invalid data']);
 }
 
 // IP / UA
@@ -78,11 +75,13 @@ $user_agent = $user_agent !== '' ? substr($user_agent, 0, 255) : null;
 
 /* =========================
    DB INSERT
+   Tabla esperada: contact_leads
 ========================= */
 try {
   $dsn = 'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME . ';charset=utf8mb4';
   $pdo = new PDO($dsn, DB_USER, DB_PASS, [
-    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
   ]);
 
   $stmt = $pdo->prepare("
@@ -105,67 +104,35 @@ try {
   ]);
 
 } catch (Throwable $e) {
-  http_response_code(500);
-  echo json_encode(['ok' => false, 'error' => 'DB error']);
-  exit;
+  // Para debug real, revisa error_log del hosting
+  // error_log("DB error: " . $e->getMessage());
+  json_out(500, ['ok' => false, 'error' => 'DB error']);
 }
 
 /* =========================
-   EMAIL NOTIFY (SMTP)
+   EMAIL NOTIFY
+   (Si falla mail(), igual ya se guardó en DB)
 ========================= */
-$mailOk = false;
-$mailErr = null;
+$subject = "Nuevo contacto - {$nombre}";
 
-try {
-  $mail = new PHPMailer(true);
-  $mail->CharSet = 'UTF-8';
+$body = "Nuevo contacto recibido:\n\n" .
+  "Nombre: {$nombre}\n" .
+  "Email: {$email}\n" .
+  "Teléfono: " . ($telefono ?: '-') . "\n" .
+  "Empresa: " . ($empresa ?: '-') . "\n\n" .
+  "Mensaje:\n{$mensaje}\n\n" .
+  "Origen: " . ($origen ?: '-') . "\n" .
+  "IP: " . ($ip ?: '-') . "\n";
 
-  $mail->isSMTP();
-  $mail->Host = SMTP_HOST;
-  $mail->SMTPAuth = true;
-  $mail->Username = SMTP_USER;
-  $mail->Password = SMTP_PASS;
-  $mail->Port = SMTP_PORT;
-  $mail->SMTPSecure = SMTP_SECURE;
-
-  // Si HostGator tiene problemas de SSL, descomenta esto (solo como último recurso):
-  // $mail->SMTPOptions = [
-  //   'ssl' => [
-  //     'verify_peer' => false,
-  //     'verify_peer_name' => false,
-  //     'allow_self_signed' => true,
-  //   ]
-  // ];
-
-  $mail->setFrom(MAIL_FROM, MAIL_FROM_NAME);
-  $mail->addAddress(MAIL_TO);
-
-  // Reply-To al cliente
-  $mail->addReplyTo($email, $nombre);
-
-  $mail->Subject = "New contact - {$nombre}";
-  $mail->Body =
-    "New contact received:\n\n" .
-    "Name: {$nombre}\n" .
-    "Email: {$email}\n" .
-    "Phone: " . ($telefono ?: '-') . "\n" .
-    "Company: " . ($empresa ?: '-') . "\n\n" .
-    "Message:\n{$mensaje}\n\n" .
-    "Origin: " . ($origen ?: '-') . "\n" .
-    "IP: " . ($ip ?: '-') . "\n";
-
-  $mail->send();
-  $mailOk = true;
-
-} catch (Throwable $e) {
-  // Ojo: NO tumbamos el endpoint, porque ya guardó en DB.
-  $mailErr = $e->getMessage();
+if ($quote_summary !== '') {
+  $body .= "\n\n--- Resumen Cotizador ---\n" . $quote_summary . "\n";
 }
 
-echo json_encode([
-  'ok' => true,
-  'saved' => true,
-  'mail_ok' => $mailOk,
-  // Puedes ocultar esto en producción si no quieres filtrar detalles:
-  'mail_error' => $mailOk ? null : $mailErr
-]);
+$headers = "From: Mirmibug <{$FROM_EMAIL}>\r\n";
+$headers .= "Reply-To: {$email}\r\n";
+$headers .= "MIME-Version: 1.0\r\n";
+$headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
+
+$mail_sent = @mail($TO_EMAIL, $subject, $body, $headers);
+
+json_out(200, ['ok' => true, 'mail_sent' => (bool)$mail_sent]);

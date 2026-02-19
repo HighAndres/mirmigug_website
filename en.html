@@ -447,7 +447,7 @@
     <h2 class="section-title">Contact</h2>
 
     <form id="contactForm" class="contact-form">
-      <!-- honeypot anti-spam (do not remove) -->
+      <!-- honeypot anti-spam -->
       <input type="text" name="website" style="display:none" tabindex="-1" autocomplete="off" />
 
       <input type="text" name="nombre" placeholder="Full name" required />
@@ -456,8 +456,8 @@
       <input type="text" name="empresa" placeholder="Company (optional)" />
       <textarea name="mensaje" placeholder="Message" required></textarea>
 
-      <label class="text-sm text-gray-400 flex gap-2 items-start">
-        <input type="checkbox" name="consentimiento" class="mt-1" />
+      <label style="display:flex; gap:.6rem; align-items:center; font-weight:700; color:rgba(255,255,255,.8);">
+        <input type="checkbox" name="consentimiento" value="1" checked />
         I agree to be contacted by Mirmibug.
       </label>
 
