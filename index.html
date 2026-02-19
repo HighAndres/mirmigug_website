@@ -1,21 +1,24 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mirmibug | IT Services</title>
 
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="img/logo_mirmibug_360.png">
+  <link rel="icon" type="image/png" href="img/logo_mirmibug_360.png" />
 
   <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css" />
 
   <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap"
+    rel="stylesheet"
+  />
 </head>
 
 <body class="bg-black text-white font-inter overflow-x-hidden">
@@ -24,7 +27,7 @@
   <header class="navbar">
     <nav class="nav-content">
       <div class="logo">
-        <img src="img/logo_mirmibug_360.png" class="w-10" alt="Mirmibug Logo">
+        <img src="img/logo_mirmibug_360.png" class="w-10" alt="Mirmibug Logo" />
         <span class="brand-name">MIRMIBUG</span>
       </div>
 
@@ -45,7 +48,7 @@
         <a href="#contacto" class="btn-contacto">Contáctanos</a>
       </div>
 
-      <button id="menuBtn" class="menu-btn" aria-label="Abrir menú">☰</button>
+      <button id="menuBtn" class="menu-btn" aria-label="Abrir menú" aria-expanded="false">☰</button>
     </nav>
   </header>
 
@@ -96,193 +99,192 @@
   <div class="section-divider" aria-hidden="true"></div>
 
   <!-- SERVICIOS -->
-<section id="servicios" class="section section-block services-pro">
-  <div class="services-bg" aria-hidden="true"></div>
+  <section id="servicios" class="section section-block services-pro">
+    <div class="services-bg" aria-hidden="true"></div>
 
-  <div class="services-inner">
-    <div class="services-head">
-      <div class="services-kicker">MSP • Cloud • Seguridad • Software • Data</div>
+    <div class="services-inner">
+      <div class="services-head">
+        <div class="services-kicker">MSP • Cloud • Seguridad • Software • Data</div>
 
-      <h2 class="section-title">Servicios IT</h2>
+        <h2 class="section-title">Servicios IT</h2>
 
-      <p class="services-subtitle">
-        Administramos, migramos y modernizamos la infraestructura tecnológica de tu empresa con procesos claros,
-        monitoreo continuo y <strong>automatización inteligente (IA)</strong>. Además, desarrollamos <strong>software a la medida</strong>,
-        <strong>add-ons</strong> e integraciones para escalar tu operación, y construimos <strong>dashboards ejecutivos</strong>
-        en <strong>Looker Studio</strong> o <strong>Power BI</strong> con KPIs y SLAs para control real y decisiones rápidas.
-      </p>
+        <p class="services-subtitle">
+          Administramos, migramos y modernizamos la infraestructura tecnológica de tu empresa con procesos claros,
+          monitoreo continuo y <strong>automatización inteligente (IA)</strong>. Además, desarrollamos <strong>software a la medida</strong>,
+          <strong>add-ons</strong> e integraciones para escalar tu operación, y construimos <strong>dashboards ejecutivos</strong>
+          en <strong>Looker Studio</strong> o <strong>Power BI</strong> con KPIs y SLAs para control real y decisiones rápidas.
+        </p>
 
-      <div class="services-pills">
-        <span class="services-pill">Soporte IT 24/7</span>
-        <span class="services-pill">Monitoreo Proactivo + IA</span>
-        <span class="services-pill">Software a Medida</span>
-        <span class="services-pill">Dashboards Looker / Power BI</span>
+        <div class="services-pills">
+          <span class="services-pill">Soporte IT 24/7</span>
+          <span class="services-pill">Monitoreo Proactivo + IA</span>
+          <span class="services-pill">Software a Medida</span>
+          <span class="services-pill">Dashboards Looker / Power BI</span>
+        </div>
+      </div>
+
+      <div class="services-strip">
+        <div class="strip-item">
+          <div class="strip-title">Visibilidad</div>
+          <div class="strip-desc">KPIs, SLAs, backlog, disponibilidad y salud operativa en un solo tablero.</div>
+        </div>
+        <div class="strip-item">
+          <div class="strip-title">Automatización</div>
+          <div class="strip-desc">Alertas, reportes y flujos inteligentes para reducir tickets y tiempos.</div>
+        </div>
+        <div class="strip-item">
+          <div class="strip-title">Escalabilidad</div>
+          <div class="strip-desc">Software, add-ons e integraciones para crecer sin caos ni reprocesos.</div>
+        </div>
+      </div>
+
+      <div class="cards">
+        <!-- 1 -->
+        <div class="card">
+          <div class="service-title">
+            <svg class="service-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M4 7h16M7 7v10m10-10v10M5 17h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+            <h3>Infraestructura & Servidores Físicos</h3>
+          </div>
+          <p>
+            Implementación y administración de servidores on-premise (Windows Server y Linux), Active Directory,
+            file servers, respaldos, RAID y alta disponibilidad, con monitoreo para detección temprana de fallos.
+          </p>
+        </div>
+
+        <!-- 2 -->
+        <div class="card">
+          <div class="service-title">
+            <svg class="service-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M6 16a4 4 0 010-8 5 5 0 019.6-1.2A4 4 0 0118 16H6z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <h3>Cloud Computing & Virtualización</h3>
+          </div>
+          <p>
+            Migraciones y operación en AWS, Azure y Google Cloud. Infraestructura híbrida, virtualización, snapshots,
+            escalabilidad y optimización de costos basada en métricas de uso.
+          </p>
+        </div>
+
+        <!-- 3 -->
+        <div class="card">
+          <div class="service-title">
+            <svg class="service-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 3l8 4v6c0 5-3.4 8.7-8 8-4.6.7-8-3-8-8V7l8-4z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <h3>Redes Empresariales & Seguridad</h3>
+          </div>
+          <p>
+            LAN/WAN, WiFi empresarial, VPNs, firewalls, segmentación de red y control de accesos.
+            Análisis de tráfico y alertas por comportamientos anómalos.
+          </p>
+        </div>
+
+        <!-- 4 -->
+        <div class="card">
+          <div class="service-title">
+            <svg class="service-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M7 7h10v10H7zM4 4h4M16 4h4M4 16h4M16 20h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+            <h3>Migraciones & Modernización IT</h3>
+          </div>
+          <p>
+            Modernización de infraestructura, migración planificada a cloud y actualización de sistemas obsoletos.
+            Roadmap técnico, evaluación de riesgos y ejecución por fases.
+          </p>
+        </div>
+
+        <!-- 5 (FEATURE) -->
+        <div class="card card-feature">
+          <div class="service-title">
+            <svg class="service-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M9 18h6M10 22h4M8 2h8l2 4v6c0 2.2-1.2 4-3 5.2L12 19l-3-1.8C7.2 16 6 14.2 6 12V6l2-4z"
+                stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <h3>Desarrollo de Software a Medida</h3>
+          </div>
+          <p>
+            Sistemas internos, portales, automatización de procesos, integraciones y APIs.
+            Incluye levantamiento (discovery), diseño, desarrollo, QA, despliegue y mantenimiento evolutivo.
+          </p>
+          <div class="card-tag">Nuevo • Software</div>
+        </div>
+
+        <!-- 6 (FEATURE) -->
+        <div class="card card-feature">
+          <div class="service-title">
+            <svg class="service-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M7 8h10M7 12h10M7 16h6M5 4h14a2 2 0 012 2v12a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z"
+                stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <h3>Add-ons, Plugins & Integraciones</h3>
+          </div>
+          <p>
+            Módulos extra para tus sistemas actuales (ERP/LMS/CRM), conectores con herramientas externas,
+            SSO, automatizaciones, webhooks y sincronización de datos para evitar doble captura.
+          </p>
+          <div class="card-tag">Nuevo • Add-ons</div>
+        </div>
+
+        <!-- 7 -->
+        <div class="card">
+          <div class="service-title">
+            <svg class="service-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 2v4m0 12v4M4 12H2m20 0h-2M5 5l2.8 2.8M19 19l-2.8-2.8M19 5l-2.8 2.8M5 19l2.8-2.8"
+                stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+            <h3>Integración con IA & Automatización</h3>
+          </div>
+          <p>
+            Automatizamos tareas (reportes, alertas, remediación, onboarding/offboarding) e integramos IA para
+            clasificación de tickets, detección de patrones y recomendaciones operativas.
+          </p>
+        </div>
+
+        <!-- 8 -->
+        <div class="card">
+          <div class="service-title">
+            <svg class="service-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M4 19V5m0 14h16M7 15l3-3 3 2 4-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <h3>Dashboards & BI (Looker Studio / Power BI)</h3>
+          </div>
+          <p>
+            Dashboards ejecutivos con KPIs, SLAs, productividad, inventario, riesgos y estado de proyectos.
+            Conexión a MySQL/Sheets/BigQuery/Excel, modelado y gobierno de datos.
+          </p>
+        </div>
+
+        <!-- 9 -->
+        <div class="card">
+          <div class="service-title">
+            <svg class="service-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 6v6l4 2M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <h3>Mantenimiento, SLAs & Roadmap</h3>
+          </div>
+          <p>
+            Paquetes de mantenimiento con SLAs, control de cambios, documentación, monitoreo continuo y
+            roadmap trimestral para evolución tecnológica sin improvisación.
+          </p>
+        </div>
+      </div>
+
+      <div class="services-cta">
+        <div class="services-cta-box">
+          <div class="services-cta-title">¿Quieres una muestra de dashboard o un demo de add-on?</div>
+          <div class="services-cta-desc">
+            Te enviamos un ejemplo (Looker/Power BI) con KPIs y SLAs, o una propuesta de desarrollo a medida con alcance por fases.
+          </div>
+        </div>
+        <a href="#contacto" class="services-cta-btn">Solicitar muestra</a>
       </div>
     </div>
+  </section>
 
-    <div class="services-strip">
-      <div class="strip-item">
-        <div class="strip-title">Visibilidad</div>
-        <div class="strip-desc">KPIs, SLAs, backlog, disponibilidad y salud operativa en un solo tablero.</div>
-      </div>
-      <div class="strip-item">
-        <div class="strip-title">Automatización</div>
-        <div class="strip-desc">Alertas, reportes y flujos inteligentes para reducir tickets y tiempos.</div>
-      </div>
-      <div class="strip-item">
-        <div class="strip-title">Escalabilidad</div>
-        <div class="strip-desc">Software, add-ons e integraciones para crecer sin caos ni reprocesos.</div>
-      </div>
-    </div>
-
-    <div class="cards">
-      <!-- 1 -->
-      <div class="card">
-        <div class="service-title">
-          <svg class="service-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M4 7h16M7 7v10m10-10v10M5 17h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-          </svg>
-          <h3>Infraestructura & Servidores Físicos</h3>
-        </div>
-        <p>
-          Implementación y administración de servidores on-premise (Windows Server y Linux), Active Directory,
-          file servers, respaldos, RAID y alta disponibilidad, con monitoreo para detección temprana de fallos.
-        </p>
-      </div>
-
-      <!-- 2 -->
-      <div class="card">
-        <div class="service-title">
-          <svg class="service-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M6 16a4 4 0 010-8 5 5 0 019.6-1.2A4 4 0 0118 16H6z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          <h3>Cloud Computing & Virtualización</h3>
-        </div>
-        <p>
-          Migraciones y operación en AWS, Azure y Google Cloud. Infraestructura híbrida, virtualización, snapshots,
-          escalabilidad y optimización de costos basada en métricas de uso.
-        </p>
-      </div>
-
-      <!-- 3 -->
-      <div class="card">
-        <div class="service-title">
-          <svg class="service-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M12 3l8 4v6c0 5-3.4 8.7-8 8-4.6.7-8-3-8-8V7l8-4z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          <h3>Redes Empresariales & Seguridad</h3>
-        </div>
-        <p>
-          LAN/WAN, WiFi empresarial, VPNs, firewalls, segmentación de red y control de accesos.
-          Análisis de tráfico y alertas por comportamientos anómalos.
-        </p>
-      </div>
-
-      <!-- 4 -->
-      <div class="card">
-        <div class="service-title">
-          <svg class="service-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M7 7h10v10H7zM4 4h4M16 4h4M4 16h4M16 20h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-          </svg>
-          <h3>Migraciones & Modernización IT</h3>
-        </div>
-        <p>
-          Modernización de infraestructura, migración planificada a cloud y actualización de sistemas obsoletos.
-          Roadmap técnico, evaluación de riesgos y ejecución por fases.
-        </p>
-      </div>
-
-      <!-- 5 (FEATURE) -->
-      <div class="card card-feature">
-        <div class="service-title">
-          <svg class="service-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M9 18h6M10 22h4M8 2h8l2 4v6c0 2.2-1.2 4-3 5.2L12 19l-3-1.8C7.2 16 6 14.2 6 12V6l2-4z"
-              stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          <h3>Desarrollo de Software a Medida</h3>
-        </div>
-        <p>
-          Sistemas internos, portales, automatización de procesos, integraciones y APIs.
-          Incluye levantamiento (discovery), diseño, desarrollo, QA, despliegue y mantenimiento evolutivo.
-        </p>
-        <div class="card-tag">Nuevo • Software</div>
-      </div>
-
-      <!-- 6 (FEATURE) -->
-      <div class="card card-feature">
-        <div class="service-title">
-          <svg class="service-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M7 8h10M7 12h10M7 16h6M5 4h14a2 2 0 012 2v12a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z"
-              stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          <h3>Add-ons, Plugins & Integraciones</h3>
-        </div>
-        <p>
-          Módulos extra para tus sistemas actuales (ERP/LMS/CRM), conectores con herramientas externas,
-          SSO, automatizaciones, webhooks y sincronización de datos para evitar doble captura.
-        </p>
-        <div class="card-tag">Nuevo • Add-ons</div>
-      </div>
-
-      <!-- 7 -->
-      <div class="card">
-        <div class="service-title">
-          <svg class="service-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M12 2v4m0 12v4M4 12H2m20 0h-2M5 5l2.8 2.8M19 19l-2.8-2.8M19 5l-2.8 2.8M5 19l2.8-2.8"
-              stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-          </svg>
-          <h3>Integración con IA & Automatización</h3>
-        </div>
-        <p>
-          Automatizamos tareas (reportes, alertas, remediación, onboarding/offboarding) e integramos IA para
-          clasificación de tickets, detección de patrones y recomendaciones operativas.
-        </p>
-      </div>
-
-      <!-- 8 -->
-      <div class="card">
-        <div class="service-title">
-          <svg class="service-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M4 19V5m0 14h16M7 15l3-3 3 2 4-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          <h3>Dashboards & BI (Looker Studio / Power BI)</h3>
-        </div>
-        <p>
-          Dashboards ejecutivos con KPIs, SLAs, productividad, inventario, riesgos y estado de proyectos.
-          Conexión a MySQL/Sheets/BigQuery/Excel, modelado y gobierno de datos.
-        </p>
-      </div>
-
-      <!-- 9 -->
-      <div class="card">
-        <div class="service-title">
-          <svg class="service-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M12 6v6l4 2M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          <h3>Mantenimiento, SLAs & Roadmap</h3>
-        </div>
-        <p>
-          Paquetes de mantenimiento con SLAs, control de cambios, documentación, monitoreo continuo y
-          roadmap trimestral para evolución tecnológica sin improvisación.
-        </p>
-      </div>
-    </div>
-
-    <div class="services-cta">
-      <div class="services-cta-box">
-        <div class="services-cta-title">¿Quieres una muestra de dashboard o un demo de add-on?</div>
-        <div class="services-cta-desc">
-          Te enviamos un ejemplo (Looker/Power BI) con KPIs y SLAs, o una propuesta de desarrollo a medida con alcance por fases.
-        </div>
-      </div>
-      <a href="#contacto" class="services-cta-btn">Solicitar muestra</a>
-    </div>
-  </div>
-</section>
-
-<div class="section-divider" aria-hidden="true"></div>
-
+  <div class="section-divider" aria-hidden="true"></div>
 
   <!-- COTIZADOR -->
   <section id="planes" class="section section-block">
@@ -292,7 +294,6 @@
       Selecciona tu escenario. Te damos un estimado mensual con desglose, supuestos y un resumen listo para WhatsApp.
     </p>
 
-    <!-- Tu bloque de cotizador (lo dejé tal cual lo enviaste) -->
     <div class="quote-grid quote-grid-pro">
       <!-- FORM -->
       <div class="quote-card quote-card-pro">
@@ -467,18 +468,29 @@
 
   <div class="section-divider" aria-hidden="true"></div>
 
-  <!-- CONTACTO -->
-  <section id="contacto" class="section section-block">
-    <h2 class="section-title">Contacto</h2>
+ <!-- CONTACTO -->
+<section id="contacto" class="section section-block">
+  <h2 class="section-title">Contacto</h2>
 
-    <form class="contact-form">
-      <input type="text" placeholder="Nombre">
-      <input type="email" placeholder="Correo">
-      <input type="text" placeholder="Empresa">
-      <textarea placeholder="Mensaje"></textarea>
-      <button type="button">Enviar mensaje</button>
-    </form>
-  </section>
+  <form id="contactForm" class="contact-form">
+    <!-- honeypot anti-spam (no lo borres) -->
+    <input type="text" name="website" style="display:none" tabindex="-1" autocomplete="off" />
+
+    <input type="text" name="nombre" placeholder="Nombre" required />
+    <input type="email" name="email" placeholder="Correo" required />
+    <input type="text" name="telefono" placeholder="Teléfono (opcional)" />
+    <input type="text" name="empresa" placeholder="Empresa (opcional)" />
+    <textarea name="mensaje" placeholder="Mensaje" required></textarea>
+
+    <label class="text-sm text-gray-400 flex gap-2 items-start">
+      <input type="checkbox" name="consentimiento" class="mt-1" />
+      Acepto ser contactado por Mirmibug.
+    </label>
+
+    <button type="submit">Enviar mensaje</button>
+  </form>
+</section>
+
 
   <!-- WhatsApp Floating Button -->
   <a
@@ -498,7 +510,7 @@
   <footer class="footer border-t border-gray-800 mt-20">
     <div class="max-w-6xl mx-auto px-6 py-10 text-center space-y-6">
       <div class="flex justify-center items-center gap-3">
-        <img src="img/logo_mirmibug_360.png" alt="Mirmibug Logo" class="w-8 h-8">
+        <img src="img/logo_mirmibug_360.png" alt="Mirmibug Logo" class="w-8 h-8" />
         <span class="text-lg font-bold tracking-wide text-[#38d84e]">MIRMIBUG IT SOLUTIONS</span>
       </div>
 
