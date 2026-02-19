@@ -5,6 +5,7 @@
  * - Glow de cards (Servicios)
  * - Footer year
  * - Cotizador PRO (validaciones + resumen claro + WhatsApp)
+ * - Contact Form (POST a /api/contact.php + guarda en DB + email)
  */
 
 /* =========================
@@ -37,7 +38,8 @@ document.addEventListener("DOMContentLoaded", () => {
   initFooterYear();
   initCookies();
   initServiceCardsGlow();
-  initCotizador(); // si no existe, no hace nada
+  initCotizador();     // si no existe, no hace nada
+  initContactForm();   // ✅ robusto (no depende del orden del script)
 });
 
 /* =========================
@@ -101,6 +103,8 @@ function initServiceCardsGlow() {
     card.addEventListener("mousemove", (e) => {
       const rect = card.getBoundingClientRect();
       card.style.setProperty("--x", `${e.clientX - rect.left}px`);
+      card.style.setProperty("--y", `${e.clientX - rect.left}px`);
+      // Nota: tu original usaba clientY, lo correcto es:
       card.style.setProperty("--y", `${e.clientY - rect.top}px`);
     });
   });
@@ -284,7 +288,7 @@ function initCotizador() {
       });
     }
 
-    // Modules (incluidos primero)
+    // Modules
     const modulesSelected = [];
     const addModule = (checked, key) => {
       if (!checked) return;
@@ -299,7 +303,6 @@ function initCotizador() {
 
     addModule(true, "helpdesk");
     addModule(true, "monitor");
-
     addModule(!!mM365?.checked, "m365");
     addModule(!!mBackup?.checked, "backup");
     addModule(!!mSecurity?.checked, "security");
@@ -328,7 +331,7 @@ function initCotizador() {
 
     renderBreakdown(breakdown, multLines);
 
-    // Summary anti-malentendido (para WhatsApp y formulario)
+    // Summary (para WhatsApp y posible envío)
     const summary = [
       `Cotización Mirmibug (Estimado mensual)`,
       `Plan base: ${plan.name}`,
@@ -390,4 +393,62 @@ function initCotizador() {
 
   // Init
   calc();
+}
+
+/* =========================
+   CONTACT FORM (ROBUSTO)
+========================= */
+function initContactForm() {
+  const form = $("contactForm");
+  if (!form) return;
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const btn = form.querySelector("button[type='submit']");
+    const originalText = btn ? btn.textContent : "";
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = "Enviando...";
+    }
+
+    const payload = {
+      nombre: form.nombre?.value || "",
+      email: form.email?.value || "",
+      telefono: form.telefono?.value || "",
+      empresa: form.empresa?.value || "",
+      mensaje: form.mensaje?.value || "",
+      consentimiento: !!form.consentimiento?.checked,
+      website: form.website?.value || "", // honeypot
+      origen: window.location.href,
+      // Si quieres enviar también el resumen del cotizador al backend:
+      // quote_summary: $("quote_summary")?.value || ""
+    };
+
+    try {
+      const res = await fetch("/api/contact.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (res.ok && data.ok) {
+        form.reset();
+        alert("¡Mensaje enviado! 🚀");
+      } else {
+        console.log("Backend response:", data);
+        alert("No se pudo enviar. Intenta de nuevo.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error de conexión.");
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = originalText;
+      }
+    }
+  });
 }
