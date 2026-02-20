@@ -19,11 +19,13 @@ define('DB_PASS', 'ygKtYLN.I1g)');
 
 /* =========================
    CONFIG EMAIL (TITAN)
+   - Prueba primero 465 (SSL)
+   - Si falla, cambia a 587 + STARTTLS (abajo te digo)
 ========================= */
 define('SMTP_HOST', 'smtp.titan.email');
-define('SMTP_PORT', 587);              // Titan: 587 STARTTLS recomendado
+define('SMTP_PORT', 465); 
 define('SMTP_USER', 'contacto@mirmibug.com');
-define('SMTP_PASS', '67]}GI[?gH05');   // <- tu pass Titan
+define('SMTP_PASS', '67]}GI[?gH05'); 
 define('MAIL_TO',   'contacto@mirmibug.com');
 
 /* =========================
@@ -33,35 +35,27 @@ define('LOG_FILE', __DIR__ . '/contact.log');
 
 function clean($s): string { return trim((string)$s); }
 function is_email($s): bool { return filter_var($s, FILTER_VALIDATE_EMAIL) !== false; }
-
 function log_line(string $msg): void {
-  @file_put_contents(LOG_FILE, '['.date('Y-m-d H:i:s').'] '.$msg.PHP_EOL, FILE_APPEND);
+  @file_put_contents(LOG_FILE, '[' . date('Y-m-d H:i:s') . '] ' . $msg . PHP_EOL, FILE_APPEND);
 }
 
 /* =========================
-   READ INPUT (JSON o FORM)
+   INPUT
+   (tu JS manda urlencoded/FormData => $_POST)
 ========================= */
-$raw = file_get_contents('php://input');
-$data = json_decode($raw, true);
+$data = $_POST;
 
-if (!is_array($data)) {
-  // fallback: form-urlencoded / multipart
-  $data = $_POST ?? [];
-}
+$nombre  = clean($data['nombre'] ?? '');
+$email   = clean($data['email'] ?? '');
+$telefono= clean($data['telefono'] ?? '');
+$empresa = clean($data['empresa'] ?? '');
+$mensaje = clean($data['mensaje'] ?? '');
+$origen  = clean($data['origen'] ?? '');
+$honeypot= clean($data['website'] ?? '');
 
-/* =========================
-   FIELDS
-========================= */
-$nombre = clean($data['nombre'] ?? '');
-$email  = clean($data['email'] ?? '');
-$telefono = clean($data['telefono'] ?? '');
-$empresa  = clean($data['empresa'] ?? '');
-$mensaje  = clean($data['mensaje'] ?? '');
 $consentimiento = !empty($data['consentimiento']) ? 1 : 0;
-$origen = clean($data['origen'] ?? '');
-$honeypot = clean($data['website'] ?? ''); // anti-spam
 
-// Honeypot: si lo llenan bots, responder ok sin hacer nada
+// Honeypot anti-spam
 if ($honeypot !== '') {
   echo json_encode(['ok' => true, 'saved' => false, 'email_ok' => false], JSON_UNESCAPED_UNICODE);
   exit;
@@ -82,13 +76,12 @@ $user_agent = $_SERVER['HTTP_USER_AGENT'] ?? '';
 $user_agent = $user_agent !== '' ? substr($user_agent, 0, 255) : null;
 
 /* =========================
-   1) SAVE TO DB
+   1) INSERT DB
 ========================= */
 try {
   $dsn = 'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME . ';charset=utf8mb4';
   $pdo = new PDO($dsn, DB_USER, DB_PASS, [
-    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
   ]);
 
   $stmt = $pdo->prepare("
@@ -124,34 +117,30 @@ $email_ok = false;
 $email_error = null;
 
 try {
-  // PHPMailer local (tu carpeta es /api/mailer/)
+  // ✅ TU PROYECTO TIENE /api/mailer/
   require_once __DIR__ . '/mailer/Exception.php';
   require_once __DIR__ . '/mailer/PHPMailer.php';
   require_once __DIR__ . '/mailer/SMTP.php';
 
-  // Usar clases
   $mail = new PHPMailer\PHPMailer\PHPMailer(true);
   $mail->CharSet = 'UTF-8';
-  $mail->isHTML(false);
 
-  // SMTP
   $mail->isSMTP();
   $mail->Host = SMTP_HOST;
   $mail->SMTPAuth = true;
   $mail->Username = SMTP_USER;
   $mail->Password = SMTP_PASS;
   $mail->Port = SMTP_PORT;
-  $mail->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
 
-  // Debug (si lo necesitas, ponlo en 2)
+  // ✅ 465 => SSL
+  $mail->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_SMTPS;
+
+  // (Opcional) Debug a log del servidor (descomenta si lo necesitas)
   // $mail->SMTPDebug = 2;
   // $mail->Debugoutput = function($str, $level) { error_log("SMTP[$level]: $str"); };
 
-  // From debe ser el mismo usuario autenticado
   $mail->setFrom(SMTP_USER, 'Mirmibug Web');
   $mail->addAddress(MAIL_TO, 'Contacto Mirmibug');
-
-  // Reply-To: el cliente
   $mail->addReplyTo($email, $nombre);
 
   $mail->Subject = "Nuevo contacto web - {$nombre}";
@@ -175,9 +164,6 @@ try {
   log_line('MAIL ERROR: ' . $email_error);
 }
 
-/* =========================
-   RESPONSE
-========================= */
 echo json_encode([
   'ok' => true,
   'saved' => true,
