@@ -1,6 +1,13 @@
 <?php
 declare(strict_types=1);
 
+/**
+ * contact.php - Mirmibug
+ * - Guarda lead en DB (MySQL)
+ * - Envía correo vía SMTP (Titan) usando PHPMailer en /api/mailer/
+ * - Responde JSON para app.js
+ */
+
 header('Content-Type: application/json; charset=utf-8');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -11,55 +18,62 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 /* =========================
    CONFIG DB
+   ⚠️ PON TU PASSWORD NUEVO
 ========================= */
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'andres63_mirmibug_web');
 define('DB_USER', 'andres63_adminmirmibug');
-define('DB_PASS', 'ygKtYLN.I1g)'); // <- cámbiala (no la dejes publicada)
+define('DB_PASS', 'ygKtYLN.I1g)');
 
 /* =========================
    CONFIG EMAIL (TITAN)
+   ⚠️ PON TU PASSWORD NUEVO
 ========================= */
 define('SMTP_HOST', 'smtp.titan.email');
 
-// Opción 1 (recomendada Titan): 587 STARTTLS
+// Titan recomendado: 587 STARTTLS
 define('SMTP_PORT', 587);
 define('SMTP_SECURE', 'tls'); // tls = STARTTLS
 
-// Opción 2 (si 587 falla): 465 SSL/TLS
+// Alternativa (si 587 falla): 465 SSL/TLS
 // define('SMTP_PORT', 465);
-// define('SMTP_SECURE', 'ssl'); // ssl = SMTPS
+// define('SMTP_SECURE', 'ssl');
 
 define('SMTP_USER', 'contacto@mirmibug.com');
-define('SMTP_PASS', '67]}GI[?gH05'); 
+define('SMTP_PASS', '67]}GI[?gH05');
 define('MAIL_TO',   'contacto@mirmibug.com');
 
+/* =========================
+   LOG
+========================= */
 define('LOG_FILE', __DIR__ . '/contact.log');
 
 function clean($s): string { return trim((string)$s); }
 function is_email($s): bool { return filter_var($s, FILTER_VALIDATE_EMAIL) !== false; }
 function log_line(string $msg): void {
-  @file_put_contents(LOG_FILE, '['.date('Y-m-d H:i:s').'] '.$msg.PHP_EOL, FILE_APPEND);
+  @file_put_contents(LOG_FILE, '[' . date('Y-m-d H:i:s') . '] ' . $msg . PHP_EOL, FILE_APPEND);
 }
 
 /* =========================
-   INPUT (form-urlencoded)
+   INPUT
 ========================= */
 $data = $_POST;
 
-$nombre  = clean($data['nombre'] ?? '');
-$email   = clean($data['email'] ?? '');
+$nombre   = clean($data['nombre'] ?? '');
+$email    = clean($data['email'] ?? '');
 $telefono = clean($data['telefono'] ?? '');
-$empresa = clean($data['empresa'] ?? '');
-$mensaje = clean($data['mensaje'] ?? '');
-$origen  = clean($data['origen'] ?? '');
+$empresa  = clean($data['empresa'] ?? '');
+$mensaje  = clean($data['mensaje'] ?? '');
+$origen   = clean($data['origen'] ?? '');
 $honeypot = clean($data['website'] ?? '');
 
+// honeypot anti-spam
 if ($honeypot !== '') {
   echo json_encode(['ok' => true, 'saved' => false, 'email_ok' => false], JSON_UNESCAPED_UNICODE);
   exit;
 }
 
+// validación mínima
 if ($nombre === '' || !is_email($email) || $mensaje === '') {
   http_response_code(400);
   echo json_encode(['ok' => false, 'error' => 'Invalid data'], JSON_UNESCAPED_UNICODE);
@@ -68,6 +82,7 @@ if ($nombre === '' || !is_email($email) || $mensaje === '') {
 
 $ip = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'] ?? '';
 if (strpos($ip, ',') !== false) $ip = trim(explode(',', $ip)[0]);
+
 $user_agent = $_SERVER['HTTP_USER_AGENT'] ?? '';
 $user_agent = $user_agent !== '' ? substr($user_agent, 0, 255) : null;
 
@@ -75,6 +90,7 @@ $user_agent = $user_agent !== '' ? substr($user_agent, 0, 255) : null;
    1) SAVE TO DB
 ========================= */
 $saved = false;
+$lead_id = null;
 
 try {
   $dsn = 'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME . ';charset=utf8mb4';
@@ -90,17 +106,19 @@ try {
   ");
 
   $stmt->execute([
-    ':nombre' => $nombre,
-    ':email' => strtolower($email),
-    ':telefono' => ($telefono !== '' ? $telefono : null),
-    ':empresa' => ($empresa !== '' ? $empresa : null),
-    ':mensaje' => $mensaje,
-    ':origen' => ($origen !== '' ? $origen : null),
-    ':ip' => ($ip !== '' ? $ip : null),
+    ':nombre'     => $nombre,
+    ':email'      => strtolower($email),
+    ':telefono'   => ($telefono !== '' ? $telefono : null),
+    ':empresa'    => ($empresa !== '' ? $empresa : null),
+    ':mensaje'    => $mensaje,
+    ':origen'     => ($origen !== '' ? $origen : null),
+    ':ip'         => ($ip !== '' ? $ip : null),
     ':user_agent' => $user_agent,
   ]);
 
   $saved = true;
+  $lead_id = (int)$pdo->lastInsertId();
+
 } catch (Throwable $e) {
   log_line('DB ERROR: ' . $e->getMessage());
   http_response_code(500);
@@ -115,9 +133,10 @@ $email_ok = false;
 $email_error = null;
 
 try {
-  require_once __DIR__ . '/mailer/Exception.php';
-  require_once __DIR__ . '/mailer/PHPMailer.php';
-  require_once __DIR__ . '/mailer/SMTP.php';
+  // ✅ RUTAS CORRECTAS SEGÚN TU ESTRUCTURA
+  require_once __DIR__ . '/api/mailer/Exception.php';
+  require_once __DIR__ . '/api/mailer/PHPMailer.php';
+  require_once __DIR__ . '/api/mailer/SMTP.php';
 
   $mail = new PHPMailer\PHPMailer\PHPMailer(true);
   $mail->CharSet = 'UTF-8';
@@ -135,27 +154,30 @@ try {
     $mail->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_SMTPS;
   }
 
-  // DEBUG a log (deja en 0 cuando funcione)
+  // DEBUG a log (cuando ya funcione, cambia a 0)
   $mail->SMTPDebug = 2;
-  $mail->Debugoutput = function($str, $level) {
+  $mail->Debugoutput = function ($str, $level) {
     log_line("SMTP[$level]: $str");
   };
 
-  // Titan suele exigir que From = usuario autenticado
+  // Titan: From debe ser el usuario autenticado
   $mail->setFrom(SMTP_USER, 'Mirmibug Web');
   $mail->addAddress(MAIL_TO, 'Contacto Mirmibug');
+
+  // Reply-To: correo del cliente
   $mail->addReplyTo($email, $nombre);
 
-  $mail->Subject = "New contact - {$nombre}";
+  $mail->Subject = "Nuevo contacto - {$nombre}";
   $mail->Body =
-    "New contact received:\n\n" .
-    "Name: {$nombre}\n" .
+    "Nuevo contacto recibido:\n\n" .
+    "Nombre: {$nombre}\n" .
     "Email: {$email}\n" .
-    "Phone: " . ($telefono ?: '-') . "\n" .
-    "Company: " . ($empresa ?: '-') . "\n\n" .
-    "Message:\n{$mensaje}\n\n" .
-    "Origin: " . ($origen ?: '-') . "\n" .
-    "IP: " . ($ip ?: '-') . "\n";
+    "Teléfono: " . ($telefono ?: '-') . "\n" .
+    "Empresa: " . ($empresa ?: '-') . "\n\n" .
+    "Mensaje:\n{$mensaje}\n\n" .
+    "Origen: " . ($origen ?: '-') . "\n" .
+    "IP: " . ($ip ?: '-') . "\n" .
+    "Lead ID: " . ($lead_id ?: '-') . "\n";
 
   $mail->send();
   $email_ok = true;
