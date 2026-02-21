@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'andres63_mirmibug_web');
 define('DB_USER', 'andres63_adminmirmibug');
-define('DB_PASS', 'PON_AQUI_TU_PASSWORD_DB'); // <- cámbiala (no la dejes publicada)
+define('DB_PASS', 'ygKtYLN.I1g)'); // <- cámbiala (no la dejes publicada)
 
 /* =========================
    CONFIG EMAIL (TITAN)
