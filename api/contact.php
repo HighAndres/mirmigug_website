@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 /**
- * contact.php - Mirmibug
+ * /api/contact.php - Mirmibug
  * - Guarda lead en DB (MySQL)
  * - Envía correo vía SMTP (Titan) usando PHPMailer en /api/mailer/
  * - Responde JSON para app.js
@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 /* =========================
    CONFIG DB
-   ⚠️ PON TU PASSWORD NUEVO
+   ⚠️ PON TUS PASSWORDS NUEVOS
 ========================= */
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'andres63_mirmibug_web');
@@ -27,7 +27,6 @@ define('DB_PASS', 'ygKtYLN.I1g)');
 
 /* =========================
    CONFIG EMAIL (TITAN)
-   ⚠️ PON TU PASSWORD NUEVO
 ========================= */
 define('SMTP_HOST', 'smtp.titan.email');
 
@@ -67,13 +66,13 @@ $mensaje  = clean($data['mensaje'] ?? '');
 $origen   = clean($data['origen'] ?? '');
 $honeypot = clean($data['website'] ?? '');
 
-// honeypot anti-spam
+// Honeypot anti-spam
 if ($honeypot !== '') {
   echo json_encode(['ok' => true, 'saved' => false, 'email_ok' => false], JSON_UNESCAPED_UNICODE);
   exit;
 }
 
-// validación mínima
+// Validación mínima
 if ($nombre === '' || !is_email($email) || $mensaje === '') {
   http_response_code(400);
   echo json_encode(['ok' => false, 'error' => 'Invalid data'], JSON_UNESCAPED_UNICODE);
@@ -133,10 +132,10 @@ $email_ok = false;
 $email_error = null;
 
 try {
-  // ✅ RUTAS CORRECTAS SEGÚN TU ESTRUCTURA
-  require_once __DIR__ . '/api/mailer/Exception.php';
-  require_once __DIR__ . '/api/mailer/PHPMailer.php';
-  require_once __DIR__ . '/api/mailer/SMTP.php';
+  // ✅ contact.php está dentro de /api, por eso mailer está en /api/mailer
+  require_once __DIR__ . '/mailer/Exception.php';
+  require_once __DIR__ . '/mailer/PHPMailer.php';
+  require_once __DIR__ . '/mailer/SMTP.php';
 
   $mail = new PHPMailer\PHPMailer\PHPMailer(true);
   $mail->CharSet = 'UTF-8';
@@ -154,17 +153,17 @@ try {
     $mail->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_SMTPS;
   }
 
-  // DEBUG a log (cuando ya funcione, cambia a 0)
+  // Debug a log (cuando funcione, cámbialo a 0)
   $mail->SMTPDebug = 2;
   $mail->Debugoutput = function ($str, $level) {
     log_line("SMTP[$level]: $str");
   };
 
-  // Titan: From debe ser el usuario autenticado
+  // Titan exige que From sea el usuario autenticado
   $mail->setFrom(SMTP_USER, 'Mirmibug Web');
   $mail->addAddress(MAIL_TO, 'Contacto Mirmibug');
 
-  // Reply-To: correo del cliente
+  // Reply-To del cliente
   $mail->addReplyTo($email, $nombre);
 
   $mail->Subject = "Nuevo contacto - {$nombre}";
@@ -188,6 +187,9 @@ try {
   log_line('MAIL ERROR: ' . $email_error);
 }
 
+/* =========================
+   RESPONSE
+========================= */
 echo json_encode([
   'ok' => true,
   'saved' => $saved,

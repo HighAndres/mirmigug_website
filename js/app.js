@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initCookies();
   initServiceCardsGlow();
   initCotizador();     // si no existe, no hace nada
-  initContactForm();   // ✅ ahora manda x-www-form-urlencoded (evita 409)
+  initContactForm();   // ✅ multipart/form-data para evitar 409
 });
 
 /* =========================
@@ -325,9 +325,10 @@ function initCotizador() {
 }
 
 /* =========================
-   CONTACT FORM (ANTI-409)
-   - envía x-www-form-urlencoded
-   - evita JSON (ModSecurity suele bloquear)
+   CONTACT FORM (FIX 409)
+   - Usa FormData (multipart)
+   - NO headers manuales (para no detonar ModSecurity)
+   - Usa action="/api/contact.php"
 ========================= */
 function initContactForm() {
   const form = $("contactForm");
@@ -338,40 +339,40 @@ function initContactForm() {
 
     const btn = form.querySelector("button[type='submit']");
     const originalText = btn ? btn.textContent : "";
+
     if (btn) {
       btn.disabled = true;
       btn.textContent = "Enviando...";
     }
 
-    // IMPORTANT: mandar como urlencoded para evitar 409
-    const fd = new FormData(form);
-    fd.set("origen", window.location.href);
-
-    // si quieres mandar el resumen del cotizador:
-    const qs = $("quote_summary")?.value || "";
-    if (qs) fd.set("quote_summary", qs);
-
-    const body = new URLSearchParams(fd);
-
     try {
-      const res = await fetch("/api/contact.php", {
+      const fd = new FormData(form);
+      fd.set("origen", window.location.href);
+
+      // opcional: resumen del cotizador
+      const qs = $("quote_summary")?.value || "";
+      if (qs) fd.set("quote_summary", qs);
+
+      const endpoint = form.getAttribute("action") || "/api/contact.php";
+
+      const res = await fetch(endpoint, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-          "Accept": "application/json"
-        },
-        body,
-        credentials: "same-origin"
+        body: fd, // multipart/form-data automático
+        credentials: "same-origin",
       });
 
-      const data = await res.json().catch(() => ({}));
+      // Puede regresar JSON o HTML (si WAF bloquea)
+      const text = await res.text();
+      let data = {};
+      try { data = JSON.parse(text); } catch (_) {}
 
       if (res.ok && data.ok) {
         form.reset();
         alert("¡Mensaje enviado! ✅");
       } else {
-        console.log("Backend response:", data);
-        alert("No se pudo enviar. Intenta de nuevo.");
+        console.log("Status:", res.status);
+        console.log("Response:", text);
+        alert("No se pudo enviar. El servidor está bloqueando el envío (409/403).");
       }
     } catch (err) {
       console.error(err);
