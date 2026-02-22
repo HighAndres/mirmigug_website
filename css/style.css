@@ -2,6 +2,7 @@
    MIRMIBUG - style.css (Full Replace)
    - Navbar centrado + acciones alineadas
    - Servicios PRO con fondo animado
+   - Soluciones IT: Stack (izq) + Panel KPI (der) (SIN barras)
    - Cotizador PRO (layout + inputs + breakdown)
    - Sin romper Tailwind (convive bien)
    ========================================================= */
@@ -59,7 +60,6 @@ body{
   letter-spacing: .04em;
 }
 
-/* menú centrado */
 .menu{
   display:flex;
   justify-content:center;
@@ -77,7 +77,6 @@ body{
 }
 .menu a:hover{ color:#38d84e; }
 
-/* Acciones derecha (switch + botón) */
 .nav-actions{
   display:flex;
   align-items:center;
@@ -85,7 +84,6 @@ body{
   gap: .75rem;
 }
 
-/* Botón principal */
 .btn-contacto{
   background: #38d84e;
   padding: 10px 16px;
@@ -106,7 +104,6 @@ body{
   box-shadow: 0 0 0 1px rgba(56,216,78,.35), 0 16px 40px rgba(0,0,0,.45);
 }
 
-/* Switch idioma (mismo “alto” que botón) */
 .lang-switch{
   display:inline-flex;
   align-items:center;
@@ -147,7 +144,6 @@ body{
   box-shadow: 0 0 18px rgba(56,216,78,.25);
 }
 
-/* Mobile menu button */
 .menu-btn{
   display:none;
   font-size: 2rem;
@@ -157,7 +153,6 @@ body{
   cursor:pointer;
 }
 
-/* MOBILE MENU */
 .mobile-menu{
   display:flex;
   flex-direction:column;
@@ -177,7 +172,6 @@ body{
   justify-content:center;
 }
 
-/* Responsive navbar */
 @media (max-width: 900px){
   .menu{ display:none; }
   .nav-actions{ display:none; }
@@ -209,7 +203,6 @@ body{
   line-height: 1.65;
 }
 
-/* HERO BUTTON */
 .hero-btn{
   border: 2px solid #38d84e;
   padding: 10px 22px;
@@ -388,112 +381,6 @@ body{
   font-size: .92rem;
 }
 
-.services-strip{
-  margin: 1.6rem auto 1.8rem;
-  display:grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: .9rem;
-}
-.strip-item{
-  border: 1px solid rgba(255,255,255,.08);
-  background: rgba(255,255,255,.02);
-  border-radius: 14px;
-  padding: .9rem 1rem;
-}
-.strip-title{
-  font-weight: 900;
-  color:#fff;
-  margin-bottom: .25rem;
-}
-.strip-desc{
-  color: rgba(255,255,255,.70);
-  line-height: 1.5;
-  font-size: .95rem;
-}
-@media (max-width: 900px){
-  .services-strip{ grid-template-columns: 1fr; }
-}
-
-/* Cards grid (solo servicios, sin afectar otras secciones) */
-.services-pro .cards{
-  display:grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.25rem;
-  margin-top: 1.3rem;
-}
-@media (max-width: 900px){
-  .services-pro .cards{ grid-template-columns: 1fr; }
-}
-
-/* Card PRO */
-.services-pro .card{
-  position:relative;
-  background: linear-gradient(180deg, rgba(17,17,17,.92), rgba(8,8,8,.92));
-  border-radius: 18px;
-  padding: 1.25rem 1.25rem;
-  border: 1px solid rgba(56,216,78,.16);
-  transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
-  overflow:hidden;
-  min-height: 220px;
-}
-.services-pro .card::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  background: radial-gradient(600px circle at var(--x, 50%) var(--y, 50%), rgba(56,216,78,.12), transparent 42%);
-  opacity:0;
-  transition: opacity .25s ease;
-  pointer-events:none;
-}
-.services-pro .card:hover{
-  transform: translateY(-6px);
-  border-color: rgba(56,216,78,.60);
-  box-shadow: 0 0 18px rgba(56,216,78,.20), 0 24px 60px rgba(0,0,0,.45);
-}
-.services-pro .card:hover::before{ opacity:1; }
-
-.service-title{
-  display:flex;
-  align-items:center;
-  gap: 10px;
-  margin-bottom: .6rem;
-}
-.service-icon{
-  width: 22px;
-  height: 22px;
-  color:#38d84e;
-  flex: 0 0 22px;
-}
-.services-pro .card h3{
-  font-size: 1.05rem;
-  font-weight: 900;
-  color:#fff;
-  margin:0;
-}
-.services-pro .card p{
-  margin:0;
-  font-size: .96rem;
-  line-height: 1.65;
-  color: rgba(255,255,255,.74);
-}
-
-/* feature tag */
-.card-tag{
-  position:absolute;
-  left: 16px;
-  bottom: 14px;
-  display:inline-flex;
-  align-items:center;
-  gap: 8px;
-  padding: 6px 10px;
-  border-radius: 999px;
-  font-weight: 900;
-  font-size: .72rem;
-  color: #0a0a0a;
-  background:#38d84e;
-  box-shadow: 0 0 0 1px rgba(56,216,78,.25);
-}
-
 /* CTA servicios */
 .services-cta{
   margin-top: 1.6rem;
@@ -536,8 +423,259 @@ body{
   .services-cta-btn{ width:100%; }
 }
 
+/* =========================================================
+   6) SOLUCIONES IT - STACK (IZQ) + PANEL KPI (DER)
+========================================================= */
+:root{
+  --mb-accent: #38d84e;
+  --mb-accent-soft: rgba(56, 216, 78, .16);
+  --mb-border: rgba(255,255,255,.10);
+  --mb-panel: rgba(255,255,255,.05);
+}
+
+/* Glow spotlight (cursor) para elementos */
+.solution-item,
+.stack-layer{
+  position: relative;
+  overflow: hidden;
+}
+
+.solution-item::before,
+.stack-layer::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  opacity:0;
+  transition: opacity .22s ease;
+  background: radial-gradient(
+    600px circle at var(--x, 50%) var(--y, 50%),
+    rgba(56,216,78,.16),
+    transparent 42%
+  );
+}
+
+.solution-item:hover::before,
+.stack-layer:hover::before{
+  opacity:1;
+}
+
+.solutions-stack{
+  margin-top: 28px;
+  display: grid;
+  grid-template-columns: 1.1fr .9fr;
+  gap: 22px;
+  align-items: center;
+}
+
+@media (max-width: 900px){
+  .solutions-stack{ grid-template-columns: 1fr; }
+  .solutions-right{ order: -1; }
+}
+
+/* LEFT */
+.solutions-left{
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.solution-item{
+  display: flex;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  border: 1px solid var(--mb-border);
+  background: var(--mb-panel);
+  backdrop-filter: blur(10px);
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+
+.solution-item:hover{
+  transform: translateY(-1px);
+  border-color: rgba(56,216,78,.28);
+  box-shadow: 0 18px 45px rgba(0,0,0,.45), 0 0 28px rgba(56,216,78,.14);
+}
+
+.solution-ico{
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(56,216,78,.35);
+  background: rgba(56,216,78,.10);
+  color: var(--mb-accent);
+  flex: 0 0 44px;
+}
+
+.solution-ico svg{ width: 22px; height: 22px; }
+
+.solution-title{
+  font-weight: 900;
+  letter-spacing: .2px;
+  color:#fff;
+}
+
+.solution-desc{
+  margin-top: 2px;
+  color: rgba(255,255,255,.70);
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.solutions-actions{
+  margin-top: 10px;
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.solutions-btn{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 18px;
+  border-radius: 999px;
+  font-weight: 900;
+  color: #0b0b0b;
+  background: var(--mb-accent);
+  box-shadow: 0 0 24px rgba(56,216,78,.25);
+  transition: opacity .18s ease, transform .18s ease;
+  text-decoration:none;
+}
+.solutions-btn:hover{ opacity: .92; transform: translateY(-1px); }
+
+.solutions-link{
+  color: rgba(255,255,255,.70);
+  font-weight: 700;
+  font-size: 14px;
+  transition: color .18s ease;
+  text-decoration:none;
+}
+.solutions-link:hover{ color: #fff; }
+
+/* RIGHT (panel KPI) */
+.solutions-right{
+  position: relative;
+  min-height: 320px;
+}
+
+.stack-wrap{
+  position: relative;
+  width: min(440px, 100%);
+  margin-left: auto;
+  padding: 18px;
+  border-radius: 26px;
+  border: 1px solid rgba(56,216,78,.18);
+  background:
+    radial-gradient(circle at 30% 20%, rgba(56,216,78,.14), transparent 55%),
+    rgba(0,0,0,.35);
+  box-shadow: 0 30px 90px rgba(0,0,0,.55);
+  overflow: hidden;
+}
+
+.stack-wrap::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(to right, rgba(56,216,78,.10) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(56,216,78,.10) 1px, transparent 1px);
+  background-size: 34px 34px;
+  opacity: .12;
+  pointer-events:none;
+}
+
+.stack-layer{
+  position: relative;
+  margin: 12px 0;
+  padding: 14px 16px;
+  border-radius: 18px;
+  border: 1px solid rgba(56,216,78,.22);
+  background: rgba(255,255,255,.04);
+  backdrop-filter: blur(10px);
+  box-shadow:
+    0 18px 40px rgba(0,0,0,.35),
+    0 0 0 1px rgba(56,216,78,.06) inset;
+  transform: perspective(900px) rotateX(4deg);
+}
+
+.stack-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 10px;
+  color: rgba(255,255,255,.88);
+  font-weight: 900;
+  font-size: 13px;
+  letter-spacing: .3px;
+}
+
+.stack-top i{
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--mb-accent);
+  opacity: .80;
+  display: inline-block;
+  box-shadow: 0 0 16px rgba(56,216,78,.35);
+}
+
+.stack-brand .stack-top .brand{
+  color: var(--mb-accent);
+  letter-spacing: .8px;
+}
+
+/* contenido KPI */
+.stack-body{
+  margin-top: 10px;
+}
+
+.stack-body p{
+  margin: 0 0 10px;
+  color: rgba(255,255,255,.72);
+  font-size: 13.5px;
+  line-height: 1.45;
+}
+
+.stack-list{
+  margin: 0;
+  padding-left: 16px;
+  display: grid;
+  gap: 6px;
+  color: rgba(255,255,255,.72);
+  font-size: 13.5px;
+  line-height: 1.35;
+}
+
+.stack-metrics{
+  display:flex;
+  flex-wrap:wrap;
+  gap: 8px;
+}
+
+.metric{
+  display:inline-flex;
+  align-items:center;
+  gap: 6px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(0,0,0,.25);
+  color: rgba(255,255,255,.78);
+  font-size: 12.5px;
+  font-weight: 800;
+}
+
+.metric b{
+  color: #d7ffe1;
+  font-weight: 900;
+}
+
 /* -----------------------------
-   6) CONTACT FORM
+   7) CONTACT FORM
 ------------------------------ */
 .contact-form{
   max-width: 560px;
@@ -565,7 +703,7 @@ body{
 .contact-form button:hover{ opacity:.92; }
 
 /* -----------------------------
-   7) FOOTER
+   8) FOOTER
 ------------------------------ */
 .footer{
   padding: 2rem;
@@ -574,7 +712,7 @@ body{
 }
 
 /* -----------------------------
-   8) WHATSAPP FLOAT
+   9) WHATSAPP FLOAT
 ------------------------------ */
 .whatsapp-float{
   position: fixed;
@@ -598,10 +736,8 @@ body{
 }
 
 /* =========================================================
-   9) COTIZADOR PRO (FIX: ahora sí se ve bien en index)
-   - No depende de #planes
-   - Estiliza inputs, selects, checks, layout, breakdown
-   ========================================================= */
+   10) COTIZADOR PRO
+========================================================= */
 .quote-grid{
   display:grid;
   grid-template-columns: 1.15fr .85fr;
@@ -692,7 +828,6 @@ body{
   margin: .95rem 0;
 }
 
-/* 2 columnas dentro del form */
 .quote-two{
   display:grid;
   grid-template-columns: 1fr 1fr;
@@ -703,7 +838,6 @@ body{
   .quote-two{ grid-template-columns: 1fr; }
 }
 
-/* Inputs / selects */
 .quote-card input[type="number"],
 .quote-card select{
   width:100%;
@@ -726,13 +860,11 @@ body{
   box-shadow: 0 0 0 3px rgba(56,216,78,.18);
 }
 
-/* Range slider */
 .quote-card input[type="range"]{
   width:100%;
   accent-color:#38d84e;
 }
 
-/* Checks */
 .quote-checks{
   display:grid;
   grid-template-columns: 1fr;
@@ -759,7 +891,6 @@ body{
   color: rgba(255,255,255,.60);
 }
 
-/* Actions buttons (reutilizables) */
 .quote-actions{
   display:flex;
   gap: .75rem;
@@ -807,7 +938,6 @@ body{
   .quote-actions{ flex-direction:column; }
 }
 
-/* Result card */
 .quote-result .quote-price{
   border: 1px solid rgba(56,216,78,.16);
   border-radius: 16px;
@@ -827,7 +957,6 @@ body{
   line-height: 1.5;
 }
 
-/* Breakdown (lo imprime app.js) */
 #q_breakdown{ margin-top: .6rem; }
 .break-items{
   display:grid;

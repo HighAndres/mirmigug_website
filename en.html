@@ -6,10 +6,13 @@
   <title>Mirmibug | IT Services</title>
 
   <link rel="icon" type="image/png" href="img/logo_mirmibug_360.png" />
-
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="css/style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet" />
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap"
+    rel="stylesheet"
+  />
 </head>
 
 <body class="bg-black text-white font-inter overflow-x-hidden">
@@ -25,7 +28,7 @@
       <ul class="menu">
         <li><a href="#home">Home</a></li>
         <li><a href="#services">Services</a></li>
-        <li><a href="#plans">Pricing</a></li>
+        <li><a href="#pricing">Plans</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
 
@@ -38,7 +41,7 @@
         <a href="#contact" class="btn-contacto">Contact us</a>
       </div>
 
-      <button id="menuBtn" class="menu-btn" aria-label="Open menu">☰</button>
+      <button id="menuBtn" class="menu-btn" aria-label="Open menu" aria-expanded="false">☰</button>
     </nav>
   </header>
 
@@ -46,7 +49,7 @@
   <div id="mobileMenu" class="mobile-menu hidden">
     <a href="#home">Home</a>
     <a href="#services">Services</a>
-    <a href="#plans">Pricing</a>
+    <a href="#pricing">Plans</a>
     <a href="#contact">Contact</a>
 
     <div class="lang-switch mobile-lang" role="navigation" aria-label="Switch language">
@@ -59,10 +62,30 @@
   <section id="home" class="hero hero-bg hero-section">
     <h1 class="hero-title">Professional IT management, clear and reliable</h1>
     <p class="hero-subtitle">
-      Support, infrastructure and automation under a controlled, documented and measurable operating model —
-      built for companies that need reliability and technical order.
+      Support, infrastructure and automation under a controlled, documented and measurable operating model
+      for companies that require stability and operational clarity.
     </p>
+
     <a href="#services" class="hero-btn">View Services</a>
+  </section>
+
+  <div class="section-divider" aria-hidden="true"></div>
+
+  <!-- ABOUT -->
+  <section id="about" class="section section-block">
+    <h2 class="section-title">Who we are</h2>
+
+    <p class="max-w-3xl mx-auto text-gray-300 text-center leading-relaxed">
+      At Mirmibug IT Solutions we manage and strengthen IT operations for small and mid-sized businesses.
+      We become your external IT department with fast response, solid infrastructure and modern solutions.
+    </p>
+
+    <div class="pillars">
+      <div class="pillar-item">8+ years of experience</div>
+      <div class="pillar-item">Fast response</div>
+      <div class="pillar-item">Modern infrastructure</div>
+      <div class="pillar-item">Tailored solutions</div>
+    </div>
   </section>
 
   <div class="section-divider" aria-hidden="true"></div>
@@ -74,169 +97,145 @@
     <div class="services-inner">
       <div class="services-head">
         <div class="services-kicker">MSP • Cloud • Security • Software • Data</div>
-        <h2 class="section-title">IT Services</h2>
+
+        <h2 class="section-title">IT Solutions</h2>
 
         <p class="services-subtitle">
-          We manage, migrate, and modernize your IT infrastructure with clear processes, continuous monitoring,
-          and <strong>AI-powered automation</strong>. We also build <strong>custom software</strong>, <strong>add-ons</strong>
-          and integrations to scale operations, and deliver <strong>executive dashboards</strong> in
-          <strong>Looker Studio</strong> or <strong>Power BI</strong> with KPIs and SLAs for real control and faster decisions.
+          We design and implement the full system that removes friction from your operation:
+          stable infrastructure, security, automation and visibility through KPIs.
         </p>
 
         <div class="services-pills">
-          <span class="services-pill">24/7 IT Support</span>
-          <span class="services-pill">Proactive Monitoring + AI</span>
-          <span class="services-pill">Custom Software</span>
-          <span class="services-pill">Looker / Power BI Dashboards</span>
+          <span class="services-pill">Controlled operation</span>
+          <span class="services-pill">Proactive monitoring</span>
+          <span class="services-pill">Automation + AI</span>
+          <span class="services-pill">BI (Looker / Power BI)</span>
         </div>
       </div>
 
-      <div class="services-strip">
-        <div class="strip-item">
-          <div class="strip-title">Visibility</div>
-          <div class="strip-desc">KPIs, SLAs, backlog, uptime, and operational health in one place.</div>
-        </div>
-        <div class="strip-item">
-          <div class="strip-title">Automation</div>
-          <div class="strip-desc">Alerts, reports, and smart workflows to reduce tickets and lead time.</div>
-        </div>
-        <div class="strip-item">
-          <div class="strip-title">Scalability</div>
-          <div class="strip-desc">Software, add-ons, and integrations to grow without chaos or rework.</div>
-        </div>
-      </div>
-
-      <div class="cards">
-        <!-- 1 -->
-        <div class="card">
-          <div class="service-title">
-            <svg class="service-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M4 7h16M7 7v10m10-10v10M5 17h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-            </svg>
-            <h3>Infrastructure & Physical Servers</h3>
+      <div class="solutions-stack">
+        <!-- LEFT -->
+        <div class="solutions-left">
+          <div class="solution-item">
+            <div class="solution-ico">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M4 6h16v4H4z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M4 14h16v4H4z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M7 8h.01M7 16h.01" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="solution-txt">
+              <div class="solution-title">Infrastructure</div>
+              <div class="solution-desc">Servers, virtualization and planned migrations.</div>
+            </div>
           </div>
-          <p>
-            On-prem server setup and administration (Windows Server and Linux), Active Directory, file servers,
-            backups, RAID and high availability, with monitoring for early failure detection.
-          </p>
-        </div>
 
-        <!-- 2 -->
-        <div class="card">
-          <div class="service-title">
-            <svg class="service-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M6 16a4 4 0 010-8 5 5 0 019.6-1.2A4 4 0 0118 16H6z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <h3>Cloud Computing & Virtualization</h3>
+          <div class="solution-item">
+            <div class="solution-ico">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="solution-txt">
+              <div class="solution-title">Security</div>
+              <div class="solution-desc">Firewalls, segmentation, hardening and active monitoring.</div>
+            </div>
           </div>
-          <p>
-            Migrations and operations across AWS, Azure, and Google Cloud. Hybrid infrastructure, virtualization,
-            snapshots, scalability, and cost optimization based on usage metrics.
-          </p>
-        </div>
 
-        <!-- 3 -->
-        <div class="card">
-          <div class="service-title">
-            <svg class="service-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M12 3l8 4v6c0 5-3.4 8.7-8 8-4.6.7-8-3-8-8V7l8-4z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <h3>Enterprise Networks & Security</h3>
+          <div class="solution-item">
+            <div class="solution-ico">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M16 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M8 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M14 4l-4 16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="solution-txt">
+              <div class="solution-title">Development</div>
+              <div class="solution-desc">Internal tools, APIs, integrations and applied AI.</div>
+            </div>
           </div>
-          <p>
-            LAN/WAN design, enterprise WiFi, VPNs, firewalls, segmentation, and access control,
-            with traffic analysis and anomaly alerts.
-          </p>
-        </div>
 
-        <!-- 4 -->
-        <div class="card">
-          <div class="service-title">
-            <svg class="service-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M7 7h10v10H7zM4 4h4M16 4h4M4 16h4M16 20h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-            </svg>
-            <h3>Migrations & IT Modernization</h3>
+          <div class="solution-item">
+            <div class="solution-ico">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M3 3v18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M7 14v4M11 10v8M15 6v12M19 12v6"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="solution-txt">
+              <div class="solution-title">BI &amp; Data</div>
+              <div class="solution-desc">Dashboards, KPIs and information governance.</div>
+            </div>
           </div>
-          <p>
-            Modernization plans, cloud migration, and legacy system upgrades.
-            Technical roadmap, risk assessment, and phased execution.
-          </p>
+
+          <div class="solutions-actions">
+            <a href="#contact" class="solutions-btn">Request a quote</a>
+            <a href="#pricing" class="solutions-link">View estimator →</a>
+          </div>
         </div>
 
-        <!-- 5 -->
-        <div class="card card-feature">
-          <div class="service-title">
-            <svg class="service-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M9 18h6M10 22h4M8 2h8l2 4v6c0 2.2-1.2 4-3 5.2L12 19l-3-1.8C7.2 16 6 14.2 6 12V6l2-4z"
-                stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <h3>Custom Software Development</h3>
-          </div>
-          <p>
-            Internal systems, portals, process automation, integrations, and APIs.
-            Includes discovery, design, development, QA, deployment, and ongoing improvements.
-          </p>
-          <div class="card-tag">New • Software</div>
-        </div>
+        <!-- RIGHT -->
+        <div class="solutions-right">
+          <div class="stack-wrap stack-wrap-kpi">
+            <div class="stack-layer">
+              <div class="stack-top">
+                <span>SLA &amp; Availability</span><i></i>
+              </div>
+              <div class="stack-body">
+                <p>Monitoring + priority-based response with ticket traceability.</p>
+                <div class="stack-metrics">
+                  <span class="metric"><b>Uptime</b> 99.9%</span>
+                  <span class="metric"><b>MTTA</b> &lt; 15 min</span>
+                  <span class="metric"><b>MTTR</b> target</span>
+                </div>
+              </div>
+            </div>
 
-        <!-- 6 -->
-        <div class="card card-feature">
-          <div class="service-title">
-            <svg class="service-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M7 8h10M7 12h10M7 16h6M5 4h14a2 2 0 012 2v12a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z"
-                stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <h3>Add-ons, Plugins & Integrations</h3>
-          </div>
-          <p>
-            Extensions for your current systems (ERP/LMS/CRM), external connectors, SSO,
-            automations, webhooks, and data synchronization to eliminate duplicate work.
-          </p>
-          <div class="card-tag">New • Add-ons</div>
-        </div>
+            <div class="stack-layer">
+              <div class="stack-top">
+                <span>Critical Alerts</span><i></i>
+              </div>
+              <div class="stack-body">
+                <p>Early detection: disk, CPU/RAM, network, backups, services and security.</p>
+                <ul class="stack-list">
+                  <li>Thresholds + anomalies</li>
+                  <li>Severity-based escalation</li>
+                  <li>Logbook with evidence</li>
+                </ul>
+              </div>
+            </div>
 
-        <!-- 7 -->
-        <div class="card">
-          <div class="service-title">
-            <svg class="service-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M12 2v4m0 12v4M4 12H2m20 0h-2M5 5l2.8 2.8M19 19l-2.8-2.8M19 5l-2.8 2.8M5 19l2.8-2.8"
-                stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-            </svg>
-            <h3>AI Integration & Automation</h3>
-          </div>
-          <p>
-            We automate repetitive tasks (reports, alerts, remediation, onboarding/offboarding) and integrate AI for
-            ticket classification, pattern detection, and operational recommendations.
-          </p>
-        </div>
+            <div class="stack-layer">
+              <div class="stack-top">
+                <span>Changes / Delivery</span><i></i>
+              </div>
+              <div class="stack-body">
+                <p>Controlled deployments with windows, rollback and documentation.</p>
+                <ul class="stack-list">
+                  <li>Change control</li>
+                  <li>Checklist and validation</li>
+                  <li>Release notes</li>
+                </ul>
+              </div>
+            </div>
 
-        <!-- 8 -->
-        <div class="card">
-          <div class="service-title">
-            <svg class="service-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M4 19V5m0 14h16M7 15l3-3 3 2 4-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <h3>Dashboards & BI (Looker Studio / Power BI)</h3>
+            <div class="stack-layer stack-brand">
+              <div class="stack-top">
+                <span class="brand">Executive KPIs (Mirmibug)</span><i></i>
+              </div>
+              <div class="stack-body">
+                <p>Dashboards with KPIs, SLAs, backlog and operational health (Looker / Power BI).</p>
+                <div class="stack-metrics">
+                  <span class="metric"><b>Tickets</b> by SLA</span>
+                  <span class="metric"><b>Risk</b> / incidents</span>
+                  <span class="metric"><b>Capacity</b> / demand</span>
+                </div>
+              </div>
+            </div>
           </div>
-          <p>
-            Executive dashboards with KPIs, SLAs, productivity, inventory, risks, and project status.
-            Data connections (MySQL/Sheets/BigQuery/Excel), modeling, and governance.
-          </p>
-        </div>
-
-        <!-- 9 -->
-        <div class="card">
-          <div class="service-title">
-            <svg class="service-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M12 6v6l4 2M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <h3>Maintenance, SLAs & Roadmap</h3>
-          </div>
-          <p>
-            Support plans with SLAs, change control, documentation, continuous monitoring,
-            and a quarterly roadmap to evolve IT without improvisation.
-          </p>
         </div>
       </div>
 
@@ -244,7 +243,7 @@
         <div class="services-cta-box">
           <div class="services-cta-title">Want a dashboard sample or an add-on demo?</div>
           <div class="services-cta-desc">
-            We can send a Looker/Power BI example with KPIs and SLAs, or a custom software proposal with phased scope.
+            We can send a KPI/SLA sample (Looker/Power BI) or a phased proposal for custom development.
           </div>
         </div>
         <a href="#contact" class="services-cta-btn">Request sample</a>
@@ -254,204 +253,101 @@
 
   <div class="section-divider" aria-hidden="true"></div>
 
-  <!-- PRICING (QUOTER) -->
-  <section id="plans" class="section section-block">
-    <h2 class="section-title">Company Quoter</h2>
+  <!-- PRICING / ESTIMATOR -->
+  <section id="pricing" class="section section-block">
+    <h2 class="section-title">Company Estimator</h2>
 
     <p class="max-w-3xl mx-auto text-gray-300 text-center mb-10">
-      Select your scenario. Get a monthly estimate with breakdown, assumptions and a WhatsApp-ready summary.
+      Select your scenario. Get a monthly estimate with breakdown and a WhatsApp-ready summary.
     </p>
 
-    <div class="quote-grid quote-grid-pro">
-      <!-- FORM -->
-      <div class="quote-card quote-card-pro">
-        <div class="quote-head">
-          <h3 class="quote-title">Configure your service</h3>
-          <span class="quote-badge" id="q_badge_plan">Plan</span>
-        </div>
-
-        <div class="quote-row">
-          <div class="quote-row-top">
-            <label class="quote-label" for="q_users">Users to support</label>
-            <span class="quote-chip"><strong id="q_users_val">25</strong> users</span>
-          </div>
-          <input id="q_users" type="range" min="5" max="300" value="25" step="1" />
-          <div class="quote-help">
-            Tip: define “users” as people needing support (not only email accounts).
-          </div>
-        </div>
-
-        <div class="quote-row">
-          <label class="quote-label" for="q_sites">Sites / Locations</label>
-          <select id="q_sites">
-            <option value="1" selected>1 site</option>
-            <option value="2">2 sites</option>
-            <option value="3">3 sites</option>
-            <option value="4">4+ sites</option>
-          </select>
-          <div class="quote-help">Includes coordination and remote support for sites.</div>
-        </div>
-
-        <div class="quote-two">
-          <div class="quote-row">
-            <label class="quote-label" for="q_support">Support type</label>
-            <select id="q_support">
-              <option value="remote" selected>100% Remote</option>
-              <option value="hybrid">Hybrid (scheduled visits)</option>
-              <option value="onsite">On-site (recurring)</option>
-            </select>
-            <div class="quote-help">On-site impacts scheduling and logistics.</div>
-          </div>
-
-          <div class="quote-row">
-            <label class="quote-label" for="q_hours">Coverage</label>
-            <select id="q_hours">
-              <option value="buss" selected>8x5 (Business hours)</option>
-              <option value="plus">12x6 (Extended)</option>
-              <option value="247">24/7 (Critical)</option>
-            </select>
-            <div class="quote-help">Coverage adjusts the real SLA.</div>
-          </div>
-        </div>
-
-        <div class="quote-divider"></div>
-
-        <div class="quote-row">
-          <div class="quote-row-top">
-            <label class="quote-label">Modules</label>
-            <span class="quote-mini-note">Base included: Help Desk + Monitoring</span>
-          </div>
-
-          <div class="quote-checks quote-checks-pro">
-            <label class="check">
-              <input type="checkbox" id="m_helpdesk" checked disabled />
-              <span>Help Desk & Tickets</span>
-              <em>Included</em>
-            </label>
-
-            <label class="check">
-              <input type="checkbox" id="m_monitor" checked disabled />
-              <span>Monitoring (devices/servers/network)</span>
-              <em>Included</em>
-            </label>
-
-            <label class="check">
-              <input type="checkbox" id="m_m365" />
-              <span>Email & Microsoft 365 / Google Workspace</span>
-              <em>+ monthly</em>
-            </label>
-
-            <label class="check">
-              <input type="checkbox" id="m_backup" />
-              <span>Backups & Recovery</span>
-              <em>+ monthly</em>
-            </label>
-
-            <label class="check">
-              <input type="checkbox" id="m_security" />
-              <span>Security (hardening, MFA, EDR/AV)</span>
-              <em>+ monthly</em>
-            </label>
-
-            <label class="check">
-              <input type="checkbox" id="m_network" />
-              <span>Networking (WiFi, switches, firewall, VPN)</span>
-              <em>+ monthly</em>
-            </label>
-
-            <label class="check">
-              <input type="checkbox" id="m_servers" />
-              <span>Servers & Virtualization</span>
-              <em>+ monthly</em>
-            </label>
-
-            <label class="check">
-              <input type="checkbox" id="m_projects" />
-              <span>Change / Projects bucket</span>
-              <em>+ monthly</em>
-            </label>
-          </div>
-        </div>
-
-        <div class="quote-two">
-          <div class="quote-row">
-            <label class="quote-label" for="q_servers">Servers to manage</label>
-            <input id="q_servers" type="number" min="0" max="50" value="0" inputmode="numeric" />
-            <div class="quote-help">0 = no servers</div>
-          </div>
-
-          <div class="quote-row">
-            <label class="quote-label" for="q_urgency">Response urgency</label>
-            <select id="q_urgency">
-              <option value="std" selected>Standard (basic SLA)</option>
-              <option value="prio">Priority (improved SLA)</option>
-              <option value="crit">Critical (high SLA)</option>
-            </select>
-            <div class="quote-help">Adjusts committed response times.</div>
-          </div>
-        </div>
-
-        <div class="quote-actions">
-          <button type="button" class="btn-cta" id="q_btn_calc">Calculate</button>
-          <button type="button" class="btn-secondary" id="q_btn_reset">Reset</button>
-        </div>
-
-        <textarea id="quote_summary" class="hidden" readonly></textarea>
-
-        <div class="quote-disclaimer">
-          <strong>Assumptions:</strong> users = people to support; monthly estimate; excludes licenses (M365, EDR, cloud backups) and hardware.
-        </div>
-      </div>
-
-      <!-- RESULT -->
-      <div class="quote-card quote-card-pro quote-result">
-        <h3 class="quote-title">Monthly estimate</h3>
-
-        <div class="quote-price quote-price-pro">
-          <div class="quote-price-main" id="q_price">$0 MXN</div>
-          <div class="quote-price-sub" id="q_price_note">
-            Preliminary estimate with assumptions. Final quote depends on inventory and SLA.
-          </div>
-        </div>
-
-        <div class="quote-breakdown" id="q_breakdown"></div>
-
-        <div class="quote-cta">
-          <a class="btn-cta w-full text-center" id="q_btn_whatsapp" href="#" target="_blank" rel="noopener">
-            Quote via WhatsApp
-          </a>
-          <a class="btn-secondary w-full text-center" href="#contact" id="q_btn_to_contact">
-            Send via form
-          </a>
-        </div>
-
-        <div class="quote-mini">
-          <p class="text-gray-300">
-            Want to avoid surprises? We can send a formal proposal with inventory, SLA, module scope and roadmap.
-          </p>
-        </div>
-      </div>
+    <!-- Reuse the same estimator markup if you want bilingual full parity.
+         For now, it stays on your ES page as the main flow. -->
+    <div class="max-w-3xl mx-auto text-gray-300 text-center">
+      <p>
+        Estimator is currently available in Spanish on the main page.
+      </p>
+      <a href="index.html#planes" class="hero-btn mt-6 inline-flex">Go to estimator</a>
     </div>
   </section>
 
   <div class="section-divider" aria-hidden="true"></div>
 
-  <!-- CONTACT (FIXED) -->
+  <!-- CONTACT -->
   <section id="contact" class="section section-block">
     <h2 class="section-title">Contact</h2>
 
-    <form id="contactForm" class="contact-form">
-      <!-- honeypot anti-spam -->
+    <form id="contactForm" class="contact-form" action="/api/contact.php" method="POST" enctype="multipart/form-data">
       <input type="text" name="website" style="display:none" tabindex="-1" autocomplete="off" />
 
-      <input type="text" name="nombre" placeholder="Full name" required />
+      <input type="text" name="nombre" placeholder="Name" required />
       <input type="email" name="email" placeholder="Email" required />
+      <input type="text" name="telefono" placeholder="Phone (optional)" />
       <input type="text" name="empresa" placeholder="Company (optional)" />
       <textarea name="mensaje" placeholder="Message" required></textarea>
+
+      <label class="text-sm text-gray-400 flex gap-2 items-start">
+        <input type="checkbox" name="consentimiento" class="mt-1" />
+        I agree to be contacted by Mirmibug.
+      </label>
 
       <button type="submit">Send message</button>
     </form>
   </section>
+
+  <a
+    href="https://wa.me/525527970496?text=Hi,%20I%20want%20more%20information%20about%20your%20IT%20services"
+    class="whatsapp-float"
+    target="_blank"
+    rel="noopener"
+    aria-label="WhatsApp"
+  >
+    <svg viewBox="0 0 32 32" width="26" height="26" fill="currentColor" aria-hidden="true">
+      <path d="M19.11 17.21c-.27-.14-1.6-.79-1.85-.88-.25-.09-.43-.14-.61.14-.18.27-.7.88-.86 1.06-.16.18-.32.2-.59.07-.27-.14-1.14-.42-2.17-1.33-.8-.71-1.34-1.6-1.5-1.87-.16-.27-.02-.42.12-.55.12-.12.27-.32.41-.48.14-.16.18-.27.27-.45.09-.18.05-.34-.02-.48-.07-.14-.61-1.47-.84-2.01-.22-.53-.45-.46-.61-.47h-.52c-.18 0-.48.07-.73.34-.25.27-.96.94-.96 2.29 0 1.35.98 2.65 1.12 2.83.14.18 1.93 2.95 4.68 4.13.65.28 1.15.45 1.54.57.65.21 1.24.18 1.7.11.52-.08 1.6-.65 1.83-1.27.23-.61.23-1.13.16-1.24-.07-.11-.25-.18-.52-.32z"/>
+      <path d="M16 2.67c-7.36 0-13.33 5.97-13.33 13.33 0 2.35.62 4.64 1.79 6.65L2.67 29.33l6.86-1.76c1.94 1.06 4.12 1.61 6.47 1.61 7.36 0 13.33-5.97 13.33-13.33S23.36 2.67 16 2.67z"/>
+    </svg>
+  </a>
+
+  <footer class="footer border-t border-gray-800 mt-20">
+    <div class="max-w-6xl mx-auto px-6 py-10 text-center space-y-6">
+      <div class="flex justify-center items-center gap-3">
+        <img src="img/logo_mirmibug_360.png" alt="Mirmibug Logo" class="w-8 h-8" />
+        <span class="text-lg font-bold tracking-wide text-[#38d84e]">MIRMIBUG IT SOLUTIONS</span>
+      </div>
+
+      <p class="text-xs text-gray-600">
+        © <span id="year"></span> Mirmibug IT Solutions — Your external IT department
+      </p>
+    </div>
+  </footer>
+
+  <div
+    id="cookie-banner"
+    class="fixed bottom-0 left-0 w-full bg-black/95 text-gray-300 text-sm px-6 py-4 z-50 hidden"
+  >
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+      <p class="leading-relaxed">
+        We use cookies to improve your experience and analyze site usage.
+        By continuing, you agree to our cookie policy.
+      </p>
+
+      <div class="flex gap-3">
+        <button
+          onclick="acceptCookies()"
+          class="px-4 py-2 bg-[#38d84e] text-black font-semibold rounded hover:opacity-90 transition"
+        >
+          Accept
+        </button>
+
+        <a
+          href="policy-cookies.html"
+          class="px-4 py-2 border border-gray-500 rounded hover:bg-gray-800 transition"
+        >
+          Learn more
+        </a>
+      </div>
+    </div>
+  </div>
 
   <script src="js/app.js"></script>
 </body>

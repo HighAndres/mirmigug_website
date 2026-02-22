@@ -2,7 +2,7 @@
  * app.js (FULL REPLACE) - Mirmibug
  * - Menú móvil robusto
  * - Cookies banner + acceptCookies()
- * - Glow de cards (Servicios)
+ * - Glow spotlight (Soluciones + panel KPI)
  * - Footer year
  * - Cotizador PRO (validaciones + resumen claro + WhatsApp)
  * - Contact Form (POST a /api/contact.php) + fallback anti-WAF
@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initMobileMenu();
   initFooterYear();
   initCookies();
-  initServiceCardsGlow();
+  initGlowSpotlight();
   initCotizador();
   initContactForm();
 });
@@ -90,10 +90,12 @@ function acceptCookies() {
 window.acceptCookies = acceptCookies;
 
 /* =========================
-   SERVICIOS - GLOW EN TARJETAS
+   GLOW SPOTLIGHT
+   - Aplica a .solution-item y .stack-layer (panel derecho)
 ========================= */
-function initServiceCardsGlow() {
-  document.querySelectorAll(".card").forEach((card) => {
+function initGlowSpotlight() {
+  const items = document.querySelectorAll(".solution-item, .stack-layer");
+  items.forEach((card) => {
     card.addEventListener("mousemove", (e) => {
       const rect = card.getBoundingClientRect();
       card.style.setProperty("--x", `${e.clientX - rect.left}px`);
@@ -134,7 +136,8 @@ function initCotizador() {
   const btnWhatsapp = $("q_btn_whatsapp");
 
   const required = [
-    qUsers, qSites, qSupport, qHours, qServers, qUrgency, qPrice, qBreakdown, quoteSummary, btnWhatsapp
+    qUsers, qSites, qSupport, qHours, qServers, qUrgency,
+    qPrice, qBreakdown, quoteSummary, btnWhatsapp
   ];
   if (required.some((el) => !el)) return;
 
@@ -326,14 +329,11 @@ function initCotizador() {
 
 /* =========================
    CONTACT FORM (ANTI-WAF)
-   - intenta fetch (FormData)
-   - si hay 409/403/HTML => fallback submit normal en iframe oculto
 ========================= */
 function initContactForm() {
   const form = $("contactForm");
   if (!form) return;
 
-  // iframe oculto para fallback
   let iframe = document.getElementById("contact_iframe");
   if (!iframe) {
     iframe = document.createElement("iframe");
@@ -354,7 +354,6 @@ function initContactForm() {
       btn.textContent = "Enviando...";
     }
 
-    // arma payload
     const fd = new FormData(form);
     fd.set("origen", window.location.href);
 
@@ -364,10 +363,9 @@ function initContactForm() {
     const endpoint = form.getAttribute("action") || "/api/contact.php";
 
     try {
-      // 1) intento por fetch (XHR)
       const res = await fetch(endpoint, {
         method: "POST",
-        body: fd,              // multipart automático
+        body: fd,
         credentials: "same-origin",
       });
 
@@ -381,15 +379,13 @@ function initContactForm() {
         return;
       }
 
-      // Si no fue OK, forzamos fallback
       console.warn("Fetch blocked or failed:", res.status, text);
-
-      // 2) fallback: submit normal del navegador (suele saltar WAF de XHR)
-      await fallbackSubmit(form, iframe, btn, originalText);
+      await fallbackSubmit(form, iframe);
 
     } catch (err) {
       console.warn("Fetch error -> fallback submit", err);
-      await fallbackSubmit(form, iframe, btn, originalText);
+      await fallbackSubmit(form, iframe);
+
     } finally {
       if (btn) {
         btn.disabled = false;
@@ -399,22 +395,16 @@ function initContactForm() {
   });
 }
 
-function fallbackSubmit(form, iframe, btn, originalText) {
+function fallbackSubmit(form, iframe) {
   return new Promise((resolve) => {
-    // preparamos target al iframe
     const oldTarget = form.getAttribute("target");
     form.setAttribute("target", "contact_iframe");
 
-    // escuchamos carga del iframe
     const onLoad = () => {
       iframe.removeEventListener("load", onLoad);
-
-      // Nota: no siempre podemos leer contenido por políticas,
-      // así que confirmamos al usuario.
       form.reset();
       alert("Envío realizado. Si no recibes respuesta, el hosting está bloqueando el endpoint y hay que ajustar ModSecurity.");
-      
-      // restaurar target
+
       if (oldTarget) form.setAttribute("target", oldTarget);
       else form.removeAttribute("target");
 
@@ -422,8 +412,6 @@ function fallbackSubmit(form, iframe, btn, originalText) {
     };
 
     iframe.addEventListener("load", onLoad);
-
-    // hacemos submit normal
     form.submit();
   });
 }
