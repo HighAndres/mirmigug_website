@@ -1,18 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mirmibug | IT Services</title>
 
-  <link rel="icon" type="image/png" href="img/logo_mirmibug_360.png" />
+  <!-- ═══ BASIC SEO ═══ -->
+  <title>Mirmibug | IT Services for Companies in Mexico</title>
+  <meta name="description"
+    content="Professional IT support for small and mid-sized businesses in Mexico. Help Desk, monitoring, cloud, security and automation. Fast response and clear pricing." />
+  <meta name="keywords"
+    content="IT support Mexico, IT services for companies, help desk, IT infrastructure, MSP Mexico, cloud computing, cybersecurity" />
+  <meta name="author" content="Mirmibug IT Solutions" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://mirmibug.com/en.html" />
+
+  <!-- ═══ OPEN GRAPH (WhatsApp, LinkedIn, Facebook) ═══ -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://mirmibug.com/en.html" />
+  <meta property="og:title" content="Mirmibug | IT Services for Companies in Mexico" />
+  <meta property="og:description"
+    content="Your external IT department. Support, infrastructure, cloud and automation for companies that require reliability and operational order." />
+  <meta property="og:image" content="https://mirmibug.com/img/logo_mirmibug_360.png" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:site_name" content="Mirmibug IT Solutions" />
+
+  <!-- ═══ TWITTER CARD ═══ -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Mirmibug | IT Services for Companies in Mexico" />
+  <meta name="twitter:description"
+    content="Your external IT department. Support, infrastructure, cloud and automation." />
+  <meta name="twitter:image" content="https://mirmibug.com/img/logo_mirmibug_360.png" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+  <link rel="apple-touch-icon" sizes="192x192" href="/favicon-192.png" />
+
+  <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Custom CSS -->
   <link rel="stylesheet" href="css/style.css" />
 
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap"
-    rel="stylesheet"
-  />
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet" />
 </head>
 
 <body class="bg-black text-white font-inter overflow-x-hidden">
@@ -28,10 +60,11 @@
       <ul class="menu">
         <li><a href="#home">Home</a></li>
         <li><a href="#services">Services</a></li>
-        <li><a href="#pricing">Plans</a></li>
+        <li><a href="#plans">Plans</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
 
+      <!-- Actions (RIGHT) -->
       <div class="nav-actions">
         <div class="lang-switch" role="navigation" aria-label="Switch language">
           <a class="lang-btn" href="index.html" hreflang="es">ES</a>
@@ -49,9 +82,10 @@
   <div id="mobileMenu" class="mobile-menu hidden">
     <a href="#home">Home</a>
     <a href="#services">Services</a>
-    <a href="#pricing">Plans</a>
+    <a href="#plans">Plans</a>
     <a href="#contact">Contact</a>
 
+    <!-- Language Switch (Mobile) -->
     <div class="lang-switch mobile-lang" role="navigation" aria-label="Switch language">
       <a class="lang-btn" href="index.html" hreflang="es">ES</a>
       <a class="lang-btn is-active" href="en.html" hreflang="en">EN</a>
@@ -60,24 +94,26 @@
 
   <!-- HERO -->
   <section id="home" class="hero hero-bg hero-section">
-    <h1 class="hero-title">Professional IT management, clear and reliable</h1>
+    <h1 class="hero-title">Technology infrastructure under control</h1>
     <p class="hero-subtitle">
-      Support, infrastructure and automation under a controlled, documented and measurable operating model
-      for companies that require stability and operational clarity.
+      We implement and manage IT environments with a focus on order, security and operational efficiency.
+      Managed technology with technical discipline and strategic vision.
     </p>
 
-    <a href="#services" class="hero-btn">View Services</a>
+    <a href="#services" class="hero-btn">Solutions</a>
   </section>
 
   <div class="section-divider" aria-hidden="true"></div>
 
-  <!-- ABOUT -->
-  <section id="about" class="section section-block">
-    <h2 class="section-title">Who we are</h2>
+  <!-- ABOUT / APPROACH -->
+  <section id="approach" class="section section-block">
+    <h2 class="section-title">Our Approach</h2>
 
     <p class="max-w-3xl mx-auto text-gray-300 text-center leading-relaxed">
-      At Mirmibug IT Solutions we manage and strengthen IT operations for small and mid-sized businesses.
-      We become your external IT department with fast response, solid infrastructure and modern solutions.
+      At Mirmibug IT Solutions we structure, manage and optimize IT operations for small and mid-sized businesses.
+      We act as an external IT department, integrating technical support, infrastructure, security and automation
+      under a clear, documented and scalable operating model.
+      The goal is simple: turn technology into a controlled, reliable asset aligned with business growth.
     </p>
 
     <div class="pillars">
@@ -101,27 +137,29 @@
         <h2 class="section-title">IT Solutions</h2>
 
         <p class="services-subtitle">
-          We design and implement the full system that removes friction from your operation:
-          stable infrastructure, security, automation and visibility through KPIs.
+          We design and implement the full system that keeps your business running without friction:
+          stable infrastructure, security, automation and KPI visibility.
         </p>
 
         <div class="services-pills">
-          <span class="services-pill">Controlled operation</span>
+          <span class="services-pill">Controlled operations</span>
           <span class="services-pill">Proactive monitoring</span>
           <span class="services-pill">Automation + AI</span>
           <span class="services-pill">BI (Looker / Power BI)</span>
         </div>
       </div>
 
+      <!-- LAYOUT: Left (areas) + Right (deliverables/KPIs) -->
       <div class="solutions-stack">
         <!-- LEFT -->
         <div class="solutions-left">
           <div class="solution-item">
             <div class="solution-ico">
+              <!-- server -->
               <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M4 6h16v4H4z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <path d="M4 14h16v4H4z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <path d="M7 8h.01M7 16h.01" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                <path d="M4 6h16v4H4z" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                <path d="M4 14h16v4H4z" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                <path d="M7 8h.01M7 16h.01" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
               </svg>
             </div>
             <div class="solution-txt">
@@ -132,9 +170,10 @@
 
           <div class="solution-item">
             <div class="solution-ico">
+              <!-- shield -->
               <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"
-                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round" />
               </svg>
             </div>
             <div class="solution-txt">
@@ -145,10 +184,13 @@
 
           <div class="solution-item">
             <div class="solution-ico">
+              <!-- code -->
               <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M16 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M8 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M14 4l-4 16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M16 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round" />
+                <path d="M8 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round" />
+                <path d="M14 4l-4 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
               </svg>
             </div>
             <div class="solution-txt">
@@ -159,10 +201,11 @@
 
           <div class="solution-item">
             <div class="solution-ico">
+              <!-- chart -->
               <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M3 3v18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <path d="M7 14v4M11 10v8M15 6v12M19 12v6"
-                  stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M3 3v18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                <path d="M7 14v4M11 10v8M15 6v12M19 12v6" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" />
               </svg>
             </div>
             <div class="solution-txt">
@@ -173,11 +216,11 @@
 
           <div class="solutions-actions">
             <a href="#contact" class="solutions-btn">Request a quote</a>
-            <a href="#pricing" class="solutions-link">View estimator →</a>
+            <a href="#plans" class="solutions-link">Open estimator →</a>
           </div>
         </div>
 
-        <!-- RIGHT -->
+        <!-- RIGHT (complementary panel, NO stripes) -->
         <div class="solutions-right">
           <div class="stack-wrap stack-wrap-kpi">
             <div class="stack-layer">
@@ -185,7 +228,7 @@
                 <span>SLA &amp; Availability</span><i></i>
               </div>
               <div class="stack-body">
-                <p>Monitoring + priority-based response with ticket traceability.</p>
+                <p>Monitoring + priority-based response with full ticket traceability.</p>
                 <div class="stack-metrics">
                   <span class="metric"><b>Uptime</b> 99.9%</span>
                   <span class="metric"><b>MTTA</b> &lt; 15 min</span>
@@ -203,7 +246,7 @@
                 <ul class="stack-list">
                   <li>Thresholds + anomalies</li>
                   <li>Severity-based escalation</li>
-                  <li>Logbook with evidence</li>
+                  <li>Evidence-based incident log</li>
                 </ul>
               </div>
             </div>
@@ -213,10 +256,10 @@
                 <span>Changes / Delivery</span><i></i>
               </div>
               <div class="stack-body">
-                <p>Controlled deployments with windows, rollback and documentation.</p>
+                <p>Controlled deployments with change windows, rollback and documentation.</p>
                 <ul class="stack-list">
                   <li>Change control</li>
-                  <li>Checklist and validation</li>
+                  <li>Checklist &amp; validation</li>
                   <li>Release notes</li>
                 </ul>
               </div>
@@ -239,35 +282,198 @@
         </div>
       </div>
 
+      <!-- CTA -->
       <div class="services-cta">
         <div class="services-cta-box">
           <div class="services-cta-title">Want a dashboard sample or an add-on demo?</div>
           <div class="services-cta-desc">
-            We can send a KPI/SLA sample (Looker/Power BI) or a phased proposal for custom development.
+            We can share a Looker/Power BI example with KPIs and SLAs, or a phased custom development proposal.
           </div>
         </div>
-        <a href="#contact" class="services-cta-btn">Request sample</a>
+        <a href="#contact" class="services-cta-btn">Request a sample</a>
       </div>
     </div>
   </section>
 
-  <div class="section-divider" aria-hidden="true"></div>
-
-  <!-- PRICING / ESTIMATOR -->
-  <section id="pricing" class="section section-block">
-    <h2 class="section-title">Company Estimator</h2>
+  <!-- ESTIMATOR -->
+  <section id="plans" class="section section-block">
+    <h2 class="section-title">Estimator for Companies</h2>
 
     <p class="max-w-3xl mx-auto text-gray-300 text-center mb-10">
-      Select your scenario. Get a monthly estimate with breakdown and a WhatsApp-ready summary.
+      Choose your scenario. Get a monthly estimate with breakdown, assumptions, and a WhatsApp-ready summary.
     </p>
 
-    <!-- Reuse the same estimator markup if you want bilingual full parity.
-         For now, it stays on your ES page as the main flow. -->
-    <div class="max-w-3xl mx-auto text-gray-300 text-center">
-      <p>
-        Estimator is currently available in Spanish on the main page.
-      </p>
-      <a href="index.html#planes" class="hero-btn mt-6 inline-flex">Go to estimator</a>
+    <div class="quote-grid quote-grid-pro">
+      <!-- FORM -->
+      <div class="quote-card quote-card-pro">
+        <div class="quote-head">
+          <h3 class="quote-title">Configure your service</h3>
+          <span class="quote-badge" id="q_badge_plan">Plan</span>
+        </div>
+
+        <div class="quote-row">
+          <div class="quote-row-top">
+            <label class="quote-label" for="q_users">Users to support</label>
+            <span class="quote-chip"><strong id="q_users_val">25</strong> users</span>
+          </div>
+          <input id="q_users" type="range" min="5" max="300" value="25" step="1" />
+          <div class="quote-help">
+            Tip: define “users” as people requiring support (not only email accounts).
+          </div>
+        </div>
+
+        <div class="quote-row">
+          <label class="quote-label" for="q_sites">Sites / Locations</label>
+          <select id="q_sites">
+            <option value="1" selected>1 site</option>
+            <option value="2">2 sites</option>
+            <option value="3">3 sites</option>
+            <option value="4">4+ sites</option>
+          </select>
+          <div class="quote-help">Includes coordination and remote support for sites.</div>
+        </div>
+
+        <div class="quote-two">
+          <div class="quote-row">
+            <label class="quote-label" for="q_support">Support type</label>
+            <select id="q_support">
+              <option value="remote" selected>100% Remote</option>
+              <option value="hybrid">Hybrid (scheduled visits)</option>
+              <option value="onsite">On-site (recurring)</option>
+            </select>
+            <div class="quote-help">On-site requires time and logistics.</div>
+          </div>
+
+          <div class="quote-row">
+            <label class="quote-label" for="q_hours">Coverage hours</label>
+            <select id="q_hours">
+              <option value="buss" selected>8x5 (Business hours)</option>
+              <option value="plus">12x6 (Extended)</option>
+              <option value="247">24/7 (Critical)</option>
+            </select>
+            <div class="quote-help">Coverage directly impacts SLA.</div>
+          </div>
+        </div>
+
+        <div class="quote-divider"></div>
+
+        <div class="quote-row">
+          <div class="quote-row-top">
+            <label class="quote-label">Modules</label>
+            <span class="quote-mini-note">Base included: Help Desk + Monitoring</span>
+          </div>
+
+          <div class="quote-checks quote-checks-pro">
+            <label class="check">
+              <input type="checkbox" id="m_helpdesk" checked disabled />
+              <span>Help Desk & Tickets</span>
+              <em>Included</em>
+            </label>
+
+            <label class="check">
+              <input type="checkbox" id="m_monitor" checked disabled />
+              <span>Monitoring (endpoints/servers/network)</span>
+              <em>Included</em>
+            </label>
+
+            <label class="check">
+              <input type="checkbox" id="m_m365" />
+              <span>Email & Microsoft 365 / Google Workspace</span>
+              <em>+ monthly</em>
+            </label>
+
+            <label class="check">
+              <input type="checkbox" id="m_backup" />
+              <span>Backups & Recovery</span>
+              <em>+ monthly</em>
+            </label>
+
+            <label class="check">
+              <input type="checkbox" id="m_security" />
+              <span>Security (hardening, MFA, EDR/AV)</span>
+              <em>+ monthly</em>
+            </label>
+
+            <label class="check">
+              <input type="checkbox" id="m_network" />
+              <span>Networking (WiFi, switches, firewall, VPN)</span>
+              <em>+ monthly</em>
+            </label>
+
+            <label class="check">
+              <input type="checkbox" id="m_servers" />
+              <span>Servers & Virtualization</span>
+              <em>+ monthly</em>
+            </label>
+
+            <label class="check">
+              <input type="checkbox" id="m_projects" />
+              <span>Changes / Projects pool</span>
+              <em>+ monthly</em>
+            </label>
+          </div>
+        </div>
+
+        <div class="quote-two">
+          <div class="quote-row">
+            <label class="quote-label" for="q_servers">Servers to manage</label>
+            <input id="q_servers" type="number" min="0" max="50" value="0" inputmode="numeric" />
+            <div class="quote-help">0 = no servers</div>
+          </div>
+
+          <div class="quote-row">
+            <label class="quote-label" for="q_urgency">Response urgency</label>
+            <select id="q_urgency">
+              <option value="std" selected>Standard (basic SLA)</option>
+              <option value="prio">Priority (improved SLA)</option>
+              <option value="crit">Critical (high SLA)</option>
+            </select>
+            <div class="quote-help">Adjusts committed response times.</div>
+          </div>
+        </div>
+
+        <div class="quote-actions">
+          <button type="button" class="btn-cta" id="q_btn_calc">Calculate</button>
+          <button type="button" class="btn-secondary" id="q_btn_reset">Reset</button>
+        </div>
+
+        <textarea id="quote_summary" class="hidden" readonly></textarea>
+
+        <div class="quote-disclaimer">
+          <strong>Assumptions:</strong> users = people to support; monthly estimate; does not include licenses (M365,
+          EDR,
+          cloud backups) or hardware.
+        </div>
+      </div>
+
+      <!-- RESULT -->
+      <div class="quote-card quote-card-pro quote-result">
+        <h3 class="quote-title">Monthly estimate</h3>
+
+        <div class="quote-price quote-price-pro">
+          <div class="quote-price-main" id="q_price">$0 MXN</div>
+          <div class="quote-price-sub" id="q_price_note">
+            Preliminary estimate with assumptions. Final quote depends on inventory and SLA.
+          </div>
+        </div>
+
+        <div class="quote-breakdown" id="q_breakdown"></div>
+
+        <div class="quote-cta">
+          <a class="btn-cta w-full text-center" id="q_btn_whatsapp" href="#" target="_blank" rel="noopener">
+            Quote via WhatsApp
+          </a>
+          <a class="btn-secondary w-full text-center" href="#contact" id="q_btn_to_contact">
+            Send via form
+          </a>
+        </div>
+
+        <div class="quote-mini">
+          <p class="text-gray-300">
+            Want to avoid surprises? We can send a formal proposal with inventory, SLA, scope per module and a roadmap.
+          </p>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -278,6 +484,7 @@
     <h2 class="section-title">Contact</h2>
 
     <form id="contactForm" class="contact-form" action="/api/contact.php" method="POST" enctype="multipart/form-data">
+      <!-- honeypot anti-spam (do not remove) -->
       <input type="text" name="website" style="display:none" tabindex="-1" autocomplete="off" />
 
       <input type="text" name="nombre" placeholder="Name" required />
@@ -295,24 +502,66 @@
     </form>
   </section>
 
-  <a
-    href="https://wa.me/525527970496?text=Hi,%20I%20want%20more%20information%20about%20your%20IT%20services"
-    class="whatsapp-float"
-    target="_blank"
-    rel="noopener"
-    aria-label="WhatsApp"
-  >
+  <!-- WhatsApp Floating Button -->
+  <a href="https://wa.me/525527970496?text=Hi,%20I%20would%20like%20information%20about%20your%20IT%20services"
+    class="whatsapp-float" target="_blank" rel="noopener" aria-label="Contact via WhatsApp">
     <svg viewBox="0 0 32 32" width="26" height="26" fill="currentColor" aria-hidden="true">
-      <path d="M19.11 17.21c-.27-.14-1.6-.79-1.85-.88-.25-.09-.43-.14-.61.14-.18.27-.7.88-.86 1.06-.16.18-.32.2-.59.07-.27-.14-1.14-.42-2.17-1.33-.8-.71-1.34-1.6-1.5-1.87-.16-.27-.02-.42.12-.55.12-.12.27-.32.41-.48.14-.16.18-.27.27-.45.09-.18.05-.34-.02-.48-.07-.14-.61-1.47-.84-2.01-.22-.53-.45-.46-.61-.47h-.52c-.18 0-.48.07-.73.34-.25.27-.96.94-.96 2.29 0 1.35.98 2.65 1.12 2.83.14.18 1.93 2.95 4.68 4.13.65.28 1.15.45 1.54.57.65.21 1.24.18 1.7.11.52-.08 1.6-.65 1.83-1.27.23-.61.23-1.13.16-1.24-.07-.11-.25-.18-.52-.32z"/>
-      <path d="M16 2.67c-7.36 0-13.33 5.97-13.33 13.33 0 2.35.62 4.64 1.79 6.65L2.67 29.33l6.86-1.76c1.94 1.06 4.12 1.61 6.47 1.61 7.36 0 13.33-5.97 13.33-13.33S23.36 2.67 16 2.67z"/>
+      <path
+        d="M19.11 17.21c-.27-.14-1.6-.79-1.85-.88-.25-.09-.43-.14-.61.14-.18.27-.7.88-.86 1.06-.16.18-.32.2-.59.07-.27-.14-1.14-.42-2.17-1.33-.8-.71-1.34-1.6-1.5-1.87-.16-.27-.02-.42.12-.55.12-.12.27-.32.41-.48.14-.16.18-.27.27-.45.09-.18.05-.34-.02-.48-.07-.14-.61-1.47-.84-2.01-.22-.53-.45-.46-.61-.47h-.52c-.18 0-.48.07-.73.34-.25.27-.96.94-.96 2.29 0 1.35.98 2.65 1.12 2.83.14.18 1.93 2.95 4.68 4.13.65.28 1.15.45 1.54.57.65.21 1.24.18 1.7.11.52-.08 1.6-.65 1.83-1.27.23-.61.23-1.13.16-1.24-.07-.11-.25-.18-.52-.32z" />
+      <path
+        d="M16 2.67c-7.36 0-13.33 5.97-13.33 13.33 0 2.35.62 4.64 1.79 6.65L2.67 29.33l6.86-1.76c1.94 1.06 4.12 1.61 6.47 1.61 7.36 0 13.33-5.97 13.33-13.33S23.36 2.67 16 2.67z" />
     </svg>
   </a>
 
+  <!-- FOOTER -->
   <footer class="footer border-t border-gray-800 mt-20">
     <div class="max-w-6xl mx-auto px-6 py-10 text-center space-y-6">
       <div class="flex justify-center items-center gap-3">
         <img src="img/logo_mirmibug_360.png" alt="Mirmibug Logo" class="w-8 h-8" />
         <span class="text-lg font-bold tracking-wide text-[#38d84e]">MIRMIBUG IT SOLUTIONS</span>
+      </div>
+
+      <div class="flex justify-center gap-6 text-gray-400">
+        <a href="https://www.linkedin.com/" target="_blank" rel="noopener" aria-label="LinkedIn"
+          class="hover:text-[#38d84e] transition">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M4.98 3.5C4.98 4.88 3.88 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.5 8h4v16h-4V8zm7.5 0h3.8v2.2h.1c.5-.9 1.8-2.2 3.7-2.2 4 0 4.7 2.6 4.7 6v10h-4v-8.9c0-2.1 0-4.8-3-4.8s-3.4 2.3-3.4 4.6V24h-4V8z" />
+          </svg>
+        </a>
+
+        <a href="https://github.com/HighAndres" target="_blank" rel="noopener" aria-label="GitHub"
+          class="hover:text-[#38d84e] transition">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M12 .5C5.73.5.5 5.73.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2.02c-3.2.69-3.88-1.54-3.88-1.54-.53-1.34-1.3-1.7-1.3-1.7-1.06-.72.08-.7.08-.7 1.17.08 1.79 1.2 1.79 1.2 1.04 1.79 2.73 1.27 3.4.97.1-.75.41-1.27.75-1.56-2.55-.29-5.23-1.27-5.23-5.67 0-1.25.45-2.27 1.19-3.07-.12-.29-.52-1.45.11-3.02 0 0 .97-.31 3.18 1.17a11.1 11.1 0 0 1 5.8 0c2.2-1.48 3.17-1.17 3.17-1.17.63 1.57.23 2.73.11 3.02.74.8 1.18 1.82 1.18 3.07 0 4.41-2.69 5.38-5.25 5.66.42.36.8 1.07.8 2.15v3.19c0 .31.21.67.8.56A11.52 11.52 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5z" />
+          </svg>
+        </a>
+
+        <a href="https://wa.me/525527970496" target="_blank" rel="noopener" aria-label="WhatsApp"
+          class="hover:text-[#38d84e] transition">
+          <svg width="22" height="22" viewBox="0 0 32 32" fill="currentColor">
+            <path
+              d="M16 2.67c-7.36 0-13.33 5.97-13.33 13.33 0 2.35.62 4.64 1.79 6.65L2.67 29.33l6.86-1.76c1.94 1.06 4.12 1.61 6.47 1.61 7.36 0 13.33-5.97 13.33-13.33S23.36 2.67 16 2.67z" />
+            <path
+              d="M19.11 17.21c-.27-.14-1.6-.79-1.85-.88-.25-.09-.43-.14-.61.14-.18.27-.7.88-.86 1.06-.16.18-.32.2-.59.07-.27-.14-1.14-.42-2.17-1.33-.8-.71-1.34-1.6-1.5-1.87-.16-.27-.02-.42.12-.55.12-.12.27-.32.41-.48.14-.16.18-.27.27-.45.09-.18.05-.34-.02-.48-.07-.14-.61-1.47-.84-2.01-.22-.53-.45-.46-.61-.47h-.52c-.18 0-.48.07-.73.34-.25.27-.96.94-.96 2.29 0 1.35.98 2.65 1.12 2.83.14.18 1.93 2.95 4.68 4.13.65.28 1.15.45 1.54.57.65.21 1.24.18 1.7.11.52-.08 1.6-.65 1.83-1.27.23-.61.23-1.13.16-1.24-.07-.11-.25-.18-.52-.32z" />
+          </svg>
+        </a>
+
+        <a href="mailto:contacto@mirmibug.com" aria-label="Email" class="hover:text-[#38d84e] transition">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z" />
+          </svg>
+        </a>
+      </div>
+
+      <div class="text-sm text-gray-500">
+        <a href="policy-cookies.html" class="hover:text-[#38d84e]">Cookie Policy</a>
+        <span class="mx-2">|</span>
+        <a href="privacy-policy.html" class="hover:text-[#38d84e]">Privacy Notice</a>
+        <span class="mx-2">|</span>
+        <a href="terms-conditions.html" class="hover:text-[#38d84e]">Terms &amp; Conditions</a>
       </div>
 
       <p class="text-xs text-gray-600">
@@ -321,28 +570,21 @@
     </div>
   </footer>
 
-  <div
-    id="cookie-banner"
-    class="fixed bottom-0 left-0 w-full bg-black/95 text-gray-300 text-sm px-6 py-4 z-50 hidden"
-  >
+  <!-- COOKIE BANNER -->
+  <div id="cookie-banner" class="fixed bottom-0 left-0 w-full bg-black/95 text-gray-300 text-sm px-6 py-4 z-50 hidden">
     <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
       <p class="leading-relaxed">
         We use cookies to improve your experience and analyze site usage.
-        By continuing, you agree to our cookie policy.
+        By continuing to browse, you accept our cookie policy.
       </p>
 
       <div class="flex gap-3">
-        <button
-          onclick="acceptCookies()"
-          class="px-4 py-2 bg-[#38d84e] text-black font-semibold rounded hover:opacity-90 transition"
-        >
+        <button onclick="acceptCookies()"
+          class="px-4 py-2 bg-[#38d84e] text-black font-semibold rounded hover:opacity-90 transition">
           Accept
         </button>
 
-        <a
-          href="policy-cookies.html"
-          class="px-4 py-2 border border-gray-500 rounded hover:bg-gray-800 transition"
-        >
+        <a href="policy-cookies.html" class="px-4 py-2 border border-gray-500 rounded hover:bg-gray-800 transition">
           Learn more
         </a>
       </div>
@@ -351,4 +593,5 @@
 
   <script src="js/app.js"></script>
 </body>
+
 </html>
