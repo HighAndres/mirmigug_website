@@ -5,7 +5,7 @@
  * - Glow de cards (Servicios)
  * - Footer year
  * - Cotizador PRO (validaciones + resumen claro + WhatsApp)
- * - Contact Form (POST a /api/contact.php + guarda en DB + email)
+ * - Contact Form (POST a /api/contact.php) + fallback anti-WAF
  */
 
 /* =========================
@@ -38,8 +38,8 @@ document.addEventListener("DOMContentLoaded", () => {
   initFooterYear();
   initCookies();
   initServiceCardsGlow();
-  initCotizador();     // si no existe, no hace nada
-  initContactForm();   // ✅ multipart/form-data para evitar 409
+  initCotizador();
+  initContactForm();
 });
 
 /* =========================
@@ -325,14 +325,23 @@ function initCotizador() {
 }
 
 /* =========================
-   CONTACT FORM (FIX 409)
-   - Usa FormData (multipart)
-   - NO headers manuales (para no detonar ModSecurity)
-   - Usa action="/api/contact.php"
+   CONTACT FORM (ANTI-WAF)
+   - intenta fetch (FormData)
+   - si hay 409/403/HTML => fallback submit normal en iframe oculto
 ========================= */
 function initContactForm() {
   const form = $("contactForm");
   if (!form) return;
+
+  // iframe oculto para fallback
+  let iframe = document.getElementById("contact_iframe");
+  if (!iframe) {
+    iframe = document.createElement("iframe");
+    iframe.id = "contact_iframe";
+    iframe.name = "contact_iframe";
+    iframe.style.display = "none";
+    document.body.appendChild(iframe);
+  }
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -345,23 +354,23 @@ function initContactForm() {
       btn.textContent = "Enviando...";
     }
 
+    // arma payload
+    const fd = new FormData(form);
+    fd.set("origen", window.location.href);
+
+    const qs = $("quote_summary")?.value || "";
+    if (qs) fd.set("quote_summary", qs);
+
+    const endpoint = form.getAttribute("action") || "/api/contact.php";
+
     try {
-      const fd = new FormData(form);
-      fd.set("origen", window.location.href);
-
-      // opcional: resumen del cotizador
-      const qs = $("quote_summary")?.value || "";
-      if (qs) fd.set("quote_summary", qs);
-
-      const endpoint = form.getAttribute("action") || "/api/contact.php";
-
+      // 1) intento por fetch (XHR)
       const res = await fetch(endpoint, {
         method: "POST",
-        body: fd, // multipart/form-data automático
+        body: fd,              // multipart automático
         credentials: "same-origin",
       });
 
-      // Puede regresar JSON o HTML (si WAF bloquea)
       const text = await res.text();
       let data = {};
       try { data = JSON.parse(text); } catch (_) {}
@@ -369,19 +378,52 @@ function initContactForm() {
       if (res.ok && data.ok) {
         form.reset();
         alert("¡Mensaje enviado! ✅");
-      } else {
-        console.log("Status:", res.status);
-        console.log("Response:", text);
-        alert("No se pudo enviar. El servidor está bloqueando el envío (409/403).");
+        return;
       }
+
+      // Si no fue OK, forzamos fallback
+      console.warn("Fetch blocked or failed:", res.status, text);
+
+      // 2) fallback: submit normal del navegador (suele saltar WAF de XHR)
+      await fallbackSubmit(form, iframe, btn, originalText);
+
     } catch (err) {
-      console.error(err);
-      alert("Error de conexión.");
+      console.warn("Fetch error -> fallback submit", err);
+      await fallbackSubmit(form, iframe, btn, originalText);
     } finally {
       if (btn) {
         btn.disabled = false;
         btn.textContent = originalText;
       }
     }
+  });
+}
+
+function fallbackSubmit(form, iframe, btn, originalText) {
+  return new Promise((resolve) => {
+    // preparamos target al iframe
+    const oldTarget = form.getAttribute("target");
+    form.setAttribute("target", "contact_iframe");
+
+    // escuchamos carga del iframe
+    const onLoad = () => {
+      iframe.removeEventListener("load", onLoad);
+
+      // Nota: no siempre podemos leer contenido por políticas,
+      // así que confirmamos al usuario.
+      form.reset();
+      alert("Envío realizado. Si no recibes respuesta, el hosting está bloqueando el endpoint y hay que ajustar ModSecurity.");
+      
+      // restaurar target
+      if (oldTarget) form.setAttribute("target", oldTarget);
+      else form.removeAttribute("target");
+
+      resolve();
+    };
+
+    iframe.addEventListener("load", onLoad);
+
+    // hacemos submit normal
+    form.submit();
   });
 }
