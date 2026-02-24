@@ -21,21 +21,20 @@
   <meta property="og:title" content="Mirmibug | Servicios IT para Empresas en México" />
   <meta property="og:description"
     content="Tu departamento de IT externo. Soporte, infraestructura, cloud y automatización para empresas que necesitan confiabilidad y orden tecnológico." />
-  <meta property="og:image" content="https://mirmibug.com/img/hexagon_logoo.png" />
+  <meta property="og:image" content="https://mirmibug.com/img/logo_mirmibug_360.png" />
   <meta property="og:locale" content="es_MX" />
   <meta property="og:site_name" content="Mirmibug IT Solutions" />
 
   <!-- ═══ TWITTER CARD ═══ -->
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:title" content="Mirmibug | Servicios IT para Empresas en México" />
-  <meta name="twitter:description"
-    content="Tu departamento de IT externo. Soporte, infraestructura, cloud y automatización." />
+  <meta name="twitter:description" content="Tu departamento de IT externo. Soporte, infraestructura, cloud y automatización." />
   <meta name="twitter:image" content="https://mirmibug.com/img/logo_mirmibug_360.png" />
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
-  <link rel="apple-touch-icon" sizes="192x192" href="/favicon-192.png" />
+  <!-- Favicon (Mirmibug) -->
+  <link rel="icon" type="image/svg+xml" href="img/hexagon_logoo.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png" />
+  <link rel="apple-touch-icon" sizes="192x192" href="img/favicon-192.png" />
 
   <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -52,10 +51,10 @@
   <!-- NAVBAR -->
   <header class="navbar">
     <nav class="nav-content">
-      <div class="logo">
+      <a class="logo" href="#inicio" aria-label="Ir a Inicio">
         <img src="img/logo_mirmibug_360.png" class="w-10" alt="Mirmibug Logo" />
         <span class="brand-name">MIRMIBUG</span>
-      </div>
+      </a>
 
       <ul class="menu">
         <li><a href="#inicio">Inicio</a></li>
@@ -111,11 +110,8 @@
 
     <p class="max-w-3xl mx-auto text-gray-300 text-center leading-relaxed">
       En Mirmibug IT Solutions estructuramos, administramos y optimizamos las áreas de TI de pequeñas y medianas
-      empresas.
-      Actuamos como un departamento de IT externo, integrando soporte técnico, infraestructura, seguridad y
+      empresas. Actuamos como un departamento de IT externo, integrando soporte técnico, infraestructura, seguridad y
       automatización bajo un modelo de operación claro, documentado y escalable.
-      Nuestro objetivo es simple: transformar la tecnología en un activo controlado, confiable y alineado al crecimiento
-      del negocio.
     </p>
 
     <div class="pillars">
@@ -151,13 +147,11 @@
         </div>
       </div>
 
-      <!-- LAYOUT: Izq (áreas) + Der (entregables/KPIs) -->
       <div class="solutions-stack">
         <!-- LEFT -->
         <div class="solutions-left">
           <div class="solution-item">
             <div class="solution-ico">
-              <!-- server -->
               <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <path d="M4 6h16v4H4z" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
                 <path d="M4 14h16v4H4z" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
@@ -172,7 +166,6 @@
 
           <div class="solution-item">
             <div class="solution-ico">
-              <!-- shield -->
               <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="2"
                   stroke-linecap="round" stroke-linejoin="round" />
@@ -186,7 +179,6 @@
 
           <div class="solution-item">
             <div class="solution-ico">
-              <!-- code -->
               <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <path d="M16 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                   stroke-linejoin="round" />
@@ -203,7 +195,6 @@
 
           <div class="solution-item">
             <div class="solution-ico">
-              <!-- chart -->
               <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <path d="M3 3v18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
                 <path d="M7 14v4M11 10v8M15 6v12M19 12v6" stroke="currentColor" stroke-width="2"
@@ -222,7 +213,7 @@
           </div>
         </div>
 
-        <!-- RIGHT (panel complementario SIN rayas) -->
+        <!-- RIGHT -->
         <div class="solutions-right">
           <div class="stack-wrap stack-wrap-kpi">
             <div class="stack-layer">
@@ -496,27 +487,24 @@
       <input type="text" name="empresa" placeholder="Empresa (opcional)" />
       <textarea name="mensaje" placeholder="Mensaje" required></textarea>
 
-      <label class="text-sm text-gray-400 flex gap-2 items-start">
-        <input type="checkbox" name="consentimiento" class="mt-1" />
-        Acepto ser contactado por Mirmibug.
+      <label class="consent-row">
+        <input type="checkbox" name="consentimiento" />
+        <span>Acepto ser contactado por Mirmibug.</span>
       </label>
 
       <button type="submit">Enviar mensaje</button>
     </form>
   </section>
 
-  <!-- ============================= -->
-  <!-- WHATSAPP MIRMIBUG TECH BUTTON -->
-  <!-- ============================= -->
+  <!-- WhatsApp Floating Button (Mirmibot) -->
   <a
-    href="https://wa.me/5215549644749?text=Hola%20Mirmibug%2C%20quiero%20informaci%C3%B3n%20sobre%20sus%20servicios%20de%20IT.%20Mi%20empresa%20tiene%20__%20usuarios%20y%20estoy%20en%20__."
+    href="https://wa.me/5215549644749?text=Hola%20Mirmibug%2C%20quiero%20info%20de%20servicios%20IT."
     target="_blank"
     rel="noopener"
     class="mirmibug-wa"
     aria-label="Hablar por WhatsApp con Mirmibug"
   >
     <span class="wa-dot" aria-hidden="true"></span>
-
     <svg class="wa-icon" viewBox="0 0 32 32" aria-hidden="true">
       <path
         d="M19.11 17.21c-.27-.14-1.6-.79-1.85-.88-.25-.09-.43-.14-.61.14-.18.27-.7.88-.86 1.06-.16.18-.32.2-.59.07-.27-.14-1.14-.42-2.17-1.33-.8-.71-1.34-1.6-1.5-1.87-.16-.27-.02-.42.12-.55.12-.12.27-.32.41-.48.14-.16.18-.27.27-.45.09-.18.05-.34-.02-.48-.07-.14-.61-1.47-.84-2.01-.22-.53-.45-.46-.61-.47h-.52c-.18 0-.48.07-.73.34-.25.27-.96.94-.96 2.29 0 1.35.98 2.65 1.12 2.83.14.18 1.93 2.95 4.68 4.13.65.28 1.15.45 1.54.57.65.21 1.24.18 1.7.11.52-.08 1.6-.65 1.83-1.27.23-.61.23-1.13.16-1.24-.07-.11-.25-.18-.52-.32z"
@@ -527,69 +515,8 @@
         fill="currentColor"
       />
     </svg>
-
     <span class="wa-text">Hablar con Mirmibot</span>
   </a>
-
-  <style>
-    .mirmibug-wa{
-      position: fixed;
-      right: 20px;
-      bottom: 20px;
-      z-index: 9999;
-
-      display: flex;
-      align-items: center;
-      gap: 10px;
-
-      padding: 12px 16px;
-      border-radius: 9999px;
-
-      background: #0b0f0c;
-      color: #ffffff;
-      text-decoration: none;
-      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      font-weight: 600;
-      letter-spacing: .2px;
-
-      border: 1px solid rgba(56,216,78,.45);
-      box-shadow: 0 14px 40px rgba(0,0,0,.55);
-      transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
-    }
-
-    .mirmibug-wa:hover{
-      transform: translateY(-3px);
-      border-color: rgba(56,216,78,.9);
-      box-shadow: 0 18px 55px rgba(0,0,0,.62);
-    }
-
-    .wa-dot{
-      width: 10px;
-      height: 10px;
-      border-radius: 9999px;
-      background: #38d84e;
-      box-shadow: 0 0 12px rgba(56,216,78,.85);
-    }
-
-    .wa-icon{
-      width: 22px;
-      height: 22px;
-      color: #38d84e;
-    }
-
-    .wa-text{
-      font-size: 14px;
-      white-space: nowrap;
-    }
-
-    @media (max-width: 600px){
-      .wa-text{ display: none; }
-      .mirmibug-wa{
-        padding: 14px;
-        border-radius: 9999px;
-      }
-    }
-  </style>
 
   <!-- FOOTER -->
   <footer class="footer border-t border-gray-800 mt-20">
@@ -601,38 +528,16 @@
 
       <div class="flex justify-center gap-6 text-gray-400">
         <a href="https://www.linkedin.com/" target="_blank" rel="noopener" aria-label="LinkedIn"
-          class="hover:text-[#38d84e] transition">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-            <path
-              d="M4.98 3.5C4.98 4.88 3.88 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.5 8h4v16h-4V8zm7.5 0h3.8v2.2h.1c.5-.9 1.8-2.2 3.7-2.2 4 0 4.7 2.6 4.7 6v10h-4v-8.9c0-2.1 0-4.8-3-4.8s-3.4 2.3-3.4 4.6V24h-4V8z" />
-          </svg>
-        </a>
+          class="hover:text-[#38d84e] transition">LinkedIn</a>
 
         <a href="https://github.com/HighAndres" target="_blank" rel="noopener" aria-label="GitHub"
-          class="hover:text-[#38d84e] transition">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-            <path
-              d="M12 .5C5.73.5.5 5.73.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2.02c-3.2.69-3.88-1.54-3.88-1.54-.53-1.34-1.3-1.7-1.3-1.7-1.06-.72.08-.7.08-.7 1.17.08 1.79 1.2 1.79 1.2 1.04 1.79 2.73 1.27 3.4.97.1-.75.41-1.27.75-1.56-2.55-.29-5.23-1.27-5.23-5.67 0-1.25.45-2.27 1.19-3.07-.12-.29-.52-1.45.11-3.02 0 0 .97-.31 3.18 1.17a11.1 11.1 0 0 1 5.8 0c2.2-1.48 3.17-1.17 3.17-1.17.63 1.57.23 2.73.11 3.02.74.8 1.18 1.82 1.18 3.07 0 4.41-2.69 5.38-5.25 5.66.42.36.8 1.07.8 2.15v3.19c0 .31.21.67.8.56A11.52 11.52 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5z" />
-          </svg>
-        </a>
+          class="hover:text-[#38d84e] transition">GitHub</a>
 
-        <!-- WhatsApp (CORREGIDO) -->
         <a href="https://wa.me/5215549644749" target="_blank" rel="noopener" aria-label="WhatsApp"
-          class="hover:text-[#38d84e] transition">
-          <svg width="22" height="22" viewBox="0 0 32 32" fill="currentColor">
-            <path
-              d="M16 2.67c-7.36 0-13.33 5.97-13.33 13.33 0 2.35.62 4.64 1.79 6.65L2.67 29.33l6.86-1.76c1.94 1.06 4.12 1.61 6.47 1.61 7.36 0 13.33-5.97 13.33-13.33S23.36 2.67 16 2.67z" />
-            <path
-              d="M19.11 17.21c-.27-.14-1.6-.79-1.85-.88-.25-.09-.43-.14-.61.14-.18.27-.7.88-.86 1.06-.16.18-.32.2-.59.07-.27-.14-1.14-.42-2.17-1.33-.8-.71-1.34-1.6-1.5-1.87-.16-.27-.02-.42.12-.55.12-.12.27-.32.41-.48.14-.16.18-.27.27-.45.09-.18.05-.34-.02-.48-.07-.14-.61-1.47-.84-2.01-.22-.53-.45-.46-.61-.47h-.52c-.18 0-.48.07-.73.34-.25.27-.96.94-.96 2.29 0 1.35.98 2.65 1.12 2.83.14.18 1.93 2.95 4.68 4.13.65.28 1.15.45 1.54.57.65.21 1.24.18 1.7.11.52-.08 1.6-.65 1.83-1.27.23-.61.23-1.13.16-1.24-.07-.11-.25-.18-.52-.32z" />
-          </svg>
-        </a>
+          class="hover:text-[#38d84e] transition">WhatsApp</a>
 
-        <a href="mailto:contacto@mirmibug.com" aria-label="Correo" class="hover:text-[#38d84e] transition">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-            <path
-              d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z" />
-          </svg>
-        </a>
+        <a href="mailto:contacto@mirmibug.com" aria-label="Correo"
+          class="hover:text-[#38d84e] transition">Correo</a>
       </div>
 
       <div class="text-sm text-gray-500">

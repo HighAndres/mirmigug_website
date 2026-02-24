@@ -1,10 +1,11 @@
 /**
  * app.js (FULL REPLACE) - Mirmibug
- * - Menú móvil robusto
+ * - Menú móvil robusto (+ aria-expanded + click fuera)
  * - Cookies banner + acceptCookies()
  * - Glow spotlight (Soluciones + panel KPI)
  * - Footer year
  * - Cotizador PRO (validaciones + resumen claro + WhatsApp)
+ * - WhatsApp Smart Prefill (Botón flotante + footer WhatsApp)
  * - Contact Form (POST a /api/contact.php) + fallback anti-WAF
  */
 
@@ -31,6 +32,11 @@ const textOfSelect = (sel) =>
   sel?.options?.[sel.selectedIndex]?.text || sel?.value || "";
 
 /* =========================
+   GLOBALS
+========================= */
+const WHATSAPP_PHONE = "5215549644749"; // ✅ Tu WhatsApp (código país + número)
+
+/* =========================
    DOM READY
 ========================= */
 document.addEventListener("DOMContentLoaded", () => {
@@ -39,6 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initCookies();
   initGlowSpotlight();
   initCotizador();
+  initWhatsAppSmartPrefill(); // ✅
   initContactForm();
 });
 
@@ -48,19 +55,39 @@ document.addEventListener("DOMContentLoaded", () => {
 function initMobileMenu() {
   const menuBtn = $("menuBtn");
   const mobileMenu = $("mobileMenu");
+  if (!menuBtn || !mobileMenu) return;
 
-  menuBtn?.addEventListener("click", () => {
-    mobileMenu?.classList.toggle("hidden");
+  const openMenu = () => {
+    mobileMenu.classList.remove("hidden");
+    menuBtn.setAttribute("aria-expanded", "true");
+  };
+
+  const closeMenu = () => {
+    mobileMenu.classList.add("hidden");
+    menuBtn.setAttribute("aria-expanded", "false");
+  };
+
+  const isOpen = () => !mobileMenu.classList.contains("hidden");
+
+  menuBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    if (isOpen()) closeMenu();
+    else openMenu();
   });
 
   document.querySelectorAll("#mobileMenu a").forEach((a) => {
-    a.addEventListener("click", () => {
-      mobileMenu?.classList.add("hidden");
-    });
+    a.addEventListener("click", () => closeMenu());
   });
 
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") mobileMenu?.classList.add("hidden");
+    if (e.key === "Escape") closeMenu();
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!isOpen()) return;
+    const target = e.target;
+    const clickedInside = mobileMenu.contains(target) || menuBtn.contains(target);
+    if (!clickedInside) closeMenu();
   });
 }
 
@@ -91,7 +118,6 @@ window.acceptCookies = acceptCookies;
 
 /* =========================
    GLOW SPOTLIGHT
-   - Aplica a .solution-item y .stack-layer (panel derecho)
 ========================= */
 function initGlowSpotlight() {
   const items = document.querySelectorAll(".solution-item, .stack-layer");
@@ -100,6 +126,105 @@ function initGlowSpotlight() {
       const rect = card.getBoundingClientRect();
       card.style.setProperty("--x", `${e.clientX - rect.left}px`);
       card.style.setProperty("--y", `${e.clientY - rect.top}px`);
+    });
+  });
+}
+
+/* =========================
+   WHATSAPP SMART PREFILL (CORTO)
+========================= */
+function initWhatsAppSmartPrefill() {
+  const floatBtn = document.querySelector(".mirmibug-wa");
+  const waLinks = Array.from(document.querySelectorAll('a[href*="wa.me"]'));
+
+  const buildMessage = () => {
+    const origin = window.location.pathname || "/";
+
+    // Datos del cotizador (si existen)
+    const users = $("q_users")?.value;
+    const sitesSel = $("q_sites");
+    const supportSel = $("q_support");
+    const hoursSel = $("q_hours");
+    const urgencySel = $("q_urgency");
+    const servers = $("q_servers")?.value;
+
+    const planBadge = $("q_badge_plan")?.textContent?.trim();
+    const price = $("q_price")?.textContent?.trim();
+
+    const modules = [
+      ["m_m365", "M365/Workspace"],
+      ["m_backup", "Backups"],
+      ["m_security", "Seguridad"],
+      ["m_network", "Redes"],
+      ["m_servers", "Servidores"],
+      ["m_projects", "Proyectos"],
+    ]
+      .filter(([id]) => $(id)?.checked)
+      .map(([, label]) => label);
+
+    const hasContext =
+      (users && supportSel && hoursSel && urgencySel) && (price || planBadge);
+
+    if (!hasContext) {
+      // Mensaje corto guiado (sin cotizador)
+      return [
+        "Hola Mirmibug 👾",
+        "Quiero info de servicios IT.",
+        "¿Usuarios aprox? ¿Sedes? ¿Tienen servidores? (sí/no)",
+        `Web: ${origin}`,
+      ].join("\n");
+    }
+
+    const sitesText = sitesSel ? textOfSelect(sitesSel) : "";
+    const supportText = supportSel ? textOfSelect(supportSel) : "";
+    const hoursText = hoursSel ? textOfSelect(hoursSel) : "";
+    const urgencyText = urgencySel ? textOfSelect(urgencySel) : "";
+
+    // Mensaje corto “tipo IA” con contexto mínimo
+    return [
+      "Hola Mirmibug 👾 Quiero cotizar IT.",
+      `Contexto: ${users} usuarios | ${sitesText} | ${supportText} | ${hoursText} | SLA ${urgencyText} | Servers: ${servers || 0}`,
+      `Módulos: ${modules.length ? modules.join(", ") : "Base"}`,
+      `Estimado: ${price || "N/A"} (${planBadge || "Plan"})`,
+      "¿Me comparten siguiente paso y tiempos de arranque?",
+      `Web: ${origin}`,
+    ].join("\n");
+  };
+
+  const buildHref = () => {
+    const msg = buildMessage();
+    return `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(msg)}`;
+  };
+
+  // Botón flotante
+  if (floatBtn) {
+    floatBtn.setAttribute("href", buildHref());
+    floatBtn.addEventListener("click", () => {
+      floatBtn.setAttribute("href", buildHref());
+    });
+  }
+
+  // Cualquier link wa.me en el sitio -> lo normalizamos al mensaje corto
+  waLinks.forEach((a) => {
+    a.addEventListener("click", () => {
+      a.setAttribute("href", buildHref());
+    });
+  });
+
+  // Si cambia el cotizador, refresca el href del botón flotante
+  const cotizadorEls = [
+    $("q_users"), $("q_sites"), $("q_support"), $("q_hours"),
+    $("q_servers"), $("q_urgency"),
+    $("m_m365"), $("m_backup"), $("m_security"),
+    $("m_network"), $("m_servers"), $("m_projects"),
+  ].filter(Boolean);
+
+  cotizadorEls.forEach((el) => {
+    el.addEventListener("change", () => {
+      if (floatBtn) floatBtn.setAttribute("href", buildHref());
+    });
+    el.addEventListener("input", () => {
+      if (floatBtn) floatBtn.setAttribute("href", buildHref());
     });
   });
 }
@@ -278,16 +403,11 @@ function initCotizador() {
       `Servidores: ${serversCount}`,
       `Módulos: ${modulesSelected.join(", ")}`,
       `Total estimado: ${money(total)} / mes`,
-      ``,
-      `Incluye: Help Desk & Tickets + Monitoreo base.`,
-      `No incluye: licencias (M365/EDR/Backup cloud), hardware, ni proyectos one-time fuera de la bolsa.`,
-      `Sujeto a inventario y SLA final.`,
     ].join("\n");
 
     quoteSummary.value = summary;
 
-    const phone = "525527970496";
-    btnWhatsapp.href = `https://wa.me/${phone}?text=${encodeURIComponent(summary)}`;
+    btnWhatsapp.href = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(summary)}`;
   }
 
   function reset() {
