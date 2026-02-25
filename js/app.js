@@ -5,7 +5,7 @@
  * - Glow spotlight (Soluciones + panel KPI)
  * - Footer year
  * - Cotizador PRO (validaciones + resumen claro + WhatsApp)
- * - WhatsApp Smart Prefill (Botón flotante + footer WhatsApp)
+ * - WhatsApp Smart Prefill (Botón flotante + footer WhatsApp) ✅ (mensaje default actualizado)
  * - Contact Form (POST a /api/contact.php) + fallback anti-WAF
  */
 
@@ -131,7 +131,7 @@ function initGlowSpotlight() {
 }
 
 /* =========================
-   WHATSAPP SMART PREFILL (CORTO)
+   WHATSAPP SMART PREFILL (DEFAULT ACTUALIZADO)
 ========================= */
 function initWhatsAppSmartPrefill() {
   const floatBtn = document.querySelector(".mirmibug-wa");
@@ -163,15 +163,13 @@ function initWhatsAppSmartPrefill() {
       .map(([, label]) => label);
 
     const hasContext =
-      (users && supportSel && hoursSel && urgencySel) && (price || planBadge);
+      users && supportSel && hoursSel && urgencySel && (price || planBadge);
 
     if (!hasContext) {
-      // Mensaje corto guiado (sin cotizador)
+      // ✅ Mensaje default EXACTO (sin cotizador)
       return [
-        "Hola Mirmibug 👾",
-        "Quiero info de servicios IT.",
-        "¿Usuarios aprox? ¿Sedes? ¿Tienen servidores? (sí/no)",
-        `Web: ${origin}`,
+        "Hola, soy Mirmibot 👾",
+        "Cuéntame, ¿qué necesitas resolver hoy en tu empresa?",
       ].join("\n");
     }
 
@@ -180,10 +178,12 @@ function initWhatsAppSmartPrefill() {
     const hoursText = hoursSel ? textOfSelect(hoursSel) : "";
     const urgencyText = urgencySel ? textOfSelect(urgencySel) : "";
 
-    // Mensaje corto “tipo IA” con contexto mínimo
+    // Mensaje con contexto (cuando ya hay cotización)
     return [
       "Hola Mirmibug 👾 Quiero cotizar IT.",
-      `Contexto: ${users} usuarios | ${sitesText} | ${supportText} | ${hoursText} | SLA ${urgencyText} | Servers: ${servers || 0}`,
+      `Contexto: ${users} usuarios | ${sitesText} | ${supportText} | ${hoursText} | SLA ${urgencyText} | Servers: ${
+        servers || 0
+      }`,
       `Módulos: ${modules.length ? modules.join(", ") : "Base"}`,
       `Estimado: ${price || "N/A"} (${planBadge || "Plan"})`,
       "¿Me comparten siguiente paso y tiempos de arranque?",
@@ -204,7 +204,7 @@ function initWhatsAppSmartPrefill() {
     });
   }
 
-  // Cualquier link wa.me en el sitio -> lo normalizamos al mensaje corto
+  // Cualquier link wa.me en el sitio -> lo normalizamos al mensaje actual
   waLinks.forEach((a) => {
     a.addEventListener("click", () => {
       a.setAttribute("href", buildHref());
@@ -213,10 +213,18 @@ function initWhatsAppSmartPrefill() {
 
   // Si cambia el cotizador, refresca el href del botón flotante
   const cotizadorEls = [
-    $("q_users"), $("q_sites"), $("q_support"), $("q_hours"),
-    $("q_servers"), $("q_urgency"),
-    $("m_m365"), $("m_backup"), $("m_security"),
-    $("m_network"), $("m_servers"), $("m_projects"),
+    $("q_users"),
+    $("q_sites"),
+    $("q_support"),
+    $("q_hours"),
+    $("q_servers"),
+    $("q_urgency"),
+    $("m_m365"),
+    $("m_backup"),
+    $("m_security"),
+    $("m_network"),
+    $("m_servers"),
+    $("m_projects"),
   ].filter(Boolean);
 
   cotizadorEls.forEach((el) => {
@@ -261,8 +269,16 @@ function initCotizador() {
   const btnWhatsapp = $("q_btn_whatsapp");
 
   const required = [
-    qUsers, qSites, qSupport, qHours, qServers, qUrgency,
-    qPrice, qBreakdown, quoteSummary, btnWhatsapp
+    qUsers,
+    qSites,
+    qSupport,
+    qHours,
+    qServers,
+    qUrgency,
+    qPrice,
+    qBreakdown,
+    quoteSummary,
+    btnWhatsapp,
   ];
   if (required.some((el) => !el)) return;
 
@@ -279,7 +295,11 @@ function initCotizador() {
     urgencyMultiplier: { std: 1.0, prio: 1.12, crit: 1.25 },
     modules: {
       helpdesk: { label: "Help Desk & Tickets", monthly: 0, included: true },
-      monitor: { label: "Monitoreo (equipos/servidores/red)", monthly: 0, included: true },
+      monitor: {
+        label: "Monitoreo (equipos/servidores/red)",
+        monthly: 0,
+        included: true,
+      },
       m365: { label: "Correo & M365 / Workspace", monthly: 600 },
       backup: { label: "Backups & Recuperación", monthly: 900 },
       security: { label: "Seguridad (hardening, MFA, EDR/AV)", monthly: 1200 },
@@ -291,8 +311,14 @@ function initCotizador() {
       "Estimado mensual. No incluye licencias (M365/EDR/Backup cloud), hardware, ni proyectos one-time fuera de la bolsa.",
   };
 
-  if (mHelpdesk) { mHelpdesk.checked = true; mHelpdesk.disabled = true; }
-  if (mMonitor) { mMonitor.checked = true; mMonitor.disabled = true; }
+  if (mHelpdesk) {
+    mHelpdesk.checked = true;
+    mHelpdesk.disabled = true;
+  }
+  if (mMonitor) {
+    mMonitor.checked = true;
+    mMonitor.disabled = true;
+  }
 
   function pickPlan(users) {
     if (users <= PRICING.plans[0].includedUsers) return PRICING.plans[0];
@@ -303,13 +329,23 @@ function initCotizador() {
   function renderBreakdown(breakdown, multLines) {
     qBreakdown.innerHTML = `
       <div class="break-items">
-        ${breakdown.map(item => `
+        ${breakdown
+          .map(
+            (item) => `
           <div class="break-item">
             <span class="break-label">${item.label}</span>
             <span class="break-val">${money(item.value)}</span>
-          </div>`).join("")}
+          </div>`
+          )
+          .join("")}
       </div>
-      ${multLines.length ? `<div class="break-mults"><strong>Ajustes operativos:</strong><br>${multLines.join("<br>")}</div>` : ""}
+      ${
+        multLines.length
+          ? `<div class="break-mults"><strong>Ajustes operativos:</strong><br>${multLines.join(
+              "<br>"
+            )}</div>`
+          : ""
+      }
       <div class="break-note">${PRICING.note}</div>
     `;
   }
@@ -335,26 +371,40 @@ function initCotizador() {
 
     let subtotal = plan.base;
     const breakdown = [];
-    breakdown.push({ label: `${plan.name} (incluye hasta ${plan.includedUsers} usuarios)`, value: plan.base });
+    breakdown.push({
+      label: `${plan.name} (incluye hasta ${plan.includedUsers} usuarios)`,
+      value: plan.base,
+    });
 
     const extraUsers = Math.max(0, users - plan.includedUsers);
     if (extraUsers > 0) {
       const extraUsersCost = extraUsers * plan.extraUser;
       subtotal += extraUsersCost;
-      breakdown.push({ label: `Usuarios adicionales (${extraUsers} × ${money(plan.extraUser)})`, value: extraUsersCost });
+      breakdown.push({
+        label: `Usuarios adicionales (${extraUsers} × ${money(plan.extraUser)})`,
+        value: extraUsersCost,
+      });
     }
 
     const extraSites = Math.max(0, sites - 1);
     if (extraSites > 0) {
       const extraSitesCost = extraSites * PRICING.extraSite;
       subtotal += extraSitesCost;
-      breakdown.push({ label: `Sedes adicionales (${extraSites} × ${money(PRICING.extraSite)})`, value: extraSitesCost });
+      breakdown.push({
+        label: `Sedes adicionales (${extraSites} × ${money(PRICING.extraSite)})`,
+        value: extraSitesCost,
+      });
     }
 
     if (serversCount > 0) {
       const serverCost = serversCount * PRICING.serverMonthly;
       subtotal += serverCost;
-      breakdown.push({ label: `Administración de servidores (${serversCount} × ${money(PRICING.serverMonthly)})`, value: serverCost });
+      breakdown.push({
+        label: `Administración de servidores (${serversCount} × ${money(
+          PRICING.serverMonthly
+        )})`,
+        value: serverCost,
+      });
     }
 
     const modulesSelected = [];
@@ -363,7 +413,10 @@ function initCotizador() {
       const m = PRICING.modules[key];
       modulesSelected.push(m.label);
       subtotal += m.monthly || 0;
-      breakdown.push({ label: `Módulo: ${m.label}${m.included ? " (Incluido)" : ""}`, value: m.monthly || 0 });
+      breakdown.push({
+        label: `Módulo: ${m.label}${m.included ? " (Incluido)" : ""}`,
+        value: m.monthly || 0,
+      });
     };
 
     addModule(true, "helpdesk");
@@ -383,9 +436,12 @@ function initCotizador() {
     const total = Math.round((subtotal * multiplier) / 10) * 10;
 
     const multLines = [];
-    if (multSupport !== 1) multLines.push(`Soporte (${textOfSelect(qSupport)}) × ${multSupport}`);
-    if (multHours !== 1) multLines.push(`Horario (${textOfSelect(qHours)}) × ${multHours}`);
-    if (multUrgency !== 1) multLines.push(`SLA (${textOfSelect(qUrgency)}) × ${multUrgency}`);
+    if (multSupport !== 1)
+      multLines.push(`Soporte (${textOfSelect(qSupport)}) × ${multSupport}`);
+    if (multHours !== 1)
+      multLines.push(`Horario (${textOfSelect(qHours)}) × ${multHours}`);
+    if (multUrgency !== 1)
+      multLines.push(`SLA (${textOfSelect(qUrgency)}) × ${multUrgency}`);
 
     qPrice.textContent = `${money(total)} / mes`;
     if (qPriceNote) qPriceNote.textContent = PRICING.note;
@@ -407,7 +463,9 @@ function initCotizador() {
 
     quoteSummary.value = summary;
 
-    btnWhatsapp.href = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(summary)}`;
+    btnWhatsapp.href = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(
+      summary
+    )}`;
   }
 
   function reset() {
@@ -436,13 +494,21 @@ function initCotizador() {
   }
 
   qUsers.addEventListener("input", calc);
-  [qSites, qSupport, qHours, qServers, qUrgency, mM365, mBackup, mSecurity, mNetwork, mServers, mProjects].forEach((el) => {
-    el?.addEventListener("change", calc);
-    el?.addEventListener("input", calc);
-  });
+  [qSites, qSupport, qHours, qServers, qUrgency, mM365, mBackup, mSecurity, mNetwork, mServers, mProjects].forEach(
+    (el) => {
+      el?.addEventListener("change", calc);
+      el?.addEventListener("input", calc);
+    }
+  );
 
-  btnCalc?.addEventListener("click", (e) => { e.preventDefault?.(); calc(); });
-  btnReset?.addEventListener("click", (e) => { e.preventDefault?.(); reset(); });
+  btnCalc?.addEventListener("click", (e) => {
+    e.preventDefault?.();
+    calc();
+  });
+  btnReset?.addEventListener("click", (e) => {
+    e.preventDefault?.();
+    reset();
+  });
 
   calc();
 }
@@ -491,7 +557,9 @@ function initContactForm() {
 
       const text = await res.text();
       let data = {};
-      try { data = JSON.parse(text); } catch (_) {}
+      try {
+        data = JSON.parse(text);
+      } catch (_) {}
 
       if (res.ok && data.ok) {
         form.reset();
@@ -501,11 +569,9 @@ function initContactForm() {
 
       console.warn("Fetch blocked or failed:", res.status, text);
       await fallbackSubmit(form, iframe);
-
     } catch (err) {
       console.warn("Fetch error -> fallback submit", err);
       await fallbackSubmit(form, iframe);
-
     } finally {
       if (btn) {
         btn.disabled = false;
@@ -523,7 +589,9 @@ function fallbackSubmit(form, iframe) {
     const onLoad = () => {
       iframe.removeEventListener("load", onLoad);
       form.reset();
-      alert("Envío realizado. Si no recibes respuesta, el hosting está bloqueando el endpoint y hay que ajustar ModSecurity.");
+      alert(
+        "Envío realizado. Si no recibes respuesta, el hosting está bloqueando el endpoint y hay que ajustar ModSecurity."
+      );
 
       if (oldTarget) form.setAttribute("target", oldTarget);
       else form.removeAttribute("target");
