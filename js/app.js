@@ -563,7 +563,7 @@ function initContactForm() {
 
       if (res.ok && data.ok) {
         form.reset();
-        alert("¡Mensaje enviado! ✅");
+        showFormMsg(form, "ok", "¡Mensaje enviado correctamente! Te responderemos pronto. ✅");
         return;
       }
 
@@ -589,9 +589,7 @@ function fallbackSubmit(form, iframe) {
     const onLoad = () => {
       iframe.removeEventListener("load", onLoad);
       form.reset();
-      alert(
-        "Envío realizado. Si no recibes respuesta, el hosting está bloqueando el endpoint y hay que ajustar ModSecurity."
-      );
+      showFormMsg(form, "ok", "¡Mensaje enviado! Te responderemos pronto. ✅");
 
       if (oldTarget) form.setAttribute("target", oldTarget);
       else form.removeAttribute("target");
@@ -602,4 +600,20 @@ function fallbackSubmit(form, iframe) {
     iframe.addEventListener("load", onLoad);
     form.submit();
   });
+}
+
+function showFormMsg(form, type, text) {
+  let msgEl = form.querySelector(".form-msg");
+  if (!msgEl) {
+    msgEl = document.createElement("div");
+    msgEl.className = "form-msg";
+    const btn = form.querySelector("button[type='submit']");
+    btn ? form.insertBefore(msgEl, btn) : form.appendChild(msgEl);
+  }
+  msgEl.textContent = text;
+  msgEl.className = "form-msg form-msg--" + type;
+  msgEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  if (type === "ok") {
+    setTimeout(() => { msgEl.className = "form-msg form-msg--hidden"; }, 8000);
+  }
 }

@@ -12,46 +12,21 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 /* =========================
-<<<<<<< HEAD
-   DB CONFIG
-=======
-   CONFIG DB (TU DATA)
->>>>>>> ba66f52 (Actualización en contact.php (SMTP o mejoras))
+   CONFIG DB
 ========================= */
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'andres63_mirmibug_web');
 define('DB_USER', 'andres63_adminmirmibug');
-<<<<<<< HEAD
 define('DB_PASS', 'ygKtYLN.I1g)');
 
 /* =========================
-   TITAN SMTP CONFIG (no-reply)
-========================= */
-define('SMTP_HOST', 'smtp.titan.email');
-define('SMTP_PORT', 587);
-define('SMTP_SECURE', 'tls'); // tls = STARTTLS (587)
-
-// Si 587 no funciona, usa 465 SSL:
-// define('SMTP_PORT', 465);
-// define('SMTP_SECURE', 'ssl');
-
-define('SMTP_USER', 'no-reply@mirmibug.com');
-define('SMTP_PASS', 'PON_AQUI_PASS'); // <-- pega tu contraseña aquí en tu editor
-
-define('MAIL_TO', 'contacto@mirmibug.com');
-=======
-define('DB_PASS', 'ygKtYLN.I1g)'); // tu pass real
-
-/* =========================
    CONFIG EMAIL (HOSTGATOR / FLOCKMAIL)
-   (TU LOG DICE smtp-out.flockmail.com)
 ========================= */
-define('SMTP_HOST', 'smtp-out.flockmail.com');
-define('SMTP_PORT', 587); // STARTTLS
-define('SMTP_USER', 'contacto@mirmibug.com');
-define('SMTP_PASS', '67]}GI[?gH05'); // <<<<< CAMBIA ESTO
-define('MAIL_TO',   'contacto@mirmibug.com');
->>>>>>> ba66f52 (Actualización en contact.php (SMTP o mejoras))
+define('SMTP_HOST',   'smtp-out.flockmail.com');
+define('SMTP_PORT',   587);
+define('SMTP_USER',   'contacto@mirmibug.com');
+define('SMTP_PASS',   '67]}GI[?gH05');
+define('MAIL_TO',     'contacto@mirmibug.com');
 
 define('LOG_FILE', __DIR__ . '/contact.log');
 
@@ -65,31 +40,17 @@ function log_line(string $msg): void {
 }
 
 /* =========================
-<<<<<<< HEAD
    INPUT
 ========================= */
-$nombre   = clean($_POST['nombre'] ?? '');
-$email    = clean($_POST['email'] ?? '');
-$telefono = clean($_POST['telefono'] ?? '');
-$empresa  = clean($_POST['empresa'] ?? '');
-$mensaje  = clean($_POST['mensaje'] ?? '');
-$origen   = clean($_POST['origen'] ?? '');
-$honeypot = clean($_POST['website'] ?? '');
-=======
-   INPUT (FORM DATA)
-   Tu JS debe mandar FormData o x-www-form-urlencoded
-========================= */
-$data = $_POST;
-
-$nombre = clean($data['nombre'] ?? '');
-$email  = clean($data['email'] ?? '');
-$telefono = clean($data['telefono'] ?? '');
-$empresa  = clean($data['empresa'] ?? '');
-$mensaje  = clean($data['mensaje'] ?? '');
-$consentimiento = !empty($data['consentimiento']) ? 1 : 0;
-$origen = clean($data['origen'] ?? '');
-$honeypot = clean($data['website'] ?? '');
->>>>>>> ba66f52 (Actualización en contact.php (SMTP o mejoras))
+$nombre         = clean($_POST['nombre']        ?? '');
+$email          = clean($_POST['email']         ?? '');
+$telefono       = clean($_POST['telefono']      ?? '');
+$empresa        = clean($_POST['empresa']       ?? '');
+$mensaje        = clean($_POST['mensaje']       ?? '');
+$consentimiento = !empty($_POST['consentimiento']) ? 1 : 0;
+$origen         = clean($_POST['origen']        ?? '');
+$quote_summary  = clean($_POST['quote_summary'] ?? '');
+$honeypot       = clean($_POST['website']       ?? '');
 
 if ($honeypot !== '') {
   echo json_encode(['ok' => true, 'saved' => false, 'email_ok' => false], JSON_UNESCAPED_UNICODE);
@@ -131,15 +92,15 @@ try {
   ");
 
   $stmt->execute([
-    ':nombre'     => $nombre,
-    ':email'      => strtolower($email),
-    ':telefono'   => ($telefono !== '' ? $telefono : null),
-    ':empresa'    => ($empresa !== '' ? $empresa : null),
-    ':mensaje'    => $mensaje,
-    ':origen'     => ($origen !== '' ? $origen : null),
-    ':ip'         => $ip,
-    ':user_agent' => $user_agent,
-    ':consentimiento' => $consentimiento
+    ':nombre'         => $nombre,
+    ':email'          => strtolower($email),
+    ':telefono'       => ($telefono !== '' ? $telefono : null),
+    ':empresa'        => ($empresa  !== '' ? $empresa  : null),
+    ':mensaje'        => $mensaje,
+    ':origen'         => ($origen   !== '' ? $origen   : null),
+    ':ip'             => $ip,
+    ':user_agent'     => $user_agent,
+    ':consentimiento' => $consentimiento,
   ]);
 
   $saved = true;
@@ -154,88 +115,57 @@ try {
 /* =========================
    2) SEND EMAIL (PHPMailer SMTP)
 ========================= */
-$email_ok = false;
+$email_ok    = false;
 $email_error = null;
 
 try {
-  // RUTAS: asegúrate que existen así:
-  // /public_html/api/mailer/PHPMailer.php
-  // /public_html/api/mailer/SMTP.php
-  // /public_html/api/mailer/Exception.php
   require_once __DIR__ . '/mailer/Exception.php';
   require_once __DIR__ . '/mailer/PHPMailer.php';
   require_once __DIR__ . '/mailer/SMTP.php';
 
   $mail = new PHPMailer(true);
-  $mail->CharSet = 'UTF-8';
-
-  // Debug (si lo necesitas)
-  // $mail->SMTPDebug = 2;
-  // $mail->Debugoutput = function($str, $level) { error_log("SMTP[$level]: $str"); };
+  $mail->CharSet   = 'UTF-8';
+  $mail->SMTPDebug = 0;
 
   $mail->isSMTP();
-  $mail->Host = SMTP_HOST;
-  $mail->SMTPAuth = true;
-  $mail->AuthType = 'LOGIN';
-  $mail->Username = SMTP_USER;
-  $mail->Password = SMTP_PASS;
-  $mail->Port = SMTP_PORT;
-  $mail->Timeout = 25;
-
-  // STARTTLS en 587 (lo que tu servidor ofreció en el log)
+  $mail->Host       = SMTP_HOST;
+  $mail->SMTPAuth   = true;
+  $mail->AuthType   = 'LOGIN';
+  $mail->Username   = SMTP_USER;
+  $mail->Password   = SMTP_PASS;
+  $mail->Port       = SMTP_PORT;
+  $mail->Timeout    = 25;
   $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
 
-<<<<<<< HEAD
-  // DEBUG a log (cuando funcione, vuelve a 0)
-  $mail->SMTPDebug = 2;
-  $mail->Debugoutput = function($str, $level) {
-    log_line("SMTP[$level]: $str");
-  };
-
-  // From debe ser el buzón autenticado (no-reply)
-=======
-  // Recomendado en hosting compartido
->>>>>>> ba66f52 (Actualización en contact.php (SMTP o mejoras))
   $mail->setFrom(SMTP_USER, 'Mirmibug Web');
-
-  // Destino final
   $mail->addAddress(MAIL_TO, 'Contacto Mirmibug');
-
-  // Para que al responder te responda al cliente
   $mail->addReplyTo($email, $nombre);
 
-<<<<<<< HEAD
-  $mail->Subject = "Nuevo contacto - {$nombre}";
-=======
   $mail->Subject = "Nuevo contacto web - {$nombre}";
->>>>>>> ba66f52 (Actualización en contact.php (SMTP o mejoras))
   $mail->Body =
     "Nuevo contacto recibido:\n\n" .
-    "Nombre: {$nombre}\n" .
-    "Email: {$email}\n" .
+    "Nombre:   {$nombre}\n" .
+    "Email:    {$email}\n" .
     "Teléfono: " . ($telefono ?: '-') . "\n" .
-    "Empresa: " . ($empresa ?: '-') . "\n\n" .
+    "Empresa:  " . ($empresa  ?: '-') . "\n\n" .
     "Mensaje:\n{$mensaje}\n\n" .
-    "Origen: " . ($origen ?: '-') . "\n" .
-<<<<<<< HEAD
-    "IP: " . ($ip ?: '-') . "\n" .
+    ($quote_summary ? "Cotización:\n{$quote_summary}\n\n" : '') .
+    "Origen:     " . ($origen     ?: '-') . "\n" .
+    "IP:         " . ($ip         ?: '-') . "\n" .
     "User-Agent: " . ($user_agent ?: '-') . "\n";
-=======
-    "IP: " . ($ip ?: '-') . "\n";
->>>>>>> ba66f52 (Actualización en contact.php (SMTP o mejoras))
 
   $mail->send();
   $email_ok = true;
 
 } catch (Throwable $e) {
-  $email_ok = false;
+  $email_ok    = false;
   $email_error = $e->getMessage();
   log_line('MAIL ERROR: ' . $email_error);
 }
 
 echo json_encode([
-  'ok' => true,
-  'saved' => $saved,
-  'email_ok' => $email_ok,
-  'email_error' => $email_ok ? null : $email_error
+  'ok'          => true,
+  'saved'       => $saved,
+  'email_ok'    => $email_ok,
+  'email_error' => $email_ok ? null : $email_error,
 ], JSON_UNESCAPED_UNICODE);
