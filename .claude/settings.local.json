@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add api/contact.php css/style.css en.html index.html js/app.js cotizador.html)",
+      "Bash(git commit:*)",
+      "Bash(git add .github/)",
+      "Bash(git merge claude/sweet-bartik)"
+    ]
+  }
+}
