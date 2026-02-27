@@ -12,21 +12,24 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 /* =========================
-   CONFIG DB
+   LOAD .env CONFIG
 ========================= */
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'andres63_mirmibug_web');
-define('DB_USER', 'andres63_adminmirmibug');
-define('DB_PASS', 'ygKtYLN.I1g)');
+$envFile = __DIR__ . '/.env';
+if (!file_exists($envFile)) {
+  http_response_code(500);
+  echo json_encode(['ok' => false, 'error' => 'Server config missing'], JSON_UNESCAPED_UNICODE);
+  exit;
+}
 
-/* =========================
-   CONFIG EMAIL (HOSTGATOR / FLOCKMAIL)
-========================= */
-define('SMTP_HOST',   'smtp-out.flockmail.com');
-define('SMTP_PORT',   587);
-define('SMTP_USER',   'contacto@mirmibug.com');
-define('SMTP_PASS',   '67]}GI[?gH05');
-define('MAIL_TO',     'contacto@mirmibug.com');
+foreach (file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
+  $line = trim($line);
+  if ($line === '' || $line[0] === '#') continue;
+  if (strpos($line, '=') === false) continue;
+  [$key, $val] = explode('=', $line, 2);
+  $key = trim($key);
+  $val = trim($val);
+  if (!defined($key)) define($key, $val);
+}
 
 define('LOG_FILE', __DIR__ . '/contact.log');
 
@@ -42,15 +45,14 @@ function log_line(string $msg): void {
 /* =========================
    INPUT
 ========================= */
-$nombre         = clean($_POST['nombre']        ?? '');
-$email          = clean($_POST['email']         ?? '');
-$telefono       = clean($_POST['telefono']      ?? '');
-$empresa        = clean($_POST['empresa']       ?? '');
-$mensaje        = clean($_POST['mensaje']       ?? '');
+$nombre   = clean($_POST['nombre'] ?? '');
+$email    = clean($_POST['email'] ?? '');
+$telefono = clean($_POST['telefono'] ?? '');
+$empresa  = clean($_POST['empresa'] ?? '');
+$mensaje  = clean($_POST['mensaje'] ?? '');
 $consentimiento = !empty($_POST['consentimiento']) ? 1 : 0;
-$origen         = clean($_POST['origen']        ?? '');
-$quote_summary  = clean($_POST['quote_summary'] ?? '');
-$honeypot       = clean($_POST['website']       ?? '');
+$origen   = clean($_POST['origen'] ?? '');
+$honeypot = clean($_POST['website'] ?? '');
 
 if ($honeypot !== '') {
   echo json_encode(['ok' => true, 'saved' => false, 'email_ok' => false], JSON_UNESCAPED_UNICODE);
@@ -92,15 +94,15 @@ try {
   ");
 
   $stmt->execute([
-    ':nombre'         => $nombre,
-    ':email'          => strtolower($email),
-    ':telefono'       => ($telefono !== '' ? $telefono : null),
-    ':empresa'        => ($empresa  !== '' ? $empresa  : null),
-    ':mensaje'        => $mensaje,
-    ':origen'         => ($origen   !== '' ? $origen   : null),
-    ':ip'             => $ip,
-    ':user_agent'     => $user_agent,
-    ':consentimiento' => $consentimiento,
+    ':nombre'     => $nombre,
+    ':email'      => strtolower($email),
+    ':telefono'   => ($telefono !== '' ? $telefono : null),
+    ':empresa'    => ($empresa !== '' ? $empresa : null),
+    ':mensaje'    => $mensaje,
+    ':origen'     => ($origen !== '' ? $origen : null),
+    ':ip'         => $ip,
+    ':user_agent' => $user_agent,
+    ':consentimiento' => $consentimiento
   ]);
 
   $saved = true;
@@ -115,7 +117,7 @@ try {
 /* =========================
    2) SEND EMAIL (PHPMailer SMTP)
 ========================= */
-$email_ok    = false;
+$email_ok = false;
 $email_error = null;
 
 try {
@@ -124,17 +126,16 @@ try {
   require_once __DIR__ . '/mailer/SMTP.php';
 
   $mail = new PHPMailer(true);
-  $mail->CharSet   = 'UTF-8';
-  $mail->SMTPDebug = 0;
+  $mail->CharSet = 'UTF-8';
 
   $mail->isSMTP();
-  $mail->Host       = SMTP_HOST;
-  $mail->SMTPAuth   = true;
-  $mail->AuthType   = 'LOGIN';
-  $mail->Username   = SMTP_USER;
-  $mail->Password   = SMTP_PASS;
-  $mail->Port       = SMTP_PORT;
-  $mail->Timeout    = 25;
+  $mail->Host = SMTP_HOST;
+  $mail->SMTPAuth = true;
+  $mail->AuthType = 'LOGIN';
+  $mail->Username = SMTP_USER;
+  $mail->Password = SMTP_PASS;
+  $mail->Port = (int) SMTP_PORT;
+  $mail->Timeout = 25;
   $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
 
   $mail->setFrom(SMTP_USER, 'Mirmibug Web');
@@ -144,28 +145,27 @@ try {
   $mail->Subject = "Nuevo contacto web - {$nombre}";
   $mail->Body =
     "Nuevo contacto recibido:\n\n" .
-    "Nombre:   {$nombre}\n" .
-    "Email:    {$email}\n" .
+    "Nombre: {$nombre}\n" .
+    "Email: {$email}\n" .
     "Teléfono: " . ($telefono ?: '-') . "\n" .
-    "Empresa:  " . ($empresa  ?: '-') . "\n\n" .
+    "Empresa: " . ($empresa ?: '-') . "\n\n" .
     "Mensaje:\n{$mensaje}\n\n" .
-    ($quote_summary ? "Cotización:\n{$quote_summary}\n\n" : '') .
-    "Origen:     " . ($origen     ?: '-') . "\n" .
-    "IP:         " . ($ip         ?: '-') . "\n" .
+    "Origen: " . ($origen ?: '-') . "\n" .
+    "IP: " . ($ip ?: '-') . "\n" .
     "User-Agent: " . ($user_agent ?: '-') . "\n";
 
   $mail->send();
   $email_ok = true;
 
 } catch (Throwable $e) {
-  $email_ok    = false;
+  $email_ok = false;
   $email_error = $e->getMessage();
   log_line('MAIL ERROR: ' . $email_error);
 }
 
 echo json_encode([
-  'ok'          => true,
-  'saved'       => $saved,
-  'email_ok'    => $email_ok,
-  'email_error' => $email_ok ? null : $email_error,
+  'ok' => true,
+  'saved' => $saved,
+  'email_ok' => $email_ok,
+  'email_error' => $email_ok ? null : $email_error
 ], JSON_UNESCAPED_UNICODE);
