@@ -59,7 +59,7 @@
       <ul class="menu">
         <li><a href="#inicio">Inicio</a></li>
         <li><a href="#servicios">Servicios</a></li>
-        <li><a href="#planes">Planes</a></li>
+        <li><a href="cotizador.html">Cotizador</a></li>
         <li><a href="#contacto">Contacto</a></li>
       </ul>
 
@@ -81,7 +81,7 @@
   <div id="mobileMenu" class="mobile-menu hidden">
     <a href="#inicio">Inicio</a>
     <a href="#servicios">Servicios</a>
-    <a href="#planes">Planes</a>
+    <a href="cotizador.html">Cotizador</a>
     <a href="#contacto">Contacto</a>
 
     <!-- Language Switch (Mobile) -->
@@ -209,7 +209,7 @@
 
           <div class="solutions-actions">
             <a href="#contacto" class="solutions-btn">Cotizar solución</a>
-            <a href="#planes" class="solutions-link">Ver cotizador →</a>
+            <a href="cotizador.html" class="solutions-link">Ver cotizador →</a>
           </div>
         </div>
 
@@ -289,184 +289,30 @@
     </div>
   </section>
 
-  <!-- COTIZADOR -->
-  <section id="planes" class="section section-block">
-    <h2 class="section-title">Cotizador para Empresas</h2>
-
-    <p class="max-w-3xl mx-auto text-gray-300 text-center mb-10">
-      Selecciona tu escenario. Te damos un estimado mensual con desglose, supuestos y un resumen listo para WhatsApp.
-    </p>
-
-    <div class="quote-grid quote-grid-pro">
-      <!-- FORM -->
-      <div class="quote-card quote-card-pro">
-        <div class="quote-head">
-          <h3 class="quote-title">Configura tu servicio</h3>
-          <span class="quote-badge" id="q_badge_plan">Plan</span>
-        </div>
-
-        <div class="quote-row">
-          <div class="quote-row-top">
-            <label class="quote-label" for="q_users">Usuarios a soportar</label>
-            <span class="quote-chip"><strong id="q_users_val">25</strong> usuarios</span>
-          </div>
-          <input id="q_users" type="range" min="5" max="300" value="25" step="1" />
-          <div class="quote-help">
-            Recomendación: define “usuarios” como personas que requieren soporte (no solo cuentas de correo).
-          </div>
-        </div>
-
-        <div class="quote-row">
-          <label class="quote-label" for="q_sites">Sedes / Ubicaciones</label>
-          <select id="q_sites">
-            <option value="1" selected>1 sede</option>
-            <option value="2">2 sedes</option>
-            <option value="3">3 sedes</option>
-            <option value="4">4+ sedes</option>
-          </select>
-          <div class="quote-help">Incluye coordinación y soporte remoto para sedes.</div>
-        </div>
-
-        <div class="quote-two">
-          <div class="quote-row">
-            <label class="quote-label" for="q_support">Tipo de soporte</label>
-            <select id="q_support">
-              <option value="remote" selected>100% Remoto</option>
-              <option value="hybrid">Híbrido (visitas programadas)</option>
-              <option value="onsite">On-site (presencial recurrente)</option>
-            </select>
-            <div class="quote-help">On-site implica tiempos y logística.</div>
-          </div>
-
-          <div class="quote-row">
-            <label class="quote-label" for="q_hours">Horario</label>
-            <select id="q_hours">
-              <option value="buss" selected>8x5 (Horario laboral)</option>
-              <option value="plus">12x6 (Extendido)</option>
-              <option value="247">24/7 (Crítico)</option>
-            </select>
-            <div class="quote-help">El horario ajusta el SLA real.</div>
-          </div>
-        </div>
-
-        <div class="quote-divider"></div>
-
-        <div class="quote-row">
-          <div class="quote-row-top">
-            <label class="quote-label">Módulos</label>
-            <span class="quote-mini-note">Incluye base: Help Desk + Monitoreo</span>
-          </div>
-
-          <div class="quote-checks quote-checks-pro">
-            <label class="check">
-              <input type="checkbox" id="m_helpdesk" checked disabled />
-              <span>Help Desk & Tickets</span>
-              <em>Incluido</em>
-            </label>
-
-            <label class="check">
-              <input type="checkbox" id="m_monitor" checked disabled />
-              <span>Monitoreo (equipos/servidores/red)</span>
-              <em>Incluido</em>
-            </label>
-
-            <label class="check">
-              <input type="checkbox" id="m_m365" />
-              <span>Correo & Microsoft 365 / Google Workspace</span>
-              <em>+ mensual</em>
-            </label>
-
-            <label class="check">
-              <input type="checkbox" id="m_backup" />
-              <span>Backups & Recuperación</span>
-              <em>+ mensual</em>
-            </label>
-
-            <label class="check">
-              <input type="checkbox" id="m_security" />
-              <span>Seguridad (hardening, MFA, EDR/AV)</span>
-              <em>+ mensual</em>
-            </label>
-
-            <label class="check">
-              <input type="checkbox" id="m_network" />
-              <span>Redes (WiFi, switches, firewall, VPN)</span>
-              <em>+ mensual</em>
-            </label>
-
-            <label class="check">
-              <input type="checkbox" id="m_servers" />
-              <span>Servidores & Virtualización</span>
-              <em>+ mensual</em>
-            </label>
-
-            <label class="check">
-              <input type="checkbox" id="m_projects" />
-              <span>Bolsa de cambios / Proyectos</span>
-              <em>+ mensual</em>
-            </label>
-          </div>
-        </div>
-
-        <div class="quote-two">
-          <div class="quote-row">
-            <label class="quote-label" for="q_servers">Servidores a administrar</label>
-            <input id="q_servers" type="number" min="0" max="50" value="0" inputmode="numeric" />
-            <div class="quote-help">0 = sin servidores</div>
-          </div>
-
-          <div class="quote-row">
-            <label class="quote-label" for="q_urgency">Urgencia de respuesta</label>
-            <select id="q_urgency">
-              <option value="std" selected>Estándar (SLA básico)</option>
-              <option value="prio">Prioridad (SLA mejorado)</option>
-              <option value="crit">Crítico (SLA alto)</option>
-            </select>
-            <div class="quote-help">Ajusta tiempos de atención comprometidos.</div>
-          </div>
-        </div>
-
-        <div class="quote-actions">
-          <button type="button" class="btn-cta" id="q_btn_calc">Calcular</button>
-          <button type="button" class="btn-secondary" id="q_btn_reset">Reiniciar</button>
-        </div>
-
-        <textarea id="quote_summary" class="hidden" readonly></textarea>
-
-        <div class="quote-disclaimer">
-          <strong>Supuestos:</strong> usuarios = personas a soportar; precio estimado mensual; no incluye licencias
-          (M365, EDR, backups cloud) ni hardware.
-        </div>
+  <!-- COTIZADOR CTA -->
+  <section id=”planes” class=”section section-block”>
+    <div class=”cotiz-cta-card”>
+      <div class=”cotiz-cta-left”>
+        <div class=”cotiz-cta-kicker”>Estimado mensual · Sin compromiso</div>
+        <h2 class=”cotiz-cta-title”>¿Cuánto cuesta tu servicio IT?</h2>
+        <p class=”cotiz-cta-desc”>
+          Configura usuarios, módulos, sedes y tipo de soporte para obtener un desglose detallado al instante.
+          El resultado incluye un resumen listo para enviar por WhatsApp.
+        </p>
+        <ul class=”cotiz-cta-features”>
+          <li>Help Desk, Monitoreo, Seguridad, Redes y más</li>
+          <li>Ajuste por horario, tipo de soporte y SLA</li>
+          <li>Resumen exportable directo a WhatsApp</li>
+        </ul>
       </div>
-
-      <!-- RESULT -->
-      <div class="quote-card quote-card-pro quote-result">
-        <h3 class="quote-title">Estimado mensual</h3>
-
-        <div class="quote-price quote-price-pro">
-          <div class="quote-price-main" id="q_price">$0 MXN</div>
-          <div class="quote-price-sub" id="q_price_note">
-            Estimado preliminar con supuestos. La cotización final depende de inventario y SLA.
-          </div>
-        </div>
-
-        <div class="quote-breakdown" id="q_breakdown"></div>
-
-        <div class="quote-cta">
-          <a class="btn-cta w-full text-center" id="q_btn_whatsapp" href="#" target="_blank" rel="noopener">
-            Cotizar por WhatsApp
-          </a>
-          <a class="btn-secondary w-full text-center" href="#contacto" id="q_btn_to_contact">
-            Enviar por formulario
-          </a>
-        </div>
-
-        <div class="quote-mini">
-          <p class="text-gray-300">
-            ¿Quieres evitar sorpresas? Podemos enviarte una propuesta formal con inventario, SLA, alcance por módulo y
-            roadmap.
-          </p>
-        </div>
+      <div class=”cotiz-cta-right”>
+        <a href=”cotizador.html” class=”cotiz-cta-btn”>
+          Abrir Cotizador
+          <svg width=”18” height=”18” viewBox=”0 0 24 24” fill=”none” aria-hidden=”true”>
+            <path d=”M5 12h14M12 5l7 7-7 7” stroke=”currentColor” stroke-width=”2.5” stroke-linecap=”round” stroke-linejoin=”round”/>
+          </svg>
+        </a>
+        <p class=”cotiz-cta-note”>Sin registro. Cotización al instante.</p>
       </div>
     </div>
   </section>

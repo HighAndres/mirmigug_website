@@ -826,6 +826,188 @@ input[type="range"]{ width: 100%; accent-color: var(--accent); }
 }
 
 /* =========================
+   COTIZADOR CTA CARD (index.html)
+========================= */
+.cotiz-cta-card{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  padding: 36px 36px;
+  border-radius: 20px;
+  background: rgba(12,12,12,0.72);
+  border: 1px solid rgba(56,216,78,0.22);
+  position: relative;
+  overflow: hidden;
+}
+
+.cotiz-cta-card::before{
+  content: "";
+  position: absolute;
+  inset: -80px;
+  background: radial-gradient(600px 300px at 80% 50%, rgba(56,216,78,0.10), transparent 55%);
+  pointer-events: none;
+}
+
+.cotiz-cta-left{ flex: 1; position: relative; }
+
+.cotiz-cta-kicker{
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: .8px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+
+.cotiz-cta-title{
+  font-size: clamp(22px, 3vw, 32px);
+  font-weight: 900;
+  margin-bottom: 10px;
+  letter-spacing: -.5px;
+}
+
+.cotiz-cta-desc{
+  color: rgba(255,255,255,0.72);
+  font-size: 15px;
+  line-height: 1.6;
+  margin-bottom: 14px;
+  max-width: 540px;
+}
+
+.cotiz-cta-features{
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cotiz-cta-features li{
+  color: rgba(255,255,255,0.75);
+  font-size: 13px;
+  padding-left: 18px;
+  position: relative;
+}
+
+.cotiz-cta-features li::before{
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-weight: 900;
+}
+
+.cotiz-cta-right{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.cotiz-cta-btn{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 26px;
+  border-radius: 16px;
+  background: var(--accent);
+  color: #061009;
+  font-weight: 900;
+  font-size: 16px;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: transform .18s ease, opacity .18s ease;
+  box-shadow: 0 10px 35px rgba(56,216,78,0.25);
+}
+
+.cotiz-cta-btn:hover{ transform: translateY(-2px); opacity: .93; }
+
+.cotiz-cta-note{
+  color: rgba(255,255,255,0.50);
+  font-size: 12px;
+}
+
+@media (max-width: 760px){
+  .cotiz-cta-card{ flex-direction: column; align-items: flex-start; padding: 24px; }
+  .cotiz-cta-right{ width: 100%; }
+  .cotiz-cta-btn{ width: 100%; justify-content: center; }
+}
+
+/* =========================
+   COTIZADOR PAGE HERO
+========================= */
+.cotiz-hero{
+  padding-top: 120px;
+  padding-bottom: 48px;
+  text-align: center;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.cotiz-hero-kicker{
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: .8px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+
+.cotiz-hero-title{
+  font-size: clamp(32px, 4vw, 52px);
+  font-weight: 900;
+  letter-spacing: -1px;
+  margin-bottom: 14px;
+}
+
+.cotiz-hero-sub{
+  color: rgba(255,255,255,0.72);
+  font-size: 16px;
+  max-width: 680px;
+  margin: 0 auto;
+  line-height: 1.65;
+}
+
+/* Nav link active (current page) */
+.menu-active{
+  background: rgba(56,216,78,0.10);
+  color: var(--accent) !important;
+  border-radius: 10px;
+}
+
+/* =========================
+   FORM FEEDBACK MSG
+========================= */
+.form-msg{
+  padding: 14px 16px;
+  border-radius: 14px;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 1.5;
+  display: block;
+}
+
+.form-msg--ok{
+  background: rgba(56,216,78,0.12);
+  border: 1px solid rgba(56,216,78,0.35);
+  color: #a6f5b0;
+}
+
+.form-msg--error{
+  background: rgba(255,80,80,0.10);
+  border: 1px solid rgba(255,80,80,0.30);
+  color: #ffb3b3;
+}
+
+.form-msg--hidden{
+  display: none;
+}
+
+/* =========================
    FOOTER
 ========================= */
 .footer a{ text-decoration: none; }

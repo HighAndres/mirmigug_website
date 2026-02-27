@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- ═══ SEO BÁSICO ═══ -->
+  <title>Cotizador IT | Mirmibug — Estima tu servicio mensual</title>
+  <meta name="description"
+    content="Cotiza tu servicio IT mensual con Mirmibug. Configura usuarios, módulos, sedes y tipo de soporte para obtener un estimado detallado al instante." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://mirmibug.com/cotizador.html" />
+
+  <!-- ═══ OPEN GRAPH ═══ -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://mirmibug.com/cotizador.html" />
+  <meta property="og:title" content="Cotizador IT | Mirmibug" />
+  <meta property="og:description" content="Estima tu servicio IT mensual: Help Desk, seguridad, backups, servidores y más." />
+  <meta property="og:image" content="https://mirmibug.com/img/logo_mirmibug_360.png" />
+  <meta property="og:locale" content="es_MX" />
+  <meta property="og:site_name" content="Mirmibug IT Solutions" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="img/hexagon_logoo.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png" />
+  <link rel="apple-touch-icon" sizes="192x192" href="img/favicon-192.png" />
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/style.css" />
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet" />
+</head>
+
+<body class="bg-black text-white font-inter overflow-x-hidden">
+
+  <!-- NAVBAR -->
+  <header class="navbar">
+    <nav class="nav-content">
+      <a class="logo" href="index.html" aria-label="Ir a Inicio">
+        <img src="img/logo_mirmibug_360.png" class="w-10" alt="Mirmibug Logo" />
+        <span class="brand-name">MIRMIBUG</span>
+      </a>
+
+      <ul class="menu">
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="index.html#servicios">Servicios</a></li>
+        <li><a href="cotizador.html" class="menu-active">Cotizador</a></li>
+        <li><a href="index.html#contacto">Contacto</a></li>
+      </ul>
+
+      <!-- Actions (RIGHT) -->
+      <div class="nav-actions">
+        <div class="lang-switch" role="navigation" aria-label="Cambiar idioma">
+          <a class="lang-btn is-active" href="cotizador.html" hreflang="es">ES</a>
+          <a class="lang-btn" href="en.html" hreflang="en">EN</a>
+        </div>
+
+        <a href="index.html#contacto" class="btn-contacto">Contáctanos</a>
+      </div>
+
+      <button id="menuBtn" class="menu-btn" aria-label="Abrir menú" aria-expanded="false">☰</button>
+    </nav>
+  </header>
+
+  <!-- MOBILE MENU -->
+  <div id="mobileMenu" class="mobile-menu hidden">
+    <a href="index.html">Inicio</a>
+    <a href="index.html#servicios">Servicios</a>
+    <a href="cotizador.html">Cotizador</a>
+    <a href="index.html#contacto">Contacto</a>
+
+    <div class="lang-switch mobile-lang" role="navigation" aria-label="Cambiar idioma">
+      <a class="lang-btn is-active" href="cotizador.html" hreflang="es">ES</a>
+      <a class="lang-btn" href="en.html" hreflang="en">EN</a>
+    </div>
+  </div>
+
+  <!-- PAGE HERO -->
+  <section class="cotiz-hero">
+    <div class="cotiz-hero-kicker">Estimado mensual · Sin compromiso</div>
+    <h1 class="cotiz-hero-title">Cotizador para Empresas</h1>
+    <p class="cotiz-hero-sub">
+      Selecciona tu escenario. Te damos un estimado mensual con desglose,
+      supuestos y un resumen listo para WhatsApp.
+    </p>
+  </section>
+
+  <!-- COTIZADOR -->
+  <section id="cotizador" class="section section-block">
+
+    <div class="quote-grid quote-grid-pro">
+      <!-- FORM -->
+      <div class="quote-card quote-card-pro">
+        <div class="quote-head">
+          <h2 class="quote-title">Configura tu servicio</h2>
+          <span class="quote-badge" id="q_badge_plan">Plan</span>
+        </div>
+
+        <div class="quote-row">
+          <div class="quote-row-top">
+            <label class="quote-label" for="q_users">Usuarios a soportar</label>
+            <span class="quote-chip"><strong id="q_users_val">25</strong> usuarios</span>
+          </div>
+          <input id="q_users" type="range" min="5" max="300" value="25" step="1" />
+          <div class="quote-help">
+            Recomendación: define "usuarios" como personas que requieren soporte (no solo cuentas de correo).
+          </div>
+        </div>
+
+        <div class="quote-row">
+          <label class="quote-label" for="q_sites">Sedes / Ubicaciones</label>
+          <select id="q_sites">
+            <option value="1" selected>1 sede</option>
+            <option value="2">2 sedes</option>
+            <option value="3">3 sedes</option>
+            <option value="4">4+ sedes</option>
+          </select>
+          <div class="quote-help">Incluye coordinación y soporte remoto para sedes.</div>
+        </div>
+
+        <div class="quote-two">
+          <div class="quote-row">
+            <label class="quote-label" for="q_support">Tipo de soporte</label>
+            <select id="q_support">
+              <option value="remote" selected>100% Remoto</option>
+              <option value="hybrid">Híbrido (visitas programadas)</option>
+              <option value="onsite">On-site (presencial recurrente)</option>
+            </select>
+            <div class="quote-help">On-site implica tiempos y logística.</div>
+          </div>
+
+          <div class="quote-row">
+            <label class="quote-label" for="q_hours">Horario</label>
+            <select id="q_hours">
+              <option value="buss" selected>8x5 (Horario laboral)</option>
+              <option value="plus">12x6 (Extendido)</option>
+              <option value="247">24/7 (Crítico)</option>
+            </select>
+            <div class="quote-help">El horario ajusta el SLA real.</div>
+          </div>
+        </div>
+
+        <div class="quote-divider"></div>
+
+        <div class="quote-row">
+          <div class="quote-row-top">
+            <label class="quote-label">Módulos</label>
+            <span class="quote-mini-note">Incluye base: Help Desk + Monitoreo</span>
+          </div>
+
+          <div class="quote-checks quote-checks-pro">
+            <label class="check">
+              <input type="checkbox" id="m_helpdesk" checked disabled />
+              <span>Help Desk & Tickets</span>
+              <em>Incluido</em>
+            </label>
+
+            <label class="check">
+              <input type="checkbox" id="m_monitor" checked disabled />
+              <span>Monitoreo (equipos/servidores/red)</span>
+              <em>Incluido</em>
+            </label>
+
+            <label class="check">
+              <input type="checkbox" id="m_m365" />
+              <span>Correo & Microsoft 365 / Google Workspace</span>
+              <em>+ mensual</em>
+            </label>
+
+            <label class="check">
+              <input type="checkbox" id="m_backup" />
+              <span>Backups & Recuperación</span>
+              <em>+ mensual</em>
+            </label>
+
+            <label class="check">
+              <input type="checkbox" id="m_security" />
+              <span>Seguridad (hardening, MFA, EDR/AV)</span>
+              <em>+ mensual</em>
+            </label>
+
+            <label class="check">
+              <input type="checkbox" id="m_network" />
+              <span>Redes (WiFi, switches, firewall, VPN)</span>
+              <em>+ mensual</em>
+            </label>
+
+            <label class="check">
+              <input type="checkbox" id="m_servers" />
+              <span>Servidores & Virtualización</span>
+              <em>+ mensual</em>
+            </label>
+
+            <label class="check">
+              <input type="checkbox" id="m_projects" />
+              <span>Bolsa de cambios / Proyectos</span>
+              <em>+ mensual</em>
+            </label>
+          </div>
+        </div>
+
+        <div class="quote-two">
+          <div class="quote-row">
+            <label class="quote-label" for="q_servers">Servidores a administrar</label>
+            <input id="q_servers" type="number" min="0" max="50" value="0" inputmode="numeric" />
+            <div class="quote-help">0 = sin servidores</div>
+          </div>
+
+          <div class="quote-row">
+            <label class="quote-label" for="q_urgency">Urgencia de respuesta</label>
+            <select id="q_urgency">
+              <option value="std" selected>Estándar (SLA básico)</option>
+              <option value="prio">Prioridad (SLA mejorado)</option>
+              <option value="crit">Crítico (SLA alto)</option>
+            </select>
+            <div class="quote-help">Ajusta tiempos de atención comprometidos.</div>
+          </div>
+        </div>
+
+        <div class="quote-actions">
+          <button type="button" class="btn-cta" id="q_btn_calc">Calcular</button>
+          <button type="button" class="btn-secondary" id="q_btn_reset">Reiniciar</button>
+        </div>
+
+        <textarea id="quote_summary" class="hidden" readonly></textarea>
+
+        <div class="quote-disclaimer">
+          <strong>Supuestos:</strong> usuarios = personas a soportar; precio estimado mensual; no incluye licencias
+          (M365, EDR, backups cloud) ni hardware.
+        </div>
+      </div>
+
+      <!-- RESULT -->
+      <div class="quote-card quote-card-pro quote-result">
+        <h3 class="quote-title">Estimado mensual</h3>
+
+        <div class="quote-price quote-price-pro">
+          <div class="quote-price-main" id="q_price">$0 MXN</div>
+          <div class="quote-price-sub" id="q_price_note">
+            Estimado preliminar con supuestos. La cotización final depende de inventario y SLA.
+          </div>
+        </div>
+
+        <div class="quote-breakdown" id="q_breakdown"></div>
+
+        <div class="quote-cta">
+          <a class="btn-cta w-full text-center" id="q_btn_whatsapp" href="#" target="_blank" rel="noopener">
+            Cotizar por WhatsApp
+          </a>
+          <a class="btn-secondary w-full text-center" href="index.html#contacto" id="q_btn_to_contact">
+            Enviar por formulario
+          </a>
+        </div>
+
+        <div class="quote-mini">
+          <p class="text-gray-300">
+            ¿Quieres evitar sorpresas? Podemos enviarte una propuesta formal con inventario, SLA, alcance por módulo y
+            roadmap.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider" aria-hidden="true"></div>
+
+  <!-- BACK CTA -->
+  <section class="section text-center" style="padding-top: 40px; padding-bottom: 60px;">
+    <p class="text-gray-400 mb-6">¿Tienes preguntas? Escríbenos directamente.</p>
+    <div style="display:flex; justify-content:center; gap:14px; flex-wrap:wrap;">
+      <a href="index.html#contacto" class="btn-cta" style="display:inline-flex; padding:14px 24px;">
+        Ir al formulario de contacto
+      </a>
+      <a href="index.html#servicios" class="btn-secondary" style="display:inline-flex; padding:14px 24px;">
+        Ver servicios
+      </a>
+    </div>
+  </section>
+
+  <!-- WhatsApp Floating Button (Mirmibot) -->
+  <a
+    href="https://wa.me/5215549644749?text=Hola%20Mirmibug%2C%20quiero%20info%20de%20servicios%20IT."
+    target="_blank"
+    rel="noopener"
+    class="mirmibug-wa"
+    aria-label="Hablar por WhatsApp con Mirmibug"
+  >
+    <span class="wa-dot" aria-hidden="true"></span>
+    <svg class="wa-icon" viewBox="0 0 32 32" aria-hidden="true">
+      <path
+        d="M19.11 17.21c-.27-.14-1.6-.79-1.85-.88-.25-.09-.43-.14-.61.14-.18.27-.7.88-.86 1.06-.16.18-.32.2-.59.07-.27-.14-1.14-.42-2.17-1.33-.8-.71-1.34-1.6-1.5-1.87-.16-.27-.02-.42.12-.55.12-.12.27-.32.41-.48.14-.16.18-.27.27-.45.09-.18.05-.34-.02-.48-.07-.14-.61-1.47-.84-2.01-.22-.53-.45-.46-.61-.47h-.52c-.18 0-.48.07-.73.34-.25.27-.96.94-.96 2.29 0 1.35.98 2.65 1.12 2.83.14.18 1.93 2.95 4.68 4.13.65.28 1.15.45 1.54.57.65.21 1.24.18 1.7.11.52-.08 1.6-.65 1.83-1.27.23-.61.23-1.13.16-1.24-.07-.11-.25-.18-.52-.32z"
+        fill="currentColor"
+      />
+      <path
+        d="M16 2.67c-7.36 0-13.33 5.97-13.33 13.33 0 2.35.62 4.64 1.79 6.65L2.67 29.33l6.86-1.76c1.94 1.06 4.12 1.61 6.47 1.61 7.36 0 13.33-5.97 13.33-13.33S23.36 2.67 16 2.67z"
+        fill="currentColor"
+      />
+    </svg>
+    <span class="wa-text">Hablar con Mirmibot</span>
+  </a>
+
+  <!-- FOOTER -->
+  <footer class="footer border-t border-gray-800 mt-10">
+    <div class="max-w-6xl mx-auto px-6 py-10 text-center space-y-6">
+      <div class="flex justify-center items-center gap-3">
+        <img src="img/hexagon_logoo.svg" alt="Mirmibug Logo" class="w-8 h-8" />
+        <span class="text-lg font-bold tracking-wide text-[#38d84e]">MIRMIBUG IT SOLUTIONS</span>
+      </div>
+
+      <div class="flex justify-center gap-6 text-gray-400">
+        <a href="https://www.linkedin.com/" target="_blank" rel="noopener" aria-label="LinkedIn"
+          class="hover:text-[#38d84e] transition">LinkedIn</a>
+        <a href="https://github.com/HighAndres" target="_blank" rel="noopener" aria-label="GitHub"
+          class="hover:text-[#38d84e] transition">GitHub</a>
+        <a href="https://wa.me/5215549644749" target="_blank" rel="noopener" aria-label="WhatsApp"
+          class="hover:text-[#38d84e] transition">WhatsApp</a>
+        <a href="mailto:contacto@mirmibug.com" aria-label="Correo"
+          class="hover:text-[#38d84e] transition">Correo</a>
+      </div>
+
+      <div class="text-sm text-gray-500">
+        <a href="policy-cookies.html" class="hover:text-[#38d84e]">Política de Cookies</a>
+        <span class="mx-2">|</span>
+        <a href="privacy-policy.html" class="hover:text-[#38d84e]">Aviso de Privacidad</a>
+        <span class="mx-2">|</span>
+        <a href="terms-conditions.html" class="hover:text-[#38d84e]">Términos y Condiciones</a>
+      </div>
+
+      <p class="text-xs text-gray-600">
+        © <span id="year"></span> Mirmibug IT Solutions — Tu departamento de IT externo
+      </p>
+    </div>
+  </footer>
+
+  <!-- COOKIE BANNER -->
+  <div id="cookie-banner" class="fixed bottom-0 left-0 w-full bg-black/95 text-gray-300 text-sm px-6 py-4 z-50 hidden">
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+      <p class="leading-relaxed">
+        Utilizamos cookies para mejorar tu experiencia y analizar el uso del sitio.
+        Al continuar navegando, aceptas nuestra política de cookies.
+      </p>
+      <div class="flex gap-3">
+        <button onclick="acceptCookies()"
+          class="px-4 py-2 bg-[#38d84e] text-black font-semibold rounded hover:opacity-90 transition">
+          Aceptar
+        </button>
+        <a href="policy-cookies.html" class="px-4 py-2 border border-gray-500 rounded hover:bg-gray-800 transition">
+          Saber más
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+
+</html>

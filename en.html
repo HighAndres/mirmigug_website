@@ -59,7 +59,7 @@
       <ul class="menu">
         <li><a href="#home">Home</a></li>
         <li><a href="#services">Services</a></li>
-        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="cotizador.html">Pricing</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
 
@@ -80,7 +80,7 @@
   <div id="mobileMenu" class="mobile-menu hidden">
     <a href="#home">Home</a>
     <a href="#services">Services</a>
-    <a href="#pricing">Pricing</a>
+    <a href="cotizador.html">Pricing</a>
     <a href="#contact">Contact</a>
 
     <div class="lang-switch mobile-lang" role="navigation" aria-label="Switch language">
@@ -205,7 +205,7 @@
 
           <div class="solutions-actions">
             <a href="#contact" class="solutions-btn">Get a quote</a>
-            <a href="#pricing" class="solutions-link">See pricing →</a>
+            <a href="cotizador.html" class="solutions-link">See pricing →</a>
           </div>
         </div>
 
@@ -274,179 +274,30 @@
     </div>
   </section>
 
-  <!-- PRICING -->
+  <!-- PRICING CTA -->
   <section id="pricing" class="section section-block">
-    <h2 class="section-title">Business Pricing Estimator</h2>
-
-    <p class="max-w-3xl mx-auto text-gray-300 text-center mb-10">
-      Select your scenario. You’ll get a monthly estimate with breakdown, assumptions and a WhatsApp-ready summary.
-    </p>
-
-    <!-- Reuse the same cotizador IDs so app.js works -->
-    <div class="quote-grid quote-grid-pro">
-      <div class="quote-card quote-card-pro">
-        <div class="quote-head">
-          <h3 class="quote-title">Configure your service</h3>
-          <span class="quote-badge" id="q_badge_plan">Plan</span>
-        </div>
-
-        <div class="quote-row">
-          <div class="quote-row-top">
-            <label class="quote-label" for="q_users">Users to support</label>
-            <span class="quote-chip"><strong id="q_users_val">25</strong> users</span>
-          </div>
-          <input id="q_users" type="range" min="5" max="300" value="25" step="1" />
-          <div class="quote-help">Tip: users = people needing support (not only email accounts).</div>
-        </div>
-
-        <div class="quote-row">
-          <label class="quote-label" for="q_sites">Sites / Locations</label>
-          <select id="q_sites">
-            <option value="1" selected>1 site</option>
-            <option value="2">2 sites</option>
-            <option value="3">3 sites</option>
-            <option value="4">4+ sites</option>
-          </select>
-          <div class="quote-help">Includes coordination and remote support for sites.</div>
-        </div>
-
-        <div class="quote-two">
-          <div class="quote-row">
-            <label class="quote-label" for="q_support">Support type</label>
-            <select id="q_support">
-              <option value="remote" selected>100% Remote</option>
-              <option value="hybrid">Hybrid (scheduled visits)</option>
-              <option value="onsite">On-site (recurring)</option>
-            </select>
-            <div class="quote-help">On-site includes logistics and travel time.</div>
-          </div>
-
-          <div class="quote-row">
-            <label class="quote-label" for="q_hours">Hours</label>
-            <select id="q_hours">
-              <option value="buss" selected>8x5 (Business hours)</option>
-              <option value="plus">12x6 (Extended)</option>
-              <option value="247">24/7 (Critical)</option>
-            </select>
-            <div class="quote-help">Hours affect real SLA coverage.</div>
-          </div>
-        </div>
-
-        <div class="quote-divider"></div>
-
-        <div class="quote-row">
-          <div class="quote-row-top">
-            <label class="quote-label">Modules</label>
-            <span class="quote-mini-note">Base includes: Help Desk + Monitoring</span>
-          </div>
-
-          <div class="quote-checks quote-checks-pro">
-            <label class="check">
-              <input type="checkbox" id="m_helpdesk" checked disabled />
-              <span>Help Desk & Tickets</span>
-              <em>Included</em>
-            </label>
-
-            <label class="check">
-              <input type="checkbox" id="m_monitor" checked disabled />
-              <span>Monitoring (endpoints/servers/network)</span>
-              <em>Included</em>
-            </label>
-
-            <label class="check">
-              <input type="checkbox" id="m_m365" />
-              <span>Email & Microsoft 365 / Google Workspace</span>
-              <em>+ monthly</em>
-            </label>
-
-            <label class="check">
-              <input type="checkbox" id="m_backup" />
-              <span>Backups & Recovery</span>
-              <em>+ monthly</em>
-            </label>
-
-            <label class="check">
-              <input type="checkbox" id="m_security" />
-              <span>Security (hardening, MFA, EDR/AV)</span>
-              <em>+ monthly</em>
-            </label>
-
-            <label class="check">
-              <input type="checkbox" id="m_network" />
-              <span>Networking (WiFi, switches, firewall, VPN)</span>
-              <em>+ monthly</em>
-            </label>
-
-            <label class="check">
-              <input type="checkbox" id="m_servers" />
-              <span>Servers & Virtualization</span>
-              <em>+ monthly</em>
-            </label>
-
-            <label class="check">
-              <input type="checkbox" id="m_projects" />
-              <span>Change budget / Projects</span>
-              <em>+ monthly</em>
-            </label>
-          </div>
-        </div>
-
-        <div class="quote-two">
-          <div class="quote-row">
-            <label class="quote-label" for="q_servers">Servers to manage</label>
-            <input id="q_servers" type="number" min="0" max="50" value="0" inputmode="numeric" />
-            <div class="quote-help">0 = no servers</div>
-          </div>
-
-          <div class="quote-row">
-            <label class="quote-label" for="q_urgency">Response urgency</label>
-            <select id="q_urgency">
-              <option value="std" selected>Standard</option>
-              <option value="prio">Priority</option>
-              <option value="crit">Critical</option>
-            </select>
-            <div class="quote-help">Adjusts committed response time.</div>
-          </div>
-        </div>
-
-        <div class="quote-actions">
-          <button type="button" class="btn-cta" id="q_btn_calc">Calculate</button>
-          <button type="button" class="btn-secondary" id="q_btn_reset">Reset</button>
-        </div>
-
-        <textarea id="quote_summary" class="hidden" readonly></textarea>
-
-        <div class="quote-disclaimer">
-          <strong>Assumptions:</strong> users = people needing support; monthly estimate; licenses (M365/EDR/cloud backup) and hardware not included.
-        </div>
+    <div class="cotiz-cta-card">
+      <div class="cotiz-cta-left">
+        <div class="cotiz-cta-kicker">Monthly estimate · No commitment</div>
+        <h2 class="cotiz-cta-title">How much does your IT service cost?</h2>
+        <p class="cotiz-cta-desc">
+          Configure users, modules, locations and support type to get a detailed breakdown instantly.
+          The result includes a summary ready to send via WhatsApp.
+        </p>
+        <ul class="cotiz-cta-features">
+          <li>Help Desk, Monitoring, Security, Networking and more</li>
+          <li>Adjustable by hours, support type and SLA</li>
+          <li>Exportable summary direct to WhatsApp</li>
+        </ul>
       </div>
-
-      <div class="quote-card quote-card-pro quote-result">
-        <h3 class="quote-title">Monthly estimate</h3>
-
-        <div class="quote-price quote-price-pro">
-          <div class="quote-price-main" id="q_price">$0 MXN</div>
-          <div class="quote-price-sub" id="q_price_note">
-            Preliminary estimate. Final quote depends on inventory and SLA.
-          </div>
-        </div>
-
-        <div class="quote-breakdown" id="q_breakdown"></div>
-
-        <div class="quote-cta">
-          <a class="btn-cta w-full text-center" id="q_btn_whatsapp" href="#" target="_blank" rel="noopener">
-            Quote via WhatsApp
-          </a>
-          <a class="btn-secondary w-full text-center" href="#contact" id="q_btn_to_contact">
-            Send via form
-          </a>
-        </div>
-
-        <div class="quote-mini">
-          <p class="text-gray-300">
-            Want to avoid surprises? We can send a formal proposal with inventory, SLA, module scope and roadmap.
-          </p>
-        </div>
+      <div class="cotiz-cta-right">
+        <a href="cotizador.html" class="cotiz-cta-btn">
+          Open Estimator
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        <p class="cotiz-cta-note">No sign-up. Instant estimate.</p>
       </div>
     </div>
   </section>
