@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cotizador de Ventas | Mirmibug</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" type="image/svg+xml" href="img/hexagon_logoo.svg" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/cotizador-ventas.css" />
+</head>
+<body>
+
+  <!-- ══════════════════════════════════
+       PIN GATE
+  ══════════════════════════════════ -->
+  <div id="pinGate" class="pin-gate">
+    <div class="pin-scanline"></div>
+    <div class="pin-box">
+      <div class="pin-hex">
+        <img src="img/hexagon_logoo.svg" alt="Logo" />
+      </div>
+      <div class="pin-brand">MIRMIBUG</div>
+      <div class="pin-label">// internal · sales tool · mx</div>
+      <div class="pin-field-wrap">
+        <span class="pin-prompt">$</span>
+        <input type="password" id="pinInput" class="pin-input" placeholder="access_key" maxlength="30" autocomplete="off" spellcheck="false" />
+      </div>
+      <button id="pinBtn" class="pin-btn">INICIAR SESIÓN <span class="pin-arrow">→</span></button>
+      <div id="pinError" class="pin-error" style="display:none">⚠ ACCESO DENEGADO</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       APP
+  ══════════════════════════════════ -->
+  <div id="app" class="app" style="display:none">
+
+    <!-- HEADER -->
+    <header class="cv-header">
+      <div class="cv-header-inner">
+        <div class="cv-logo">
+          <img src="img/hexagon_logoo.svg" alt="Logo" />
+          <span class="cv-logo-name">MIRMIBUG</span>
+          <span class="cv-badge">SALES · MX</span>
+        </div>
+        <div class="cv-header-center">
+          <span class="cv-status-dot"></span>
+          <span class="cv-status-text">SISTEMA ACTIVO</span>
+        </div>
+        <div class="cv-header-right">
+          <span id="currentDate" class="cv-date"></span>
+          <button onclick="triggerPrint()" class="cv-print-btn">⎙ PDF</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- MAIN -->
+    <main class="cv-main">
+
+      <!-- ── LEFT: CLIENTE + CARDS ── -->
+      <div class="cv-left">
+
+        <!-- CLIENT BAR -->
+        <div class="cv-client-bar">
+          <div class="cv-client-bar-label">// cliente</div>
+          <div class="cv-client-fields">
+            <div class="cv-cf">
+              <label>EMPRESA</label>
+              <input type="text" id="empresa" placeholder="Nombre empresa" oninput="updateSummary()" />
+            </div>
+            <div class="cv-cf">
+              <label>CONTACTO</label>
+              <input type="text" id="contacto" placeholder="Nombre contacto" oninput="updateSummary()" />
+            </div>
+            <div class="cv-cf">
+              <label>EMAIL</label>
+              <input type="email" id="emailCliente" placeholder="correo@empresa.com" oninput="updateSummary()" />
+            </div>
+            <div class="cv-cf">
+              <label>VENDEDOR</label>
+              <input type="text" id="vendedor" placeholder="Tu nombre" oninput="updateSummary()" />
+            </div>
+          </div>
+          <div class="cv-cf cv-cf-full" style="margin-top:10px">
+            <label>NOTAS / CONDICIONES</label>
+            <textarea id="notas" placeholder="Descuentos, condiciones especiales, observaciones..." rows="2" oninput="updateSummary()"></textarea>
+          </div>
+        </div>
+
+        <!-- LABEL GRID -->
+        <div class="cv-grid-header">
+          <span class="cv-grid-label">// módulos de servicio — selecciona y configura</span>
+          <span class="cv-grid-count"><span id="activeCount">0</span> activos</span>
+        </div>
+
+        <!-- SERVICE CARDS GRID -->
+        <div id="svcGrid" class="cv-svc-grid">
+          <!-- Rendered by JS -->
+        </div>
+
+      </div>
+
+      <!-- ── RIGHT: TERMINAL + ACCIONES ── -->
+      <div class="cv-right">
+        <div class="cv-sticky">
+
+          <!-- TERMINAL PANEL -->
+          <div class="cv-terminal">
+            <div class="cv-terminal-bar">
+              <div class="cv-terminal-dots">
+                <span class="tdot tdot-r"></span>
+                <span class="tdot tdot-y"></span>
+                <span class="tdot tdot-g"></span>
+              </div>
+              <span class="cv-terminal-title">mirmibug@sales ~ propuesta</span>
+            </div>
+            <div class="cv-terminal-body" id="terminalBody">
+              <div class="t-line t-cmd">$ mirmibug quote --mode=live</div>
+              <div class="t-line t-info">// Configura servicios en el panel izquierdo</div>
+              <div id="termItems" class="t-items"></div>
+              <div class="t-sep" id="termSep" style="display:none">─────────────────────────────</div>
+              <div class="t-total-row" id="termTotalRow" style="display:none">
+                <div class="t-total-label">TOTAL/MES <span class="t-noiva">(sin IVA)</span></div>
+                <div class="t-total-amount" id="termTotal">$0</div>
+              </div>
+              <div class="t-iva-row" id="termIvaRow" style="display:none">
+                <span class="t-iva-label">+ IVA 16%</span>
+                <span class="t-iva-amount" id="termIva"></span>
+              </div>
+              <div class="t-cursor" id="termCursor">_</div>
+            </div>
+          </div>
+
+          <!-- ACCIONES -->
+          <div class="cv-actions-panel">
+            <div class="cv-actions-label">// exportar propuesta</div>
+            <div class="cv-actions-grid">
+              <button onclick="exportWhatsApp()" class="cv-act-btn cv-act-wa">
+                <span class="cv-act-icon">📱</span>
+                <span>WhatsApp</span>
+              </button>
+              <button onclick="triggerPrint()" class="cv-act-btn cv-act-pdf">
+                <span class="cv-act-icon">⎙</span>
+                <span>PDF</span>
+              </button>
+              <button onclick="saveAndShare()" class="cv-act-btn cv-act-link">
+                <span class="cv-act-icon">🔗</span>
+                <span>Link</span>
+              </button>
+              <button onclick="sendEmail()" class="cv-act-btn cv-act-email">
+                <span class="cv-act-icon">✉</span>
+                <span>Email</span>
+              </button>
+            </div>
+            <div id="shareResult" class="cv-share-result" style="display:none"></div>
+          </div>
+
+        </div>
+      </div>
+
+    </main>
+
+    <!-- PRINT VIEW -->
+    <div id="printView" class="print-view"></div>
+
+  </div>
+
+  <script src="js/cotizador-ventas.js"></script>
+</body>
+</html>
