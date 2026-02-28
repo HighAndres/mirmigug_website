@@ -2,7 +2,22 @@
 declare(strict_types=1);
 
 header('Content-Type: application/json; charset=utf-8');
-header('Access-Control-Allow-Origin: https://mirmibug.com');
+
+// ── CORS ──
+$allowed_origins = ['https://mirmibug.com'];
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+if (preg_match('#^https?://localhost(:\d+)?$#', $origin)) {
+  $allowed_origins[] = $origin;
+}
+if (in_array($origin, $allowed_origins, true)) {
+  header("Access-Control-Allow-Origin: $origin");
+  header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+  header('Access-Control-Allow-Headers: Content-Type');
+}
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+  http_response_code(204);
+  exit;
+}
 
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'andres63_mirmibug_web');

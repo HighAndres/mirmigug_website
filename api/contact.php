@@ -5,6 +5,22 @@ use PHPMailer\PHPMailer\PHPMailer;
 
 header('Content-Type: application/json; charset=utf-8');
 
+// ── CORS ──
+$allowed_origins = ['https://mirmibug.com'];
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+if (preg_match('#^https?://localhost(:\d+)?$#', $origin)) {
+  $allowed_origins[] = $origin;
+}
+if (in_array($origin, $allowed_origins, true)) {
+  header("Access-Control-Allow-Origin: $origin");
+  header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+  header('Access-Control-Allow-Headers: Content-Type');
+}
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+  http_response_code(204);
+  exit;
+}
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
   http_response_code(405);
   echo json_encode(['ok' => false, 'error' => 'Method not allowed'], JSON_UNESCAPED_UNICODE);

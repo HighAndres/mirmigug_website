@@ -9,6 +9,8 @@
 
 // ─────────────────────────────────────────
 // USUARIOS (agregar vendedores aquí)
+// ⚠ SEGURIDAD: Los PINs están expuestos en el código fuente del navegador.
+//   Para mayor seguridad, migrar autenticación a server-side (PHP + sesiones).
 // ─────────────────────────────────────────
 const USERS = [
   { id: 'V001', name: 'Andres', pin: 'mirmi2026' },
