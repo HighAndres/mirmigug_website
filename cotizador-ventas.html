@@ -49,8 +49,10 @@
           <span class="cv-status-text">SISTEMA ACTIVO</span>
         </div>
         <div class="cv-header-right">
+          <span id="userBadge" class="cv-user-badge" style="display:none"></span>
           <span id="currentDate" class="cv-date"></span>
           <button onclick="triggerPrint()" class="cv-print-btn">⎙ PDF</button>
+          <button id="logoutBtn" onclick="logout()" class="cv-logout-btn" style="display:none">⏻ SALIR</button>
         </div>
       </div>
     </header>
@@ -128,6 +130,7 @@
                 <span class="t-iva-label">+ IVA 16%</span>
                 <span class="t-iva-amount" id="termIva"></span>
               </div>
+              <div class="t-folio" id="termFolio" style="display:none"></div>
               <div class="t-cursor" id="termCursor">_</div>
             </div>
           </div>
