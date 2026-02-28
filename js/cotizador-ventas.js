@@ -1,15 +1,20 @@
 /* =========================
    COTIZADOR DE VENTAS — TECH REDESIGN
    Mirmibug IT Solutions · México
-   Contraseña: mirmi2026  (cambiar en la constante PASS)
+   Cada vendedor tiene su propio PIN.
+   Para agregar vendedores: añadir una línea al array USERS.
 ========================= */
 
 'use strict';
 
 // ─────────────────────────────────────────
-// CONTRASEÑA
+// USUARIOS (agregar vendedores aquí)
 // ─────────────────────────────────────────
-const PASS = 'mirmi2026';
+const USERS = [
+  { id: 'V001', name: 'Andres', pin: 'mirmi2026' },
+  // { id: 'V002', name: 'Carlos', pin: 'ventas2026' },
+  // { id: 'V003', name: 'Laura',  pin: 'laura2026' },
+];
 
 // ─────────────────────────────────────────
 // CATÁLOGO DE SERVICIOS
@@ -73,12 +78,30 @@ const SERVICES = [
 
 const activeModules = new Set();
 let prevTotal = 0;
+let currentFolio = null;
+
+// ─────────────────────────────────────────
+// USUARIOS: helpers
+// ─────────────────────────────────────────
+function getCurrentUser() {
+  try { return JSON.parse(sessionStorage.getItem('cv_user')); }
+  catch { return null; }
+}
+
+function logout() {
+  sessionStorage.removeItem('cv_auth');
+  sessionStorage.removeItem('cv_user');
+  location.reload();
+}
 
 // ─────────────────────────────────────────
 // PIN GATE
 // ─────────────────────────────────────────
 function initPin() {
-  if (sessionStorage.getItem('cv_auth') === '1') { showApp(); return; }
+  if (sessionStorage.getItem('cv_auth') === '1' && sessionStorage.getItem('cv_user')) {
+    showApp();
+    return;
+  }
 
   const input = document.getElementById('pinInput');
   document.getElementById('pinBtn').addEventListener('click', checkPin);
@@ -88,8 +111,11 @@ function initPin() {
 
 function checkPin() {
   const v = document.getElementById('pinInput').value.trim().toLowerCase();
-  if (v === PASS.toLowerCase()) {
+  const user = USERS.find(u => u.pin.toLowerCase() === v);
+
+  if (user) {
     sessionStorage.setItem('cv_auth', '1');
+    sessionStorage.setItem('cv_user', JSON.stringify({ id: user.id, name: user.name }));
     showApp();
   } else {
     const err = document.getElementById('pinError');
@@ -112,6 +138,22 @@ function showApp() {
 function initApp() {
   document.getElementById('currentDate').textContent =
     new Date().toLocaleDateString('es-MX', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase();
+
+  // Mostrar user badge y logout
+  const user = getCurrentUser();
+  if (user) {
+    const badge = document.getElementById('userBadge');
+    badge.textContent = `${user.id} // ${user.name}`;
+    badge.style.display = 'inline-block';
+    document.getElementById('logoutBtn').style.display = 'inline-block';
+
+    // Auto-fill vendedor
+    const vendedorInput = document.getElementById('vendedor');
+    vendedorInput.value = user.name;
+    vendedorInput.readOnly = true;
+    vendedorInput.style.opacity = '0.7';
+    vendedorInput.style.cursor = 'default';
+  }
 
   renderCards();
   updateSummary();
@@ -170,7 +212,7 @@ function renderCards() {
 // CARD INTERACTION
 // ─────────────────────────────────────────
 function handleCardClick(event, id) {
-  if (activeModules.has(id)) return; // si ya activo, ignorar click en card
+  if (activeModules.has(id)) return;
   activateModule(id);
 }
 
@@ -225,12 +267,14 @@ function updateSummary() {
   const termIvaRow = document.getElementById('termIvaRow');
   const termTotal  = document.getElementById('termTotal');
   const termIva    = document.getElementById('termIva');
+  const termFolio  = document.getElementById('termFolio');
 
   if (activeModules.size === 0) {
     termItems.innerHTML  = '<div class="t-line t-info">// Sin servicios activos</div>';
     termSep.style.display    = 'none';
     termTotRow.style.display = 'none';
     termIvaRow.style.display = 'none';
+    if (termFolio) termFolio.style.display = 'none';
     prevTotal = 0;
     return;
   }
@@ -243,7 +287,6 @@ function updateSummary() {
     const calc = calcSvc(id);
     grand += calc.total;
 
-    // Actualiza subtotal en card
     document.getElementById('csub_' + id).textContent = fmt(calc.total);
 
     html += `
@@ -258,11 +301,16 @@ function updateSummary() {
   termTotRow.style.display = 'flex';
   termIvaRow.style.display = 'flex';
 
-  // Animación del contador
   animateCount(termTotal, prevTotal, grand);
   prevTotal = grand;
 
   termIva.textContent = fmt(Math.round(grand * 1.16));
+
+  // Folio display
+  if (termFolio) {
+    termFolio.textContent = currentFolio ? `FOLIO: ${currentFolio}` : '';
+    termFolio.style.display = currentFolio ? 'block' : 'none';
+  }
 }
 
 // ─────────────────────────────────────────
@@ -274,7 +322,7 @@ function animateCount(el, from, to, ms = 500) {
 
   function tick(now) {
     const p = Math.min((now - start) / ms, 1);
-    const e = 1 - Math.pow(1 - p, 3); // ease-out cubic
+    const e = 1 - Math.pow(1 - p, 3);
     el.textContent = fmt(Math.round(from + diff * e));
     if (p < 1) requestAnimationFrame(tick);
   }
@@ -285,9 +333,7 @@ function animateCount(el, from, to, ms = 500) {
 // TYPEWRITER EN TERMINAL
 // ─────────────────────────────────────────
 function typeTerminalLine(id) {
-  const svc  = SERVICES.find(s => s.id === id);
   const body = document.getElementById('terminalBody');
-  // pequeño flash verde en el terminal
   body.style.transition = 'background .1s';
   body.style.background = 'rgba(56,216,78,0.04)';
   setTimeout(() => { body.style.background = ''; }, 200);
@@ -303,6 +349,7 @@ function exportWhatsApp() {
   const contacto = val('contacto') || '—';
   const notas    = val('notas');
   const fecha    = new Date().toLocaleDateString('es-MX', { day: '2-digit', month: 'long', year: 'numeric' });
+  const user     = getCurrentUser();
 
   let total = 0;
   let lines = '';
@@ -318,11 +365,14 @@ function exportWhatsApp() {
     lines += `   • *Subtotal: ${fmt(calc.total)}*\n`;
   });
 
+  const folioLine = currentFolio ? `\n📋 Folio: ${currentFolio}` : '';
+  const vendedorLine = user ? `\n👨‍💼 Vendedor: ${user.name} (${user.id})` : '';
+
   const text =
 `🔧 *PROPUESTA MIRMIBUG IT SOLUTIONS*
 📅 ${fecha}
 🏢 Empresa: ${empresa}
-👤 Contacto: ${contacto}
+👤 Contacto: ${contacto}${vendedorLine}${folioLine}
 
 *Servicios incluidos:*${lines}
 ━━━━━━━━━━━━━━━━━━━
@@ -358,13 +408,22 @@ async function saveAndShare() {
     const data = await res.json();
 
     if (data.ok) {
+      if (data.folio) currentFolio = data.folio;
+
       const url = `${location.origin}/cotizador-ventas.html?propuesta=${data.token}`;
+      const folioHtml = data.folio
+        ? `<div class="cv-share-folio">// FOLIO: ${data.folio}</div>`
+        : '';
       resultEl.innerHTML = `
+        ${folioHtml}
         <div class="cv-share-url">
           <input type="text" id="shareUrl" value="${url}" readonly />
           <button type="button" onclick="copyShareUrl()">COPIAR</button>
         </div>
         <span class="cv-share-hint">// link válido 60 días</span>`;
+
+      // Actualizar folio en terminal
+      updateSummary();
     } else {
       resultEl.textContent = '// error al guardar';
     }
@@ -398,12 +457,13 @@ function sendEmail() {
 
   const q       = buildQuoteData();
   const summary = q.items.map(i => `${i.name}: ${fmt(i.total)}`).join('\n');
+  const folioNote = currentFolio ? `\nFolio: ${currentFolio}` : '';
 
   const fd = new FormData();
   fd.append('nombre',         q.contacto || 'Prospecto');
   fd.append('email',          emailCliente);
   fd.append('empresa',        q.empresa || '');
-  fd.append('mensaje',        `Propuesta IT Mirmibug:\n\n${summary}\n\nTOTAL: ${fmt(q.total)} MXN (sin IVA)\nCon IVA: ${fmt(Math.round(q.total * 1.16))} MXN`);
+  fd.append('mensaje',        `Propuesta IT Mirmibug:${folioNote}\n\n${summary}\n\nTOTAL: ${fmt(q.total)} MXN (sin IVA)\nCon IVA: ${fmt(Math.round(q.total * 1.16))} MXN`);
   fd.append('origen',         'cotizador-ventas');
   fd.append('quote_summary',  summary);
   fd.append('consentimiento', '1');
@@ -423,6 +483,7 @@ function sendEmail() {
 function buildQuoteData() {
   let total = 0;
   const items = [];
+  const user = getCurrentUser();
 
   activeModules.forEach(id => {
     const svc  = SERVICES.find(s => s.id === id);
@@ -437,12 +498,13 @@ function buildQuoteData() {
   });
 
   return {
-    empresa:  val('empresa'),
-    contacto: val('contacto'),
-    email:    val('emailCliente'),
-    vendedor: val('vendedor'),
-    notas:    val('notas'),
-    fecha:    new Date().toISOString().split('T')[0],
+    empresa:     val('empresa'),
+    contacto:    val('contacto'),
+    email:       val('emailCliente'),
+    vendedor:    val('vendedor'),
+    vendedor_id: user?.id || '',
+    notas:       val('notas'),
+    fecha:       new Date().toISOString().split('T')[0],
     items,
     total
   };
@@ -461,8 +523,15 @@ async function loadSharedQuote(token) {
     if (q.empresa)  document.getElementById('empresa').value      = q.empresa;
     if (q.contacto) document.getElementById('contacto').value     = q.contacto;
     if (q.email)    document.getElementById('emailCliente').value = q.email;
-    if (q.vendedor) document.getElementById('vendedor').value     = q.vendedor;
     if (q.notas)    document.getElementById('notas').value        = q.notas;
+
+    // Folio
+    if (q.folio) {
+      currentFolio = q.folio;
+      const resultEl = document.getElementById('shareResult');
+      resultEl.style.display = 'block';
+      resultEl.innerHTML = `<div class="cv-share-folio">// FOLIO: ${q.folio}</div>`;
+    }
 
     q.items.forEach(item => {
       if (!activeModules.has(item.id)) activateModule(item.id);
@@ -489,6 +558,7 @@ function buildPrintView() {
 
   const q     = buildQuoteData();
   const fecha = new Date().toLocaleDateString('es-MX', { day: '2-digit', month: 'long', year: 'numeric' });
+  const user  = getCurrentUser();
 
   let rows = '';
   q.items.forEach(item => {
@@ -513,7 +583,8 @@ function buildPrintView() {
         </div>
         <div style="text-align:right;font-size:12px;color:#555">
           <div><b>Fecha:</b> ${fecha}</div>
-          ${q.vendedor ? `<div><b>Vendedor:</b> ${q.vendedor}</div>` : ''}
+          ${user ? `<div><b>Vendedor:</b> ${user.name} (${user.id})</div>` : ''}
+          ${currentFolio ? `<div><b>Folio:</b> ${currentFolio}</div>` : ''}
         </div>
       </div>
 
@@ -528,7 +599,7 @@ function buildPrintView() {
         <thead>
           <tr style="background:#38d84e;color:#000">
             <th style="padding:10px 12px;text-align:left">Servicio</th>
-            <th style="padding:10px 12px;text-align:left">Descripción</th>
+            <th style="padding:10px 12px;text-align:left">Descripcion</th>
             <th style="padding:10px 12px;text-align:right">Base</th>
             <th style="padding:10px 12px;text-align:center">Cantidad</th>
             <th style="padding:10px 12px;text-align:right">P. Unit.</th>
@@ -549,7 +620,7 @@ function buildPrintView() {
       ${q.notas ? `<div style="padding:12px 16px;border:1px solid #ddd;border-radius:6px;font-size:12px;color:#444;margin-bottom:20px"><b>Notas:</b> ${q.notas}</div>` : ''}
 
       <div style="font-size:10px;color:#999;border-top:1px solid #eee;padding-top:14px;line-height:1.7">
-        Precios en MXN sin IVA. IVA aplicable 16%. Contrato mensual sin permanencia mínima. Propuesta válida 30 días.
+        Precios en MXN sin IVA. IVA aplicable 16%. Contrato mensual sin permanencia minima. Propuesta valida 30 dias.
         Consultas: <b>contacto@mirmibug.com</b>
       </div>
     </div>`;

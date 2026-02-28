@@ -284,6 +284,38 @@ body {
   box-shadow: 0 0 12px var(--glow);
 }
 
+/* ── USER BADGE ── */
+.cv-user-badge {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 4px 10px;
+  border-radius: 2px;
+  background: var(--accent3);
+  color: var(--accent);
+  border: 1px solid var(--border2);
+}
+
+/* ── LOGOUT BUTTON ── */
+.cv-logout-btn {
+  padding: 6px 12px;
+  border-radius: 3px;
+  border: 1px solid rgba(255, 68, 68, 0.3);
+  background: rgba(255, 68, 68, 0.06);
+  color: #ff4444;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: background 0.15s, box-shadow 0.15s;
+}
+.cv-logout-btn:hover {
+  background: rgba(255, 68, 68, 0.15);
+  box-shadow: 0 0 12px rgba(255, 68, 68, 0.2);
+}
+
 /* ══════════════════════════════════
    MAIN LAYOUT
 ══════════════════════════════════ */
@@ -722,6 +754,19 @@ body {
 .t-iva-label  { font-family: var(--mono); font-size: 9px; color: var(--muted2); }
 .t-iva-amount { font-family: var(--mono); font-size: 9px; color: var(--muted2); }
 
+/* ── FOLIO IN TERMINAL ── */
+.t-folio {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 1px;
+  margin-top: 8px;
+  padding: 4px 0;
+  border-top: 1px solid var(--border);
+  text-shadow: 0 0 8px var(--glow);
+}
+
 .t-cursor {
   font-family: var(--mono);
   font-size: 13px;
@@ -833,6 +878,17 @@ body {
   color: var(--muted2);
 }
 
+/* ── FOLIO DISPLAY ── */
+.cv-share-folio {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+  text-shadow: 0 0 12px var(--glow);
+}
+
 /* ══════════════════════════════════
    PRINT
 ══════════════════════════════════ */
@@ -864,10 +920,15 @@ body {
   .cv-sticky { position: static; }
   .cv-client-fields { grid-template-columns: 1fr 1fr; }
   .cv-svc-grid { grid-template-columns: repeat(2, 1fr); }
+  .cv-date { display: none; }
+  .cv-header-center { display: none; }
+  .cv-print-btn { display: none; }
 }
 
 @media (max-width: 480px) {
   .cv-svc-grid { grid-template-columns: 1fr; }
   .cv-client-fields { grid-template-columns: 1fr; }
   .pin-box { padding: 32px 20px; min-width: unset; width: 92vw; }
+  .cv-user-badge { font-size: 9px; padding: 3px 6px; }
+  .cv-logout-btn { font-size: 9px; padding: 4px 8px; }
 }

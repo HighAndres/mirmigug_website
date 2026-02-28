@@ -23,7 +23,7 @@ try {
   $pdo = new PDO($dsn, DB_USER, DB_PASS, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
 
   $stmt = $pdo->prepare("
-    SELECT quote_json FROM sales_quotes
+    SELECT quote_json, folio, vendedor_id FROM sales_quotes
     WHERE token = ? AND (expires_at IS NULL OR expires_at > NOW())
   ");
   $stmt->execute([$token]);
@@ -36,6 +36,8 @@ try {
   }
 
   $quote = json_decode($row['quote_json'], true);
+  $quote['folio']       = $row['folio'];
+  $quote['vendedor_id'] = $row['vendedor_id'];
   echo json_encode(['ok' => true, 'quote' => $quote], JSON_UNESCAPED_UNICODE);
 
 } catch (Throwable $e) {
