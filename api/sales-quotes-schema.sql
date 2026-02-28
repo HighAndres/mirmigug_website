@@ -1,0 +1,22 @@
+-- =============================================
+-- Tabla: sales_quotes
+-- Propuestas guardadas del Cotizador de Ventas
+-- Mirmibug IT Solutions
+-- Ejecutar en: andres63_mirmibug_web
+-- =============================================
+
+CREATE TABLE IF NOT EXISTS sales_quotes (
+  id               INT UNSIGNED    AUTO_INCREMENT PRIMARY KEY,
+  token            VARCHAR(16)     NOT NULL UNIQUE COMMENT 'Token URL de 16 chars hex',
+  cliente_empresa  VARCHAR(120),
+  cliente_contacto VARCHAR(120),
+  cliente_email    VARCHAR(180),
+  vendedor         VARCHAR(60),
+  quote_json       TEXT            NOT NULL COMMENT 'JSON completo de la propuesta',
+  total_mensual    DECIMAL(12,2)   DEFAULT 0,
+  notas            VARCHAR(500),
+  created_at       DATETIME        DEFAULT CURRENT_TIMESTAMP,
+  expires_at       DATETIME        COMMENT 'NULL = no expira',
+  INDEX idx_token  (token),
+  INDEX idx_created (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
