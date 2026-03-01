@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS sales_quotes (
   vendedor_id      VARCHAR(10)     DEFAULT NULL COMMENT 'ID vendedor: V001, V002...',
   quote_json       TEXT            NOT NULL COMMENT 'JSON completo de la propuesta',
   total_mensual    DECIMAL(12,2)   DEFAULT 0,
+  total_unico      DECIMAL(12,2)   DEFAULT NULL COMMENT 'Total cargos únicos (hora, proyecto, equipos)',
   notas            VARCHAR(500),
   created_at       DATETIME        DEFAULT CURRENT_TIMESTAMP,
   expires_at       DATETIME        COMMENT 'NULL = no expira',
@@ -33,3 +34,10 @@ CREATE TABLE IF NOT EXISTS sales_quotes (
 --   ADD COLUMN folio VARCHAR(20) DEFAULT NULL UNIQUE AFTER token,
 --   ADD COLUMN vendedor_id VARCHAR(10) DEFAULT NULL AFTER vendedor,
 --   ADD INDEX idx_vendedor_id (vendedor_id);
+
+-- =============================================
+-- Migración: agregar total_unico
+-- Ejecutar si la tabla ya existe
+-- =============================================
+-- ALTER TABLE sales_quotes
+--   ADD COLUMN total_unico DECIMAL(12,2) DEFAULT NULL AFTER total_mensual;

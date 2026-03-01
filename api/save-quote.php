@@ -124,6 +124,15 @@ try {
     ]);
   }
 
+  // Guardar total_unico si existe
+  $total_unico = isset($data['total_unico']) ? (float)$data['total_unico'] : null;
+  if ($total_unico !== null && $total_unico > 0) {
+    try {
+      $upd = $pdo->prepare("UPDATE sales_quotes SET total_unico = ? WHERE token = ?");
+      $upd->execute([$total_unico, $token]);
+    } catch (Throwable $ignore) {}
+  }
+
   echo json_encode(['ok' => true, 'token' => $token, 'folio' => $folio], JSON_UNESCAPED_UNICODE);
 
 } catch (Throwable $e) {
