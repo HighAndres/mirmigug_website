@@ -89,17 +89,40 @@ body {
 .pin-box::after  { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
 
 .pin-hex {
-  width: 64px;
-  height: 64px;
+  width: 100px;
+  height: 100px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--accent3);
-  border: 1px solid var(--border2);
+  background: transparent;
+  border: none;
   border-radius: 50%;
   box-shadow: 0 0 20px var(--glow);
+  animation: float 3s ease-in-out infinite, glow-pulse 3s ease-in-out infinite;
 }
-.pin-hex img { width: 36px; height: 36px; }
+.pin-hex img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  transition: transform 0.3s ease;
+}
+.pin-hex:hover img {
+  animation: wiggle 0.5s ease;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
+}
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 20px var(--glow); }
+  50%      { box-shadow: 0 0 40px var(--glow), 0 0 60px rgba(56,216,78,0.15); }
+}
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25%      { transform: rotate(-5deg); }
+  75%      { transform: rotate(5deg); }
+}
 
 .pin-brand {
   font-family: var(--mono);
