@@ -113,11 +113,25 @@ try {
 }
 
 /* =========================
-   2) SEND EMAIL (PHPMailer SMTP)
+   2) RESPUESTA INMEDIATA AL USUARIO
+   (no hacer esperar por el email)
 ========================= */
-$email_ok = false;
-$email_error = null;
+ignore_user_abort(true);
+$response = json_encode(['ok' => true, 'saved' => true], JSON_UNESCAPED_UNICODE);
+header('Connection: close');
+header('Content-Length: ' . strlen($response));
+echo $response;
+if (function_exists('fastcgi_finish_request')) {
+  fastcgi_finish_request();
+} else {
+  if (ob_get_level()) ob_end_flush();
+  flush();
+}
 
+/* =========================
+   3) SEND EMAIL EN BACKGROUND (PHPMailer SMTP)
+   El usuario ya recibió su respuesta
+========================= */
 try {
   require_once __DIR__ . '/mailer/Exception.php';
   require_once __DIR__ . '/mailer/PHPMailer.php';
@@ -133,7 +147,8 @@ try {
   $mail->Username = SMTP_USER;
   $mail->Password = SMTP_PASS;
   $mail->Port = (int) SMTP_PORT;
-  $mail->Timeout = 25;
+  $mail->Timeout = 10;
+  $mail->SMTPKeepAlive = false;
   $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
 
   $mail->setFrom(SMTP_USER, 'Mirmibug Web');
@@ -153,17 +168,8 @@ try {
     "User-Agent: " . ($user_agent ?: '-') . "\n";
 
   $mail->send();
-  $email_ok = true;
+  log_line('MAIL OK: enviado a ' . MAIL_TO . ' (contacto de ' . $email . ')');
 
 } catch (Throwable $e) {
-  $email_ok = false;
-  $email_error = $e->getMessage();
-  log_line('MAIL ERROR: ' . $email_error);
+  log_line('MAIL ERROR: ' . $e->getMessage());
 }
-
-echo json_encode([
-  'ok' => true,
-  'saved' => $saved,
-  'email_ok' => $email_ok,
-  'email_error' => $email_ok ? null : $email_error
-], JSON_UNESCAPED_UNICODE);
