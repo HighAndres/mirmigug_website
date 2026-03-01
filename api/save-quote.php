@@ -19,10 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
   exit;
 }
 
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'andres63_mirmibug_web');
-define('DB_USER', 'andres63_adminmirmibug');
-define('DB_PASS', 'ygKtYLN.I1g)');
+require_once __DIR__ . '/config.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
   http_response_code(405);

@@ -41,3 +41,28 @@ CREATE TABLE IF NOT EXISTS sales_quotes (
 -- =============================================
 -- ALTER TABLE sales_quotes
 --   ADD COLUMN total_unico DECIMAL(12,2) DEFAULT NULL AFTER total_mensual;
+
+-- =============================================
+-- Tabla: sales_vendors
+-- Vendedores del cotizador con autenticación server-side
+-- =============================================
+
+CREATE TABLE IF NOT EXISTS sales_vendors (
+  id           INT UNSIGNED   AUTO_INCREMENT PRIMARY KEY,
+  vendor_id    VARCHAR(10)    NOT NULL UNIQUE COMMENT 'V001, V002...',
+  name         VARCHAR(60)    NOT NULL,
+  pin_hash     VARCHAR(255)   NOT NULL COMMENT 'password_hash()',
+  role         ENUM('vendor','admin') DEFAULT 'vendor',
+  active       TINYINT(1)     DEFAULT 1,
+  created_at   TIMESTAMP      DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_vendor_id (vendor_id),
+  INDEX idx_active    (active)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =============================================
+-- Seed: vendedor inicial (Andres como admin)
+-- El hash se genera al ejecutar api/vendors.php?action=setup
+-- desde el navegador UNA sola vez.
+-- =============================================
+-- INSERT INTO sales_vendors (vendor_id, name, pin_hash, role)
+-- VALUES ('V001', 'Andres', '<hash_generado>', 'admin');

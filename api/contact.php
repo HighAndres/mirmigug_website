@@ -27,25 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
   exit;
 }
 
-/* =========================
-   LOAD .env CONFIG
-========================= */
-$envFile = __DIR__ . '/.env';
-if (!file_exists($envFile)) {
-  http_response_code(500);
-  echo json_encode(['ok' => false, 'error' => 'Server config missing'], JSON_UNESCAPED_UNICODE);
-  exit;
-}
-
-foreach (file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
-  $line = trim($line);
-  if ($line === '' || $line[0] === '#') continue;
-  if (strpos($line, '=') === false) continue;
-  [$key, $val] = explode('=', $line, 2);
-  $key = trim($key);
-  $val = trim($val);
-  if (!defined($key)) define($key, $val);
-}
+require_once __DIR__ . '/config.php';
 
 define('LOG_FILE', __DIR__ . '/contact.log');
 

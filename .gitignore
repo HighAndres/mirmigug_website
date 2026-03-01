@@ -1,5 +1,6 @@
 # Credenciales (NUNCA subir)
 api/.env
+api/config.php
 
 # Logs
 api/contact.log
