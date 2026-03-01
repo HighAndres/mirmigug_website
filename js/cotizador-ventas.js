@@ -13,7 +13,7 @@ const API_BASE = 'api/vendors.php';
 const LOCAL_DEV_USERS = [
   { id: 'V001', name: 'Andres', pin: 'mirmi2026', role: 'admin' }
 ];
-const IS_LOCALHOST = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+const IS_LOCALHOST = location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.hostname.endsWith('github.io');
 
 // ─────────────────────────────────────────
 // CATÁLOGO DE SERVICIOS
