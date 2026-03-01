@@ -18,7 +18,7 @@
     <div class="pin-scanline"></div>
     <div class="pin-box">
       <div class="pin-hex">
-        <img src="img/logo_mirmibug_360.png" alt="Mirmibug" />
+        <img src="img/mirmibug-logo-green_sfondo.png" alt="Mirmibug" />
       </div>
       <div class="pin-brand">MIRMIBUG</div>
       <div class="pin-label">// internal · sales tool · mx</div>
@@ -52,6 +52,7 @@
           <span id="userBadge" class="cv-user-badge" style="display:none"></span>
           <span id="currentDate" class="cv-date"></span>
           <button onclick="triggerPrint()" class="cv-print-btn">⎙ PDF</button>
+          <button id="adminBtn" onclick="openAdminPanel()" class="cv-admin-btn" style="display:none">⚙ ADMIN</button>
           <button id="logoutBtn" onclick="logout()" class="cv-logout-btn" style="display:none">⏻ SALIR</button>
         </div>
       </div>
@@ -180,8 +181,32 @@
     <!-- PRINT VIEW -->
     <div id="printView" class="print-view"></div>
 
+    <!-- ══════════════════════════════════
+         ADMIN PANEL — GESTIÓN DE VENDEDORES
+    ══════════════════════════════════ -->
+    <div id="adminPanel" class="admin-overlay" style="display:none">
+      <div class="admin-box">
+        <div class="admin-header">
+          <span class="admin-title">⚙ ADMINISTRAR VENDEDORES</span>
+          <button onclick="closeAdminPanel()" class="admin-close">✕</button>
+        </div>
+
+        <div class="admin-create">
+          <div class="admin-create-label">// nuevo vendedor</div>
+          <div class="admin-create-fields">
+            <input id="newVendorName" class="admin-input" type="text" placeholder="Nombre" maxlength="60" autocomplete="off" />
+            <input id="newVendorPin" class="admin-input" type="password" placeholder="PIN (mín. 4 chars)" maxlength="30" autocomplete="off" />
+            <button onclick="createVendor()" class="admin-create-btn">+ AGREGAR</button>
+          </div>
+        </div>
+
+        <div class="admin-list-label">// vendedores registrados</div>
+        <div id="vendorList" class="admin-list"></div>
+      </div>
+    </div>
+
   </div>
 
-  <script src="js/cotizador-ventas.js"></script>
+  <script src="js/cotizador-ventas.js?v=2"></script>
 </body>
 </html>

@@ -1,22 +1,13 @@
 /* =========================
    COTIZADOR DE VENTAS — TECH REDESIGN
    Mirmibug IT Solutions · México
-   Cada vendedor tiene su propio PIN.
-   Para agregar vendedores: añadir una línea al array USERS.
+   Autenticación server-side (PHP + MySQL)
+   Panel admin para gestión de vendedores
 ========================= */
 
 'use strict';
 
-// ─────────────────────────────────────────
-// USUARIOS (agregar vendedores aquí)
-// ⚠ SEGURIDAD: Los PINs están expuestos en el código fuente del navegador.
-//   Para mayor seguridad, migrar autenticación a server-side (PHP + sesiones).
-// ─────────────────────────────────────────
-const USERS = [
-  { id: 'V001', name: 'Andres', pin: 'mirmi2026' },
-  // { id: 'V002', name: 'Carlos', pin: 'ventas2026' },
-  // { id: 'V003', name: 'Laura',  pin: 'laura2026' },
-];
+const API_BASE = 'api/vendors.php';
 
 // ─────────────────────────────────────────
 // CATÁLOGO DE SERVICIOS
@@ -119,14 +110,24 @@ function getCurrentUser() {
   catch { return null; }
 }
 
+function getAdminToken() {
+  return sessionStorage.getItem('cv_admin') || '';
+}
+
+function isAdmin() {
+  const u = getCurrentUser();
+  return u && u.role === 'admin';
+}
+
 function logout() {
   sessionStorage.removeItem('cv_auth');
   sessionStorage.removeItem('cv_user');
+  sessionStorage.removeItem('cv_admin');
   location.reload();
 }
 
 // ─────────────────────────────────────────
-// PIN GATE
+// PIN GATE (server-side auth)
 // ─────────────────────────────────────────
 function initPin() {
   if (sessionStorage.getItem('cv_auth') === '1' && sessionStorage.getItem('cv_user')) {
@@ -140,20 +141,45 @@ function initPin() {
   setTimeout(() => input.focus(), 150);
 }
 
-function checkPin() {
-  const v = document.getElementById('pinInput').value.trim().toLowerCase();
-  const user = USERS.find(u => u.pin.toLowerCase() === v);
+async function checkPin() {
+  const pin = document.getElementById('pinInput').value.trim();
+  if (!pin) return;
 
-  if (user) {
-    sessionStorage.setItem('cv_auth', '1');
-    sessionStorage.setItem('cv_user', JSON.stringify({ id: user.id, name: user.name }));
-    showApp();
-  } else {
+  const btn = document.getElementById('pinBtn');
+  btn.disabled = true;
+  btn.textContent = 'VERIFICANDO...';
+
+  try {
+    const res = await fetch(`${API_BASE}?action=login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pin })
+    });
+    const data = await res.json();
+
+    if (data.ok) {
+      sessionStorage.setItem('cv_auth', '1');
+      sessionStorage.setItem('cv_user', JSON.stringify(data.user));
+      if (data.admin_token) sessionStorage.setItem('cv_admin', data.admin_token);
+      showApp();
+    } else {
+      const err = document.getElementById('pinError');
+      err.style.display = 'block';
+      document.getElementById('pinInput').value = '';
+      document.getElementById('pinInput').focus();
+      setTimeout(() => { err.style.display = 'none'; }, 2500);
+    }
+  } catch (e) {
     const err = document.getElementById('pinError');
+    err.textContent = '⚠ ERROR DE CONEXIÓN';
     err.style.display = 'block';
-    document.getElementById('pinInput').value = '';
-    document.getElementById('pinInput').focus();
-    setTimeout(() => { err.style.display = 'none'; }, 2500);
+    setTimeout(() => {
+      err.textContent = '⚠ ACCESO DENEGADO';
+      err.style.display = 'none';
+    }, 3000);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = 'INICIAR SESIÓN <span class="pin-arrow">→</span>';
   }
 }
 
@@ -184,6 +210,11 @@ function initApp() {
     vendedorInput.readOnly = true;
     vendedorInput.style.opacity = '0.7';
     vendedorInput.style.cursor = 'default';
+
+    // Mostrar botón admin si es admin
+    if (user.role === 'admin') {
+      document.getElementById('adminBtn').style.display = 'inline-block';
+    }
   }
 
   renderCards();
@@ -1137,6 +1168,156 @@ function buildPrintView() {
         Consultas: <b>contacto@mirmibug.com</b>
       </div>
     </div>`;
+}
+
+// ─────────────────────────────────────────
+// ADMIN PANEL — GESTIÓN DE VENDEDORES
+// ─────────────────────────────────────────
+
+function openAdminPanel() {
+  document.getElementById('adminPanel').style.display = 'flex';
+  loadVendors();
+}
+
+function closeAdminPanel() {
+  document.getElementById('adminPanel').style.display = 'none';
+}
+
+async function adminFetch(action, method = 'GET', body = null) {
+  const opts = {
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Admin-Token': getAdminToken()
+    }
+  };
+  if (body) opts.body = JSON.stringify(body);
+
+  const res = await fetch(`${API_BASE}?action=${action}`, opts);
+  return res.json();
+}
+
+async function loadVendors() {
+  const list = document.getElementById('vendorList');
+  list.innerHTML = '<div class="admin-loading">Cargando...</div>';
+
+  try {
+    const data = await adminFetch('list');
+    if (!data.ok) {
+      list.innerHTML = `<div class="admin-error">Error: ${data.error}</div>`;
+      return;
+    }
+
+    if (data.vendors.length === 0) {
+      list.innerHTML = '<div class="admin-empty">No hay vendedores</div>';
+      return;
+    }
+
+    const currentUser = getCurrentUser();
+    list.innerHTML = data.vendors.map(v => {
+      const isSelf = v.vendor_id === currentUser?.id;
+      const statusClass = v.active == 1 ? 'admin-status-active' : 'admin-status-inactive';
+      const statusText  = v.active == 1 ? 'ACTIVO' : 'INACTIVO';
+      const roleTag     = v.role === 'admin' ? '<span class="admin-role-tag">ADMIN</span>' : '';
+
+      return `
+        <div class="admin-row ${v.active == 1 ? '' : 'admin-row-inactive'}">
+          <div class="admin-row-info">
+            <span class="admin-row-id">${v.vendor_id}</span>
+            <span class="admin-row-name">${v.name}</span>
+            ${roleTag}
+            <span class="${statusClass}">${statusText}</span>
+          </div>
+          <div class="admin-row-actions">
+            <button onclick="promptChangePin('${v.vendor_id}', '${v.name}')" class="admin-action-btn" title="Cambiar PIN">🔑</button>
+            ${!isSelf ? `<button onclick="toggleVendor('${v.vendor_id}')" class="admin-action-btn" title="${v.active == 1 ? 'Desactivar' : 'Activar'}">${v.active == 1 ? '⏸' : '▶'}</button>` : ''}
+            ${!isSelf ? `<button onclick="deleteVendor('${v.vendor_id}', '${v.name}')" class="admin-action-btn admin-action-danger" title="Eliminar">🗑</button>` : ''}
+          </div>
+        </div>`;
+    }).join('');
+  } catch (e) {
+    list.innerHTML = '<div class="admin-error">Error de conexión</div>';
+  }
+}
+
+async function createVendor() {
+  const nameInput = document.getElementById('newVendorName');
+  const pinInput  = document.getElementById('newVendorPin');
+  const name = nameInput.value.trim();
+  const pin  = pinInput.value.trim();
+
+  if (!name || !pin) {
+    alert('Nombre y PIN son requeridos');
+    return;
+  }
+  if (pin.length < 4) {
+    alert('El PIN debe tener al menos 4 caracteres');
+    return;
+  }
+
+  try {
+    const data = await adminFetch('create', 'POST', { name, pin });
+    if (data.ok) {
+      nameInput.value = '';
+      pinInput.value  = '';
+      loadVendors();
+    } else {
+      alert('Error: ' + (data.error || 'No se pudo crear'));
+    }
+  } catch {
+    alert('Error de conexión');
+  }
+}
+
+function promptChangePin(vendorId, vendorName) {
+  const newPin = prompt(`Nuevo PIN para ${vendorName} (${vendorId}):\n(mínimo 4 caracteres)`);
+  if (!newPin) return;
+  if (newPin.trim().length < 4) {
+    alert('El PIN debe tener al menos 4 caracteres');
+    return;
+  }
+  changePin(vendorId, newPin.trim());
+}
+
+async function changePin(vendorId, newPin) {
+  try {
+    const data = await adminFetch('update_pin', 'POST', { vendor_id: vendorId, new_pin: newPin });
+    if (data.ok) {
+      alert('PIN actualizado correctamente');
+    } else {
+      alert('Error: ' + (data.error || 'No se pudo actualizar'));
+    }
+  } catch {
+    alert('Error de conexión');
+  }
+}
+
+async function toggleVendor(vendorId) {
+  try {
+    const data = await adminFetch('toggle', 'POST', { vendor_id: vendorId });
+    if (data.ok) {
+      loadVendors();
+    } else {
+      alert('Error: ' + (data.error || 'No se pudo cambiar estado'));
+    }
+  } catch {
+    alert('Error de conexión');
+  }
+}
+
+async function deleteVendor(vendorId, vendorName) {
+  if (!confirm(`¿Eliminar a ${vendorName} (${vendorId})?\nEsta acción no se puede deshacer.`)) return;
+
+  try {
+    const data = await adminFetch('delete', 'POST', { vendor_id: vendorId });
+    if (data.ok) {
+      loadVendors();
+    } else {
+      alert('Error: ' + (data.error || 'No se pudo eliminar'));
+    }
+  } catch {
+    alert('Error de conexión');
+  }
 }
 
 // ─────────────────────────────────────────

@@ -27,22 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
   exit;
 }
 
-/* =========================
-   CONFIG DB
-========================= */
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'andres63_mirmibug_web');
-define('DB_USER', 'andres63_adminmirmibug');
-define('DB_PASS', 'ygKtYLN.I1g)');
-
-/* =========================
-   CONFIG EMAIL (HOSTGATOR / FLOCKMAIL)
-========================= */
-define('SMTP_HOST',   'smtp-out.flockmail.com');
-define('SMTP_PORT',   587);
-define('SMTP_USER',   'contacto@mirmibug.com');
-define('SMTP_PASS',   '67]}GI[?gH05');
-define('MAIL_TO',     'contacto@mirmibug.com');
+require_once __DIR__ . '/config.php';
 
 define('LOG_FILE', __DIR__ . '/contact.log');
 
