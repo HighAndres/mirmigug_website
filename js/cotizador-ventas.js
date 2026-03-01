@@ -9,6 +9,12 @@
 
 const API_BASE = 'api/vendors.php';
 
+// ── Fallback para desarrollo local (sin servidor PHP) ──
+const LOCAL_DEV_USERS = [
+  { id: 'V001', name: 'Andres', pin: 'mirmi2026', role: 'admin' }
+];
+const IS_LOCALHOST = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+
 // ─────────────────────────────────────────
 // CATÁLOGO DE SERVICIOS
 // ─────────────────────────────────────────
@@ -170,6 +176,18 @@ async function checkPin() {
       setTimeout(() => { err.style.display = 'none'; }, 2500);
     }
   } catch (e) {
+    // Fallback local: si no hay servidor PHP y estamos en localhost
+    if (IS_LOCALHOST) {
+      const match = LOCAL_DEV_USERS.find(u => u.pin === pin);
+      if (match) {
+        const user = { id: match.id, name: match.name, role: match.role };
+        sessionStorage.setItem('cv_auth', '1');
+        sessionStorage.setItem('cv_user', JSON.stringify(user));
+        if (match.role === 'admin') sessionStorage.setItem('cv_admin', 'local-dev-token');
+        showApp();
+        return;
+      }
+    }
     const err = document.getElementById('pinError');
     err.textContent = '⚠ ERROR DE CONEXIÓN';
     err.style.display = 'block';
