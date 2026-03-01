@@ -26,60 +26,89 @@ const SERVICES = [
     id: 'helpdesk', name: 'HELP DESK', sub: '8×5 remoto',
     icon: '🖥️', base: 3500, varRate: 380,
     varLabel: 'Usuarios', varUnit: 'usuario', defaultQty: 5, min: 1,
+    hourlyRate: 450, hourlyDefault: 10,
     desc: 'Soporte remoto, tickets ilimitados razonables, altas/bajas, soporte M365/Google, documentación básica, SLA estándar.'
   },
   {
     id: 'monitoreo', name: 'MONITOREO', sub: 'RMM proactivo',
     icon: '📡', base: 2000, varRate: 120,
     varLabel: 'Equipos', varUnit: 'equipo', defaultQty: 10, min: 1,
+    hourlyRate: 500, hourlyDefault: 8,
     desc: 'Monitoreo de salud (CPU, RAM, disco), alertas, inventario, parches básicos, prevención de fallas.'
   },
   {
     id: 'seguridad', name: 'SEGURIDAD', sub: 'Endpoint EDR',
     icon: '🛡️', base: 2500, varRate: 180,
     varLabel: 'Usuarios', varUnit: 'usuario', defaultQty: 5, min: 1,
+    hourlyRate: 550, hourlyDefault: 8,
     desc: 'Protección antivirus/EDR, políticas de seguridad base, hardening inicial, respuesta básica ante incidentes.'
   },
   {
     id: 'redes', name: 'REDES', sub: 'Admin. básica',
     icon: '🌐', base: 2800, varRate: 90,
     varLabel: 'Dispositivos', varUnit: 'dispositivo', defaultQty: 5, min: 1,
+    hourlyRate: 500, hourlyDefault: 10,
     desc: 'Gestión de firewall, switches y APs, cambios menores, respaldo de configuración, monitoreo de red.'
   },
   {
     id: 'infra', name: 'INFRA', sub: 'Servidores / Cloud',
     icon: '🖧', base: 4500, varRate: 750,
     varLabel: 'Servidores', varUnit: 'servidor', defaultQty: 1, min: 1,
+    hourlyRate: 750, hourlyDefault: 10,
     desc: 'Gestión de servidores, monitoreo, revisión de backups, mantenimiento preventivo, soporte cloud básico.'
   },
   {
     id: 'desarrollo', name: 'DESARROLLO', sub: 'Automatización',
     icon: '⚙️', base: 0, varRate: 750,
     varLabel: 'Horas / mes', varUnit: 'hora', defaultQty: 10, min: 1,
+    hourlyRate: 750, hourlyDefault: 10,
     desc: 'Scripts, automatizaciones, mejoras internas, integraciones técnicas a medida.'
   },
   {
     id: 'bi', name: 'BI & DATA', sub: 'Dashboards / SQL',
     icon: '📊', base: 3000, varRate: 650,
     varLabel: 'Horas / mes', varUnit: 'hora', defaultQty: 5, min: 1,
+    hourlyRate: 650, hourlyDefault: 10,
     desc: 'Desarrollo de dashboards, consultas SQL, reportes ejecutivos, automatización de datos.'
   },
   {
     id: 'ia', name: 'INTEGRACIONES IA', sub: 'APIs + Bots',
     icon: '🤖', base: 4000, varRate: 850,
     varLabel: 'Horas / mes', varUnit: 'hora', defaultQty: 5, min: 1,
+    hourlyRate: 850, hourlyDefault: 8,
     desc: 'Integración con APIs de IA, bots internos, automatizaciones inteligentes, pruebas y despliegue inicial.'
   },
   {
     id: 'sitio', name: 'SITIO CDMX', sub: 'Visita presencial',
     icon: '📍', base: 1200, varRate: 1800,
     varLabel: 'Visitas / mes', varUnit: 'visita', defaultQty: 1, min: 0,
+    hourlyRate: 650, hourlyDefault: 4,
     desc: 'Atención presencial, troubleshooting físico, instalaciones, revisión de red o equipos en sitio.'
   }
 ];
 
+// ─────────────────────────────────────────
+// CATÁLOGO DE EQUIPOS (precios sugeridos editables)
+// ─────────────────────────────────────────
+const EQUIP_CATALOG = [
+  { id: 'laptop',   name: 'Laptop',        icon: '💻', defaultPrice: 18500 },
+  { id: 'desktop',  name: 'Desktop',        icon: '🖥️', defaultPrice: 14000 },
+  { id: 'server',   name: 'Servidor',       icon: '🗄️', defaultPrice: 45000 },
+  { id: 'switch',   name: 'Switch',         icon: '🔌', defaultPrice: 12000 },
+  { id: 'firewall', name: 'Firewall',       icon: '🛡️', defaultPrice: 25000 },
+  { id: 'ups',      name: 'UPS',            icon: '🔋', defaultPrice: 8000 },
+  { id: 'ap',       name: 'Access Point',   icon: '📡', defaultPrice: 6500 },
+];
+
+// ─────────────────────────────────────────
+// ESTADO GLOBAL
+// ─────────────────────────────────────────
 const activeModules = new Set();
-let prevTotal = 0;
+const svcModes = {};          // { svcId: 'mensual' | 'hora' | 'proyecto' }
+let equipmentItems = [];      // [{ uid, catalogId, name, qty, unitPrice }]
+let equipUidCounter = 0;
+let prevTotalMensual = 0;
+let prevTotalUnico   = 0;
 let currentFolio = null;
 
 // ─────────────────────────────────────────
@@ -158,6 +187,7 @@ function initApp() {
   }
 
   renderCards();
+  renderEquipSection();
   updateSummary();
 
   const token = new URLSearchParams(window.location.search).get('propuesta');
@@ -191,7 +221,15 @@ function renderCards() {
 
         <div class="svc-subtotal" id="csub_${svc.id}"></div>
 
-        <div class="svc-controls" id="ctrl_${svc.id}">
+        <!-- Mode toggle (shown when active) -->
+        <div class="svc-mode-toggle" id="mode_${svc.id}">
+          <button type="button" class="svc-mode-btn active" data-mode="mensual" onclick="event.stopPropagation();setMode('${svc.id}','mensual')">MENSUAL</button>
+          <button type="button" class="svc-mode-btn" data-mode="hora" onclick="event.stopPropagation();setMode('${svc.id}','hora')">HORA</button>
+          <button type="button" class="svc-mode-btn" data-mode="proyecto" onclick="event.stopPropagation();setMode('${svc.id}','proyecto')">PROYECTO</button>
+        </div>
+
+        <!-- Controls: MENSUAL (default) -->
+        <div class="svc-controls svc-ctrl-mensual" id="ctrl_mensual_${svc.id}">
           <div class="svc-qty-label">${svc.varLabel.toUpperCase()}</div>
           <div class="svc-qty-row">
             <button type="button" onclick="event.stopPropagation();adjustQty('${svc.id}',-1)">−</button>
@@ -203,11 +241,70 @@ function renderCards() {
           </div>
         </div>
 
+        <!-- Controls: HORA -->
+        <div class="svc-controls svc-ctrl-hora" id="ctrl_hora_${svc.id}" style="display:none">
+          <div class="svc-qty-label">HORAS</div>
+          <div class="svc-qty-row">
+            <button type="button" onclick="event.stopPropagation();adjustHours('${svc.id}',-1)">−</button>
+            <input type="number" id="hrs_${svc.id}" value="${svc.hourlyDefault}"
+              min="1" max="999"
+              onclick="event.stopPropagation()"
+              oninput="updateSummary()" />
+            <button type="button" onclick="event.stopPropagation();adjustHours('${svc.id}',1)">+</button>
+          </div>
+          <div class="svc-qty-label" style="margin-top:8px">TARIFA / HR</div>
+          <div class="svc-qty-row">
+            <span class="svc-rate-prefix">$</span>
+            <input type="number" id="rate_${svc.id}" value="${svc.hourlyRate}"
+              min="1" max="99999"
+              onclick="event.stopPropagation()"
+              oninput="updateSummary()" />
+          </div>
+        </div>
+
+        <!-- Controls: PROYECTO -->
+        <div class="svc-controls svc-ctrl-proyecto" id="ctrl_proyecto_${svc.id}" style="display:none">
+          <div class="svc-qty-label">MONTO DEL PROYECTO</div>
+          <div class="svc-qty-row">
+            <span class="svc-rate-prefix">$</span>
+            <input type="number" id="proj_${svc.id}" value="0"
+              min="0" max="9999999"
+              onclick="event.stopPropagation()"
+              oninput="updateSummary()"
+              placeholder="Monto total" />
+          </div>
+        </div>
+
         <div class="svc-rate">${rateTag}</div>
 
         <button class="svc-close" onclick="event.stopPropagation();deactivateModule('${svc.id}')">✕ quitar</button>
       </div>`;
   }).join('');
+}
+
+// ─────────────────────────────────────────
+// MODE TOGGLE
+// ─────────────────────────────────────────
+function getMode(id) {
+  return svcModes[id] || 'mensual';
+}
+
+function setMode(id, mode) {
+  svcModes[id] = mode;
+
+  // Update toggle buttons
+  const toggleEl = document.getElementById('mode_' + id);
+  toggleEl.querySelectorAll('.svc-mode-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.mode === mode);
+  });
+
+  // Show/hide control panels
+  ['mensual', 'hora', 'proyecto'].forEach(m => {
+    const ctrl = document.getElementById(`ctrl_${m}_${id}`);
+    if (ctrl) ctrl.style.display = (m === mode) ? 'block' : 'none';
+  });
+
+  updateSummary();
 }
 
 // ─────────────────────────────────────────
@@ -220,10 +317,16 @@ function handleCardClick(event, id) {
 
 function activateModule(id) {
   activeModules.add(id);
+  if (!svcModes[id]) svcModes[id] = 'mensual';
+
   const card = document.getElementById('card_' + id);
   card.classList.add('active');
   document.getElementById('stxt_' + id).textContent = 'ON';
   document.getElementById('activeCount').textContent = activeModules.size;
+
+  // Show the correct control panel for current mode
+  setMode(id, svcModes[id]);
+
   updateSummary();
   typeTerminalLine(id);
 }
@@ -235,6 +338,13 @@ function deactivateModule(id) {
   document.getElementById('stxt_' + id).textContent = 'OFF';
   document.getElementById('csub_' + id).textContent = '';
   document.getElementById('activeCount').textContent = activeModules.size;
+
+  // Hide all control panels
+  ['mensual', 'hora', 'proyecto'].forEach(m => {
+    const ctrl = document.getElementById(`ctrl_${m}_${id}`);
+    if (ctrl) ctrl.style.display = 'none';
+  });
+
   updateSummary();
 }
 
@@ -245,14 +355,37 @@ function adjustQty(id, delta) {
   updateSummary();
 }
 
+function adjustHours(id, delta) {
+  const input = document.getElementById('hrs_' + id);
+  input.value = Math.max(1, (parseInt(input.value) || 1) + delta);
+  updateSummary();
+}
+
 // ─────────────────────────────────────────
-// CALCULAR
+// CALCULAR SERVICIO
 // ─────────────────────────────────────────
 function calcSvc(id) {
-  const svc = SERVICES.find(s => s.id === id);
-  const qty = Math.max(svc.min, parseInt(document.getElementById('qty_' + id)?.value) || svc.defaultQty);
-  const variable = qty * svc.varRate;
-  return { base: svc.base, qty, variable, total: svc.base + variable };
+  const svc  = SERVICES.find(s => s.id === id);
+  const mode = getMode(id);
+
+  if (mode === 'mensual') {
+    const qty = Math.max(svc.min, parseInt(document.getElementById('qty_' + id)?.value) || svc.defaultQty);
+    const variable = qty * svc.varRate;
+    return { mode, base: svc.base, qty, variable, varUnit: svc.varUnit, varRate: svc.varRate, total: svc.base + variable };
+  }
+
+  if (mode === 'hora') {
+    const hrs  = Math.max(1, parseInt(document.getElementById('hrs_' + id)?.value) || svc.hourlyDefault);
+    const rate = Math.max(1, parseInt(document.getElementById('rate_' + id)?.value) || svc.hourlyRate);
+    return { mode, hours: hrs, hourlyRate: rate, total: hrs * rate };
+  }
+
+  if (mode === 'proyecto') {
+    const amount = Math.max(0, parseFloat(document.getElementById('proj_' + id)?.value) || 0);
+    return { mode, total: amount };
+  }
+
+  return { mode: 'mensual', base: 0, qty: 0, variable: 0, total: 0 };
 }
 
 function fmt(n)  { return '$' + Math.round(n).toLocaleString('es-MX'); }
@@ -260,53 +393,232 @@ function fmt2(n) { return Math.round(n).toLocaleString('es-MX'); }
 function val(id) { return document.getElementById(id)?.value?.trim() || ''; }
 
 // ─────────────────────────────────────────
-// UPDATE SUMMARY (TERMINAL)
+// EQUIPOS: RENDER SECCIÓN
+// ─────────────────────────────────────────
+function renderEquipSection() {
+  const section = document.getElementById('equipSection');
+  if (!section) return;
+
+  let chipsHtml = EQUIP_CATALOG.map(eq =>
+    `<button type="button" class="equip-chip" onclick="addEquipment('${eq.id}')">${eq.icon} ${eq.name}</button>`
+  ).join('');
+  chipsHtml += `<button type="button" class="equip-chip equip-chip-otro" onclick="addEquipment('otro')">+ Otro...</button>`;
+
+  section.innerHTML = `
+    <div class="equip-header">
+      <span class="equip-header-label">// equipos y hardware</span>
+      <span class="equip-header-count" id="equipCount">0 items</span>
+    </div>
+    <div class="equip-chips">${chipsHtml}</div>
+    <div id="equipRows" class="equip-rows"></div>
+    <div id="equipSubtotal" class="equip-subtotal" style="display:none"></div>`;
+}
+
+function addEquipment(catalogId) {
+  const uid = ++equipUidCounter;
+  let item;
+
+  if (catalogId === 'otro') {
+    item = { uid, catalogId: 'otro', name: '', qty: 1, unitPrice: 0 };
+  } else {
+    const cat = EQUIP_CATALOG.find(c => c.id === catalogId);
+    item = { uid, catalogId, name: cat.name, qty: 1, unitPrice: cat.defaultPrice };
+  }
+
+  equipmentItems.push(item);
+  renderEquipRows();
+  updateSummary();
+}
+
+function removeEquipment(uid) {
+  equipmentItems = equipmentItems.filter(e => e.uid !== uid);
+  renderEquipRows();
+  updateSummary();
+}
+
+function updateEquipField(uid, field, value) {
+  const item = equipmentItems.find(e => e.uid === uid);
+  if (!item) return;
+
+  if (field === 'qty')       item.qty = Math.max(1, parseInt(value) || 1);
+  if (field === 'unitPrice') item.unitPrice = Math.max(0, parseFloat(value) || 0);
+  if (field === 'name')      item.name = value;
+
+  updateSummary();
+}
+
+function renderEquipRows() {
+  const container = document.getElementById('equipRows');
+  if (!container) return;
+
+  container.innerHTML = equipmentItems.map(item => {
+    const cat = EQUIP_CATALOG.find(c => c.id === item.catalogId);
+    const icon = cat ? cat.icon : '📦';
+    const lineTotal = item.qty * item.unitPrice;
+
+    return `
+      <div class="equip-row">
+        <span class="equip-row-icon">${icon}</span>
+        <input type="text" class="equip-row-name" value="${item.name}"
+          placeholder="Descripción del equipo"
+          oninput="updateEquipField(${item.uid},'name',this.value)" />
+        <div class="equip-row-qty">
+          <button type="button" onclick="adjustEquipQty(${item.uid},-1)">−</button>
+          <input type="number" value="${item.qty}" min="1" max="999"
+            oninput="updateEquipField(${item.uid},'qty',this.value)" />
+          <button type="button" onclick="adjustEquipQty(${item.uid},1)">+</button>
+        </div>
+        <div class="equip-row-price">
+          <span class="svc-rate-prefix">$</span>
+          <input type="number" value="${item.unitPrice}" min="0"
+            oninput="updateEquipField(${item.uid},'unitPrice',this.value)" />
+        </div>
+        <span class="equip-row-total">${fmt(lineTotal)}</span>
+        <button type="button" class="equip-row-remove" onclick="removeEquipment(${item.uid})">✕</button>
+      </div>`;
+  }).join('');
+
+  // Update count
+  const countEl = document.getElementById('equipCount');
+  if (countEl) countEl.textContent = `${equipmentItems.length} item${equipmentItems.length !== 1 ? 's' : ''}`;
+}
+
+function adjustEquipQty(uid, delta) {
+  const item = equipmentItems.find(e => e.uid === uid);
+  if (!item) return;
+  item.qty = Math.max(1, item.qty + delta);
+  renderEquipRows();
+  updateSummary();
+}
+
+function calcEquipTotal() {
+  return equipmentItems.reduce((sum, item) => sum + (item.qty * item.unitPrice), 0);
+}
+
+// ─────────────────────────────────────────
+// UPDATE SUMMARY (TERMINAL) — TOTALES SEPARADOS
 // ─────────────────────────────────────────
 function updateSummary() {
-  const termItems  = document.getElementById('termItems');
-  const termSep    = document.getElementById('termSep');
-  const termTotRow = document.getElementById('termTotalRow');
-  const termIvaRow = document.getElementById('termIvaRow');
-  const termTotal  = document.getElementById('termTotal');
-  const termIva    = document.getElementById('termIva');
-  const termFolio  = document.getElementById('termFolio');
+  const termItems    = document.getElementById('termItems');
+  const termSep      = document.getElementById('termSep');
+  const termTotRow   = document.getElementById('termTotalRow');
+  const termIvaRow   = document.getElementById('termIvaRow');
+  const termTotal    = document.getElementById('termTotal');
+  const termIva      = document.getElementById('termIva');
+  const termTotLabel = document.getElementById('termTotalLabel');
+  const termFolio    = document.getElementById('termFolio');
 
-  if (activeModules.size === 0) {
-    termItems.innerHTML  = '<div class="t-line t-info">// Sin servicios activos</div>';
+  // ── Separar totales mensuales vs únicos ──
+  const termUnicoRow  = document.getElementById('termUnicoRow');
+  const termUnicoAmt  = document.getElementById('termUnicoAmt');
+  const termUnicoIvaR = document.getElementById('termUnicoIvaRow');
+  const termUnicoIva  = document.getElementById('termUnicoIva');
+
+  const equipTotal = calcEquipTotal();
+  const hasEquip = equipmentItems.length > 0;
+
+  // Update equip subtotal display
+  const equipSubEl = document.getElementById('equipSubtotal');
+  if (equipSubEl) {
+    if (hasEquip) {
+      equipSubEl.style.display = 'flex';
+      equipSubEl.innerHTML = `<span>Subtotal equipos:</span><span class="equip-subtotal-amount">${fmt(equipTotal)}</span>`;
+    } else {
+      equipSubEl.style.display = 'none';
+    }
+  }
+
+  const hasActive = activeModules.size > 0;
+
+  if (!hasActive && !hasEquip) {
+    termItems.innerHTML = '<div class="t-line t-info">// Sin servicios activos</div>';
     termSep.style.display    = 'none';
     termTotRow.style.display = 'none';
     termIvaRow.style.display = 'none';
+    if (termUnicoRow)  termUnicoRow.style.display  = 'none';
+    if (termUnicoIvaR) termUnicoIvaR.style.display = 'none';
     if (termFolio) termFolio.style.display = 'none';
-    prevTotal = 0;
+    prevTotalMensual = 0;
+    prevTotalUnico   = 0;
     return;
   }
 
-  let grand = 0;
-  let html  = '';
+  let grandMensual = 0;
+  let grandUnico   = 0;
+  let html = '';
 
+  // ── Servicios ──
   activeModules.forEach(id => {
     const svc  = SERVICES.find(s => s.id === id);
     const calc = calcSvc(id);
-    grand += calc.total;
 
     document.getElementById('csub_' + id).textContent = fmt(calc.total);
 
-    html += `
-      <div class="t-item">
-        <span class="t-item-name">+ ${svc.icon} ${svc.name.toLowerCase()} ×${calc.qty}</span>
-        <span class="t-item-amount">${fmt(calc.total)}</span>
-      </div>`;
+    if (calc.mode === 'mensual') {
+      grandMensual += calc.total;
+      html += `
+        <div class="t-item">
+          <span class="t-item-name">+ ${svc.icon} ${svc.name.toLowerCase()} ×${calc.qty} <span class="t-mode-tag">mensual</span></span>
+          <span class="t-item-amount">${fmt(calc.total)}</span>
+        </div>`;
+    } else if (calc.mode === 'hora') {
+      grandUnico += calc.total;
+      html += `
+        <div class="t-item">
+          <span class="t-item-name">+ ${svc.icon} ${svc.name.toLowerCase()} ${calc.hours}h <span class="t-mode-tag t-mode-unico">hora</span></span>
+          <span class="t-item-amount">${fmt(calc.total)}</span>
+        </div>`;
+    } else if (calc.mode === 'proyecto') {
+      grandUnico += calc.total;
+      html += `
+        <div class="t-item">
+          <span class="t-item-name">+ ${svc.icon} ${svc.name.toLowerCase()} <span class="t-mode-tag t-mode-unico">proy</span></span>
+          <span class="t-item-amount">${fmt(calc.total)}</span>
+        </div>`;
+    }
   });
 
+  // ── Equipos en terminal ──
+  if (hasEquip) {
+    html += '<div class="t-item t-equip-header"><span class="t-item-name">── equipos ──</span></div>';
+    equipmentItems.forEach(item => {
+      const cat = EQUIP_CATALOG.find(c => c.id === item.catalogId);
+      const icon = cat ? cat.icon : '📦';
+      const lineTotal = item.qty * item.unitPrice;
+      grandUnico += lineTotal;
+      html += `
+        <div class="t-item">
+          <span class="t-item-name">+ ${icon} ${item.name || 'Equipo'} ×${item.qty} <span class="t-mode-tag t-mode-unico">equipo</span></span>
+          <span class="t-item-amount">${fmt(lineTotal)}</span>
+        </div>`;
+    });
+  }
+
   termItems.innerHTML = html;
-  termSep.style.display    = 'block';
-  termTotRow.style.display = 'flex';
-  termIvaRow.style.display = 'flex';
+  termSep.style.display = 'block';
 
-  animateCount(termTotal, prevTotal, grand);
-  prevTotal = grand;
+  // ── Mensual ──
+  const hasMensual = grandMensual > 0;
+  termTotRow.style.display = hasMensual ? 'flex' : 'none';
+  termIvaRow.style.display = hasMensual ? 'flex' : 'none';
 
-  termIva.textContent = fmt(Math.round(grand * 1.16));
+  if (hasMensual) {
+    if (termTotLabel) termTotLabel.innerHTML = 'TOTAL/MES <span class="t-noiva">(sin IVA)</span>';
+    animateCount(termTotal, prevTotalMensual, grandMensual);
+    prevTotalMensual = grandMensual;
+    termIva.textContent = fmt(Math.round(grandMensual * 1.16));
+  }
+
+  // ── Único ──
+  const hasUnico = grandUnico > 0;
+  if (termUnicoRow)  termUnicoRow.style.display  = hasUnico ? 'flex' : 'none';
+  if (termUnicoIvaR) termUnicoIvaR.style.display = hasUnico ? 'flex' : 'none';
+
+  if (hasUnico && termUnicoAmt) {
+    animateCount(termUnicoAmt, prevTotalUnico, grandUnico);
+    prevTotalUnico = grandUnico;
+    if (termUnicoIva) termUnicoIva.textContent = fmt(Math.round(grandUnico * 1.16));
+  }
 
   // Folio display
   if (termFolio) {
@@ -345,7 +657,7 @@ function typeTerminalLine(id) {
 // EXPORT: WHATSAPP
 // ─────────────────────────────────────────
 function exportWhatsApp() {
-  if (!assertModules()) return;
+  if (!assertAny()) return;
 
   const empresa  = val('empresa')  || '—';
   const contacto = val('contacto') || '—';
@@ -353,40 +665,72 @@ function exportWhatsApp() {
   const fecha    = new Date().toLocaleDateString('es-MX', { day: '2-digit', month: 'long', year: 'numeric' });
   const user     = getCurrentUser();
 
-  let total = 0;
-  let lines = '';
+  let totalMensual = 0;
+  let totalUnico   = 0;
+  let linesMensual = '';
+  let linesUnico   = '';
 
   activeModules.forEach(id => {
     const svc  = SERVICES.find(s => s.id === id);
     const calc = calcSvc(id);
-    const p    = calc.qty !== 1 ? 's' : '';
-    total += calc.total;
-    lines += `\n✅ *${svc.name} — ${svc.sub}*\n`;
-    if (calc.base > 0) lines += `   • Base mensual: ${fmt(calc.base)}\n`;
-    lines += `   • ${calc.qty} ${svc.varUnit}${p} × ${fmt(svc.varRate)}: ${fmt(calc.variable)}\n`;
-    lines += `   • *Subtotal: ${fmt(calc.total)}*\n`;
+
+    if (calc.mode === 'mensual') {
+      totalMensual += calc.total;
+      const p = calc.qty !== 1 ? 's' : '';
+      linesMensual += `\n✅ *${svc.name} — ${svc.sub}*\n`;
+      if (calc.base > 0) linesMensual += `   • Base mensual: ${fmt(calc.base)}\n`;
+      linesMensual += `   • ${calc.qty} ${calc.varUnit}${p} × ${fmt(calc.varRate)}: ${fmt(calc.variable)}\n`;
+      linesMensual += `   • *Subtotal: ${fmt(calc.total)}/mes*\n`;
+    } else if (calc.mode === 'hora') {
+      totalUnico += calc.total;
+      linesUnico += `\n⚡ *${svc.name} — Por hora*\n`;
+      linesUnico += `   • ${calc.hours} hrs × ${fmt(calc.hourlyRate)}/hr\n`;
+      linesUnico += `   • *Subtotal: ${fmt(calc.total)}*\n`;
+    } else if (calc.mode === 'proyecto') {
+      totalUnico += calc.total;
+      linesUnico += `\n🔧 *${svc.name} — Proyecto*\n`;
+      linesUnico += `   • *Monto: ${fmt(calc.total)}*\n`;
+    }
+  });
+
+  // Equipos
+  let linesEquip = '';
+  equipmentItems.forEach(item => {
+    const cat = EQUIP_CATALOG.find(c => c.id === item.catalogId);
+    const icon = cat ? cat.icon : '📦';
+    const lineTotal = item.qty * item.unitPrice;
+    totalUnico += lineTotal;
+    linesEquip += `\n${icon} ${item.name || 'Equipo'} ×${item.qty} = ${fmt(lineTotal)}`;
   });
 
   const folioLine = currentFolio ? `\n📋 Folio: ${currentFolio}` : '';
   const vendedorLine = user ? `\n👨‍💼 Vendedor: ${user.name} (${user.id})` : '';
 
-  const text =
-`🔧 *PROPUESTA MIRMIBUG IT SOLUTIONS*
-📅 ${fecha}
-🏢 Empresa: ${empresa}
-👤 Contacto: ${contacto}${vendedorLine}${folioLine}
+  let text = `🔧 *PROPUESTA MIRMIBUG IT SOLUTIONS*\n📅 ${fecha}\n🏢 Empresa: ${empresa}\n👤 Contacto: ${contacto}${vendedorLine}${folioLine}\n`;
 
-*Servicios incluidos:*${lines}
-━━━━━━━━━━━━━━━━━━━
-💰 *TOTAL MENSUAL: ${fmt(total)} MXN*
-💼 *Con IVA (16%): ${fmt(Math.round(total * 1.16))} MXN*
-━━━━━━━━━━━━━━━━━━━
-${notas ? `\n📝 ${notas}\n` : ''}
-_Precios en MXN sin IVA. Contrato mensual, sin permanencia mínima. Válida 30 días._
+  if (linesMensual) {
+    text += `\n*─── SERVICIOS MENSUALES ───*${linesMensual}`;
+  }
+  if (linesUnico) {
+    text += `\n*─── SERVICIOS ÚNICOS ───*${linesUnico}`;
+  }
+  if (linesEquip) {
+    text += `\n*─── EQUIPOS ───*${linesEquip}\n`;
+  }
 
-📞 Mirmibug IT Solutions
-✉️ contacto@mirmibug.com
-🌐 mirmibug.com`;
+  text += `\n━━━━━━━━━━━━━━━━━━━`;
+  if (totalMensual > 0) {
+    text += `\n💰 *MENSUAL: ${fmt(totalMensual)} MXN*`;
+    text += `\n💼 *Con IVA (16%): ${fmt(Math.round(totalMensual * 1.16))} MXN*`;
+  }
+  if (totalUnico > 0) {
+    text += `\n💰 *ÚNICO: ${fmt(totalUnico)} MXN*`;
+    text += `\n💼 *Con IVA (16%): ${fmt(Math.round(totalUnico * 1.16))} MXN*`;
+  }
+  text += `\n━━━━━━━━━━━━━━━━━━━`;
+  if (notas) text += `\n\n📝 ${notas}`;
+  text += `\n\n_Precios en MXN sin IVA. Contrato mensual, sin permanencia mínima. Válida 30 días._`;
+  text += `\n\n📞 Mirmibug IT Solutions\n✉️ contacto@mirmibug.com\n🌐 mirmibug.com`;
 
   window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
 }
@@ -395,7 +739,7 @@ _Precios en MXN sin IVA. Contrato mensual, sin permanencia mínima. Válida 30 d
 // EXPORT: GUARDAR Y COMPARTIR
 // ─────────────────────────────────────────
 async function saveAndShare() {
-  if (!assertModules()) return;
+  if (!assertAny()) return;
 
   const resultEl = document.getElementById('shareResult');
   resultEl.style.display = 'block';
@@ -448,7 +792,7 @@ function copyShareUrl() {
 // EXPORT: EMAIL
 // ─────────────────────────────────────────
 function sendEmail() {
-  if (!assertModules()) return;
+  if (!assertAny()) return;
 
   const emailCliente = val('emailCliente');
   if (!emailCliente) {
@@ -458,14 +802,20 @@ function sendEmail() {
   }
 
   const q       = buildQuoteData();
-  const summary = q.items.map(i => `${i.name}: ${fmt(i.total)}`).join('\n');
+  const summary = q.items.map(i => `${i.name} (${i.mode}): ${fmt(i.total)}`).join('\n');
+  const equipSummary = q.equipment.map(e => `${e.name} ×${e.qty}: ${fmt(e.lineTotal)}`).join('\n');
   const folioNote = currentFolio ? `\nFolio: ${currentFolio}` : '';
+
+  let body = `Propuesta IT Mirmibug:${folioNote}\n\n${summary}`;
+  if (equipSummary) body += `\n\nEquipos:\n${equipSummary}`;
+  if (q.total_mensual > 0) body += `\n\nTOTAL MENSUAL: ${fmt(q.total_mensual)} MXN (sin IVA) — Con IVA: ${fmt(Math.round(q.total_mensual * 1.16))} MXN`;
+  if (q.total_unico > 0) body += `\nTOTAL ÚNICO: ${fmt(q.total_unico)} MXN (sin IVA) — Con IVA: ${fmt(Math.round(q.total_unico * 1.16))} MXN`;
 
   const fd = new FormData();
   fd.append('nombre',         q.contacto || 'Prospecto');
   fd.append('email',          emailCliente);
   fd.append('empresa',        q.empresa || '');
-  fd.append('mensaje',        `Propuesta IT Mirmibug:${folioNote}\n\n${summary}\n\nTOTAL: ${fmt(q.total)} MXN (sin IVA)\nCon IVA: ${fmt(Math.round(q.total * 1.16))} MXN`);
+  fd.append('mensaje',        body);
   fd.append('origen',         'cotizador-ventas');
   fd.append('quote_summary',  summary);
   fd.append('consentimiento', '1');
@@ -483,32 +833,64 @@ function sendEmail() {
 // BUILD QUOTE DATA
 // ─────────────────────────────────────────
 function buildQuoteData() {
-  let total = 0;
+  let totalMensual = 0;
+  let totalUnico   = 0;
   const items = [];
   const user = getCurrentUser();
 
   activeModules.forEach(id => {
     const svc  = SERVICES.find(s => s.id === id);
     const calc = calcSvc(id);
-    total += calc.total;
-    items.push({
+
+    const item = {
       id, name: svc.name, icon: svc.icon, sub: svc.sub,
-      base: calc.base, qty: calc.qty,
-      varUnit: svc.varUnit, varRate: svc.varRate,
-      variable: calc.variable, total: calc.total, desc: svc.desc
-    });
+      mode: calc.mode, total: calc.total, desc: svc.desc
+    };
+
+    if (calc.mode === 'mensual') {
+      totalMensual += calc.total;
+      item.base = calc.base;
+      item.qty = calc.qty;
+      item.varUnit = calc.varUnit;
+      item.varRate = calc.varRate;
+      item.variable = calc.variable;
+    } else if (calc.mode === 'hora') {
+      totalUnico += calc.total;
+      item.hours = calc.hours;
+      item.hourlyRate = calc.hourlyRate;
+    } else if (calc.mode === 'proyecto') {
+      totalUnico += calc.total;
+    }
+
+    items.push(item);
+  });
+
+  // Equipos
+  const equipment = equipmentItems.map(item => {
+    const lineTotal = item.qty * item.unitPrice;
+    totalUnico += lineTotal;
+    return {
+      catalogId: item.catalogId,
+      name: item.name,
+      qty: item.qty,
+      unitPrice: item.unitPrice,
+      lineTotal
+    };
   });
 
   return {
-    empresa:     val('empresa'),
-    contacto:    val('contacto'),
-    email:       val('emailCliente'),
-    vendedor:    val('vendedor'),
-    vendedor_id: user?.id || '',
-    notas:       val('notas'),
-    fecha:       new Date().toISOString().split('T')[0],
+    empresa:        val('empresa'),
+    contacto:       val('contacto'),
+    email:          val('emailCliente'),
+    vendedor:       val('vendedor'),
+    vendedor_id:    user?.id || '',
+    notas:          val('notas'),
+    fecha:          new Date().toISOString().split('T')[0],
     items,
-    total
+    equipment,
+    total_mensual:  totalMensual,
+    total_unico:    totalUnico,
+    total:          totalMensual + totalUnico   // legacy compat
   };
 }
 
@@ -535,11 +917,45 @@ async function loadSharedQuote(token) {
       resultEl.innerHTML = `<div class="cv-share-folio">// FOLIO: ${q.folio}</div>`;
     }
 
-    q.items.forEach(item => {
-      if (!activeModules.has(item.id)) activateModule(item.id);
-      const inp = document.getElementById('qty_' + item.id);
-      if (inp) inp.value = item.qty;
-    });
+    // Restaurar servicios con modo
+    if (q.items) {
+      q.items.forEach(item => {
+        if (!activeModules.has(item.id)) activateModule(item.id);
+
+        // Restaurar modo
+        const mode = item.mode || 'mensual';
+        setMode(item.id, mode);
+
+        if (mode === 'mensual') {
+          const inp = document.getElementById('qty_' + item.id);
+          if (inp) inp.value = item.qty || item.defaultQty;
+        } else if (mode === 'hora') {
+          const hrsInp  = document.getElementById('hrs_' + item.id);
+          const rateInp = document.getElementById('rate_' + item.id);
+          if (hrsInp)  hrsInp.value  = item.hours || 10;
+          if (rateInp) rateInp.value = item.hourlyRate || 750;
+        } else if (mode === 'proyecto') {
+          const projInp = document.getElementById('proj_' + item.id);
+          if (projInp) projInp.value = item.total || 0;
+        }
+      });
+    }
+
+    // Restaurar equipos
+    if (q.equipment && Array.isArray(q.equipment)) {
+      q.equipment.forEach(eq => {
+        const uid = ++equipUidCounter;
+        equipmentItems.push({
+          uid,
+          catalogId: eq.catalogId || 'otro',
+          name: eq.name || '',
+          qty: eq.qty || 1,
+          unitPrice: eq.unitPrice || 0
+        });
+      });
+      renderEquipRows();
+    }
+
     updateSummary();
   } catch {
     console.warn('No se pudo cargar la propuesta.');
@@ -550,31 +966,144 @@ async function loadSharedQuote(token) {
 // PRINT / PDF
 // ─────────────────────────────────────────
 function triggerPrint() {
-  if (!assertModules()) return;
+  if (!assertAny()) return;
   buildPrintView();
   window.print();
 }
 
 function buildPrintView() {
-  if (activeModules.size === 0) return;
+  const q = buildQuoteData();
+  if (q.items.length === 0 && q.equipment.length === 0) return;
 
-  const q     = buildQuoteData();
   const fecha = new Date().toLocaleDateString('es-MX', { day: '2-digit', month: 'long', year: 'numeric' });
   const user  = getCurrentUser();
 
-  let rows = '';
-  q.items.forEach(item => {
-    const p = item.qty !== 1 ? 's' : '';
-    rows += `
+  // ── Servicios mensuales ──
+  const mensualItems = q.items.filter(i => i.mode === 'mensual');
+  const unicoItems   = q.items.filter(i => i.mode !== 'mensual');
+
+  let mensualRows = '';
+  mensualItems.forEach(item => {
+    const p = (item.qty || 0) !== 1 ? 's' : '';
+    mensualRows += `
       <tr>
         <td style="padding:10px 12px;border-bottom:1px solid #eee;font-weight:600">${item.icon} ${item.name}</td>
         <td style="padding:10px 12px;border-bottom:1px solid #eee;color:#555;font-size:11px">${item.desc}</td>
-        <td style="padding:10px 12px;border-bottom:1px solid #eee;text-align:right">${item.base > 0 ? fmt(item.base) : '—'}</td>
+        <td style="padding:10px 12px;border-bottom:1px solid #eee;text-align:right">${(item.base || 0) > 0 ? fmt(item.base) : '—'}</td>
         <td style="padding:10px 12px;border-bottom:1px solid #eee;text-align:center">${item.qty} ${item.varUnit}${p}</td>
         <td style="padding:10px 12px;border-bottom:1px solid #eee;text-align:right">${fmt(item.varRate)}</td>
         <td style="padding:10px 12px;border-bottom:1px solid #eee;font-weight:700;color:#38d84e;text-align:right">${fmt(item.total)}</td>
       </tr>`;
   });
+
+  // ── Servicios únicos ──
+  let unicoRows = '';
+  unicoItems.forEach(item => {
+    let detailCol = '';
+    let qtyCol = '';
+    let unitCol = '';
+
+    if (item.mode === 'hora') {
+      detailCol = item.desc;
+      qtyCol = `${item.hours} hrs`;
+      unitCol = fmt(item.hourlyRate) + '/hr';
+    } else {
+      detailCol = item.desc;
+      qtyCol = 'Proyecto';
+      unitCol = '—';
+    }
+
+    unicoRows += `
+      <tr>
+        <td style="padding:10px 12px;border-bottom:1px solid #eee;font-weight:600">${item.icon} ${item.name}</td>
+        <td style="padding:10px 12px;border-bottom:1px solid #eee;color:#555;font-size:11px">${detailCol}</td>
+        <td style="padding:10px 12px;border-bottom:1px solid #eee;text-align:right">—</td>
+        <td style="padding:10px 12px;border-bottom:1px solid #eee;text-align:center">${qtyCol}</td>
+        <td style="padding:10px 12px;border-bottom:1px solid #eee;text-align:right">${unitCol}</td>
+        <td style="padding:10px 12px;border-bottom:1px solid #eee;font-weight:700;color:#38d84e;text-align:right">${fmt(item.total)}</td>
+      </tr>`;
+  });
+
+  // ── Equipos ──
+  let equipRows = '';
+  q.equipment.forEach(eq => {
+    const cat = EQUIP_CATALOG.find(c => c.id === eq.catalogId);
+    const icon = cat ? cat.icon : '📦';
+    equipRows += `
+      <tr>
+        <td style="padding:10px 12px;border-bottom:1px solid #eee;font-weight:600">${icon} ${eq.name || 'Equipo'}</td>
+        <td style="padding:10px 12px;border-bottom:1px solid #eee;color:#555;font-size:11px">Hardware</td>
+        <td style="padding:10px 12px;border-bottom:1px solid #eee;text-align:right">—</td>
+        <td style="padding:10px 12px;border-bottom:1px solid #eee;text-align:center">${eq.qty}</td>
+        <td style="padding:10px 12px;border-bottom:1px solid #eee;text-align:right">${fmt(eq.unitPrice)}</td>
+        <td style="padding:10px 12px;border-bottom:1px solid #eee;font-weight:700;color:#38d84e;text-align:right">${fmt(eq.lineTotal)}</td>
+      </tr>`;
+  });
+
+  // ── Build sections ──
+  const tableHead = `
+    <thead>
+      <tr style="background:#38d84e;color:#000">
+        <th style="padding:10px 12px;text-align:left">Servicio</th>
+        <th style="padding:10px 12px;text-align:left">Descripción</th>
+        <th style="padding:10px 12px;text-align:right">Base</th>
+        <th style="padding:10px 12px;text-align:center">Cantidad</th>
+        <th style="padding:10px 12px;text-align:right">P. Unit.</th>
+        <th style="padding:10px 12px;text-align:right">Subtotal</th>
+      </tr>
+    </thead>`;
+
+  let tablesHtml = '';
+
+  if (mensualRows) {
+    tablesHtml += `
+      <div style="font-size:11px;font-weight:800;color:#38d84e;letter-spacing:2px;margin:16px 0 8px;text-transform:uppercase">Servicios Recurrentes (Mensual)</div>
+      <table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:16px">
+        ${tableHead}
+        <tbody>${mensualRows}</tbody>
+      </table>`;
+  }
+
+  if (unicoRows) {
+    tablesHtml += `
+      <div style="font-size:11px;font-weight:800;color:#38d84e;letter-spacing:2px;margin:16px 0 8px;text-transform:uppercase">Servicios Únicos</div>
+      <table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:16px">
+        ${tableHead}
+        <tbody>${unicoRows}</tbody>
+      </table>`;
+  }
+
+  if (equipRows) {
+    tablesHtml += `
+      <div style="font-size:11px;font-weight:800;color:#38d84e;letter-spacing:2px;margin:16px 0 8px;text-transform:uppercase">Equipos / Hardware</div>
+      <table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:16px">
+        ${tableHead}
+        <tbody>${equipRows}</tbody>
+      </table>`;
+  }
+
+  // ── Totals ──
+  let totalsHtml = '<div style="display:flex;justify-content:flex-end;gap:16px;margin-bottom:20px;flex-wrap:wrap">';
+
+  if (q.total_mensual > 0) {
+    totalsHtml += `
+      <div style="text-align:right;background:#f9f9f9;padding:16px 24px;border-radius:8px;border-left:4px solid #38d84e">
+        <div style="font-size:10px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Total Mensual (sin IVA)</div>
+        <div style="font-size:24px;font-weight:900;color:#38d84e">${fmt(q.total_mensual)} MXN</div>
+        <div style="font-size:12px;color:#777;margin-top:4px">Con IVA (16%): ${fmt(Math.round(q.total_mensual * 1.16))} MXN</div>
+      </div>`;
+  }
+
+  if (q.total_unico > 0) {
+    totalsHtml += `
+      <div style="text-align:right;background:#f9f9f9;padding:16px 24px;border-radius:8px;border-left:4px solid #2196F3">
+        <div style="font-size:10px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Total Único (sin IVA)</div>
+        <div style="font-size:24px;font-weight:900;color:#2196F3">${fmt(q.total_unico)} MXN</div>
+        <div style="font-size:12px;color:#777;margin-top:4px">Con IVA (16%): ${fmt(Math.round(q.total_unico * 1.16))} MXN</div>
+      </div>`;
+  }
+
+  totalsHtml += '</div>';
 
   document.getElementById('printView').innerHTML = `
     <div style="max-width:820px;margin:0 auto;font-family:Inter,Arial,sans-serif;color:#111;padding:24px">
@@ -597,43 +1126,25 @@ function buildPrintView() {
         ${q.email    ? `<div style="font-size:13px"><b>Email:</b> ${q.email}</div>` : ''}
       </div>
 
-      <table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:20px">
-        <thead>
-          <tr style="background:#38d84e;color:#000">
-            <th style="padding:10px 12px;text-align:left">Servicio</th>
-            <th style="padding:10px 12px;text-align:left">Descripcion</th>
-            <th style="padding:10px 12px;text-align:right">Base</th>
-            <th style="padding:10px 12px;text-align:center">Cantidad</th>
-            <th style="padding:10px 12px;text-align:right">P. Unit.</th>
-            <th style="padding:10px 12px;text-align:right">Subtotal</th>
-          </tr>
-        </thead>
-        <tbody>${rows}</tbody>
-      </table>
+      ${tablesHtml}
 
-      <div style="display:flex;justify-content:flex-end;margin-bottom:20px">
-        <div style="text-align:right;background:#f9f9f9;padding:16px 24px;border-radius:8px;border-left:4px solid #38d84e">
-          <div style="font-size:10px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Total Mensual (sin IVA)</div>
-          <div style="font-size:28px;font-weight:900;color:#38d84e">${fmt(q.total)} MXN</div>
-          <div style="font-size:12px;color:#777;margin-top:4px">Con IVA (16%): ${fmt(Math.round(q.total * 1.16))} MXN</div>
-        </div>
-      </div>
+      ${totalsHtml}
 
       ${q.notas ? `<div style="padding:12px 16px;border:1px solid #ddd;border-radius:6px;font-size:12px;color:#444;margin-bottom:20px"><b>Notas:</b> ${q.notas}</div>` : ''}
 
       <div style="font-size:10px;color:#999;border-top:1px solid #eee;padding-top:14px;line-height:1.7">
-        Precios en MXN sin IVA. IVA aplicable 16%. Contrato mensual sin permanencia minima. Propuesta valida 30 dias.
+        Precios en MXN sin IVA. IVA aplicable 16%. Contrato mensual sin permanencia mínima. Propuesta válida 30 días.
         Consultas: <b>contacto@mirmibug.com</b>
       </div>
     </div>`;
 }
 
 // ─────────────────────────────────────────
-// HELPER
+// HELPERS
 // ─────────────────────────────────────────
-function assertModules() {
-  if (activeModules.size === 0) {
-    alert('Activa al menos un módulo de servicio primero.');
+function assertAny() {
+  if (activeModules.size === 0 && equipmentItems.length === 0) {
+    alert('Activa al menos un módulo de servicio o agrega un equipo primero.');
     return false;
   }
   return true;
