@@ -13,13 +13,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Deploy via FTP
+      - name: Deploy via FTP (upload only, never deletes server files)
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           server-dir: /public_html/
+          dangerous-clean-slate: false
           exclude: |
             **/.git*
             **/.git*/**
@@ -27,5 +28,8 @@ jobs:
             **/node_modules/**
             **/.DS_Store
             **/.gitignore
-            api/config.php
-            api/test-debug.php
+            **/config.php
+            **/test-smtp.php
+            **/test-debug.php
+            **/contact.log
+            **/.ftp-deploy-sync-state.json
