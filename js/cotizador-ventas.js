@@ -1212,12 +1212,37 @@ async function adminFetch(action, method = 'GET', body = null) {
   if (body) opts.body = JSON.stringify(body);
 
   const res = await fetch(`${API_BASE}?action=${action}`, opts);
+  if (res.status === 403) {
+    throw new Error('SESSION_EXPIRED');
+  }
   return res.json();
 }
 
 async function loadVendors() {
   const list = document.getElementById('vendorList');
   list.innerHTML = '<div class="admin-loading">Cargando...</div>';
+
+  // Fallback local: sin PHP, mostrar usuarios locales
+  if (IS_LOCALHOST) {
+    const currentUser = getCurrentUser();
+    list.innerHTML = LOCAL_DEV_USERS.map(v => {
+      const isSelf = v.id === currentUser?.id;
+      const roleTag = v.role === 'admin' ? '<span class="admin-role-tag">ADMIN</span>' : '';
+      return `
+        <div class="admin-row">
+          <div class="admin-row-info">
+            <span class="admin-row-id">${v.id}</span>
+            <span class="admin-row-name">${v.name}</span>
+            ${roleTag}
+            <span class="admin-status-active">ACTIVO</span>
+          </div>
+          <div class="admin-row-actions">
+            <span style="color:var(--accent);font-size:.7rem;opacity:.6">modo local</span>
+          </div>
+        </div>`;
+    }).join('') + '<div class="admin-empty" style="margin-top:8px">Gestión completa solo en mirmibug.com</div>';
+    return;
+  }
 
   try {
     const data = await adminFetch('list');
@@ -1254,11 +1279,17 @@ async function loadVendors() {
         </div>`;
     }).join('');
   } catch (e) {
-    list.innerHTML = '<div class="admin-error">Error de conexión</div>';
+    if (e.message === 'SESSION_EXPIRED') {
+      list.innerHTML = '<div class="admin-error">Sesión expirada — cierra sesión y vuelve a entrar con tu PIN</div>';
+    } else {
+      list.innerHTML = '<div class="admin-error">Error de conexión con el servidor</div>';
+    }
   }
 }
 
 async function createVendor() {
+  if (IS_LOCALHOST) { alert('Gestión de vendedores solo disponible en mirmibug.com'); return; }
+
   const nameInput = document.getElementById('newVendorName');
   const pinInput  = document.getElementById('newVendorPin');
   const name = nameInput.value.trim();
@@ -1282,12 +1313,14 @@ async function createVendor() {
     } else {
       alert('Error: ' + (data.error || 'No se pudo crear'));
     }
-  } catch {
-    alert('Error de conexión');
+  } catch (e) {
+    alert(e.message === 'SESSION_EXPIRED' ? 'Sesión expirada — sal y vuelve a entrar' : 'Error de conexión');
   }
 }
 
 function promptChangePin(vendorId, vendorName) {
+  if (IS_LOCALHOST) { alert('Gestión de vendedores solo disponible en mirmibug.com'); return; }
+
   const newPin = prompt(`Nuevo PIN para ${vendorName} (${vendorId}):\n(mínimo 4 caracteres)`);
   if (!newPin) return;
   if (newPin.trim().length < 4) {
@@ -1305,8 +1338,8 @@ async function changePin(vendorId, newPin) {
     } else {
       alert('Error: ' + (data.error || 'No se pudo actualizar'));
     }
-  } catch {
-    alert('Error de conexión');
+  } catch (e) {
+    alert(e.message === 'SESSION_EXPIRED' ? 'Sesión expirada — sal y vuelve a entrar' : 'Error de conexión');
   }
 }
 
@@ -1318,8 +1351,8 @@ async function toggleVendor(vendorId) {
     } else {
       alert('Error: ' + (data.error || 'No se pudo cambiar estado'));
     }
-  } catch {
-    alert('Error de conexión');
+  } catch (e) {
+    alert(e.message === 'SESSION_EXPIRED' ? 'Sesión expirada — sal y vuelve a entrar' : 'Error de conexión');
   }
 }
 
@@ -1333,8 +1366,8 @@ async function deleteVendor(vendorId, vendorName) {
     } else {
       alert('Error: ' + (data.error || 'No se pudo eliminar'));
     }
-  } catch {
-    alert('Error de conexión');
+  } catch (e) {
+    alert(e.message === 'SESSION_EXPIRED' ? 'Sesión expirada — sal y vuelve a entrar' : 'Error de conexión');
   }
 }
 
