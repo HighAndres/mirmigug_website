@@ -109,6 +109,7 @@ try {
         ],
       ];
 
+      $adminToken = null;
       // Si es admin, generar token adicional de admin
       if ($matched['role'] === 'admin') {
         $adminToken = bin2hex(random_bytes(16));
@@ -116,6 +117,15 @@ try {
         $_SESSION['admin_vendor_id'] = $matched['vendor_id'];
         $response['admin_token'] = $adminToken;
       }
+
+      // Persistir tokens en DB para auth stateless (no depender de sesión PHP)
+      try {
+        $colCheck = $pdo->query("SHOW COLUMNS FROM sales_vendors LIKE 'vendor_token'");
+        if ($colCheck->rowCount() > 0) {
+          $upd = $pdo->prepare("UPDATE sales_vendors SET vendor_token = ?, admin_token = ? WHERE vendor_id = ?");
+          $upd->execute([$vendorToken, $adminToken, $matched['vendor_id']]);
+        }
+      } catch (Throwable $ignore) {}
 
       echo json_encode($response, JSON_UNESCAPED_UNICODE);
       break;
@@ -298,8 +308,26 @@ try {
 // ── Helpers ──
 
 function requireAdmin(): void {
+  global $pdo;
   $token = $_SERVER['HTTP_X_ADMIN_TOKEN'] ?? '';
-  if ($token === '' || !isset($_SESSION['admin_token']) || $token !== $_SESSION['admin_token']) {
+  if ($token === '') {
+    http_response_code(403);
+    echo json_encode(['ok' => false, 'error' => 'No autorizado']);
+    exit;
+  }
+
+  // DB-based validation (stateless — no sessions needed)
+  try {
+    $colCheck = $pdo->query("SHOW COLUMNS FROM sales_vendors LIKE 'admin_token'");
+    if ($colCheck->rowCount() > 0) {
+      $stmt = $pdo->prepare("SELECT id FROM sales_vendors WHERE admin_token = ? AND role = 'admin' AND active = 1");
+      $stmt->execute([$token]);
+      if ($stmt->fetch()) return; // authorized
+    }
+  } catch (Throwable $ignore) {}
+
+  // Fallback: session-based validation (legacy)
+  if (!isset($_SESSION['admin_token']) || $token !== $_SESSION['admin_token']) {
     http_response_code(403);
     echo json_encode(['ok' => false, 'error' => 'No autorizado']);
     exit;

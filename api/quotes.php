@@ -17,7 +17,7 @@ if (in_array($origin, $allowed_origins, true)) {
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { http_response_code(204); exit; }
 
 require_once __DIR__ . '/config.php';
-session_start();
+@session_start();
 
 $action = $_GET['action'] ?? 'list';
 
@@ -74,9 +74,33 @@ try {
 
 // ── Helpers ──
 
+/**
+ * Validates vendor token against DB (stateless).
+ * Falls back to session if DB column not yet migrated.
+ * Returns vendor_id on success, exits with 403 on failure.
+ */
 function requireVendor(): string {
+  global $pdo;
   $token = $_SERVER['HTTP_X_VENDOR_TOKEN'] ?? '';
-  if ($token === '' || !isset($_SESSION['vendor_token']) || $token !== $_SESSION['vendor_token']) {
+  if ($token === '') {
+    http_response_code(403);
+    echo json_encode(['ok' => false, 'error' => 'No autorizado — inicia sesión de nuevo']);
+    exit;
+  }
+
+  // DB-based validation (stateless)
+  try {
+    $colCheck = $pdo->query("SHOW COLUMNS FROM sales_vendors LIKE 'vendor_token'");
+    if ($colCheck->rowCount() > 0) {
+      $stmt = $pdo->prepare("SELECT vendor_id FROM sales_vendors WHERE vendor_token = ? AND active = 1");
+      $stmt->execute([$token]);
+      $row = $stmt->fetch(PDO::FETCH_ASSOC);
+      if ($row) return (string)$row['vendor_id'];
+    }
+  } catch (Throwable $ignore) {}
+
+  // Fallback: session-based validation (legacy)
+  if (!isset($_SESSION['vendor_token']) || $token !== $_SESSION['vendor_token']) {
     http_response_code(403);
     echo json_encode(['ok' => false, 'error' => 'No autorizado — inicia sesión de nuevo']);
     exit;
@@ -84,9 +108,25 @@ function requireVendor(): string {
   return (string)($_SESSION['vendor_id'] ?? '');
 }
 
+/**
+ * Checks if the request has a valid admin token.
+ * Checks DB first, then falls back to session.
+ */
 function isAdminSession(): bool {
+  global $pdo;
   $adminToken = $_SERVER['HTTP_X_ADMIN_TOKEN'] ?? '';
-  return $adminToken !== ''
-    && isset($_SESSION['admin_token'])
-    && $adminToken === $_SESSION['admin_token'];
+  if ($adminToken === '') return false;
+
+  // DB-based check
+  try {
+    $colCheck = $pdo->query("SHOW COLUMNS FROM sales_vendors LIKE 'admin_token'");
+    if ($colCheck->rowCount() > 0) {
+      $stmt = $pdo->prepare("SELECT id FROM sales_vendors WHERE admin_token = ? AND role = 'admin' AND active = 1");
+      $stmt->execute([$adminToken]);
+      if ($stmt->fetch()) return true;
+    }
+  } catch (Throwable $ignore) {}
+
+  // Fallback: session
+  return isset($_SESSION['admin_token']) && $adminToken === $_SESSION['admin_token'];
 }

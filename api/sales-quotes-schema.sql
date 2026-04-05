@@ -94,6 +94,16 @@ CREATE TABLE IF NOT EXISTS sales_vendors (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =============================================
+-- Migración: tokens stateless para vendedores (auth sin sesión PHP)
+-- Ejecutar si la tabla ya existe
+-- =============================================
+-- ALTER TABLE sales_vendors
+--   ADD COLUMN vendor_token VARCHAR(64) DEFAULT NULL COMMENT 'Token activo del vendedor',
+--   ADD COLUMN admin_token  VARCHAR(64) DEFAULT NULL COMMENT 'Token activo de admin (solo role=admin)',
+--   ADD INDEX idx_vendor_token (vendor_token),
+--   ADD INDEX idx_admin_token  (admin_token);
+
+-- =============================================
 -- Seed: vendedor inicial (Andres como admin)
 -- El hash se genera al ejecutar api/vendors.php?action=setup
 -- desde el navegador UNA sola vez.

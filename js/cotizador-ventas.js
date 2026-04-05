@@ -259,7 +259,7 @@ function initApp() {
 // ─────────────────────────────────────────
 async function loadCompanyConfig() {
   try {
-    const res  = await fetch('api/config.php?action=get_company');
+    const res  = await fetch('api/company-config.php?action=get_company');
     const data = await res.json();
     if (data.ok) companyConfig = data.config || {};
   } catch { /* sin servidor: usar vacío */ }
@@ -267,7 +267,7 @@ async function loadCompanyConfig() {
 
 async function loadPriceOverrides() {
   try {
-    const res  = await fetch('api/config.php?action=get_prices');
+    const res  = await fetch('api/company-config.php?action=get_prices');
     const data = await res.json();
     if (data.ok && data.prices && typeof data.prices === 'object') {
       applyPriceOverrides(data.prices);
@@ -1563,7 +1563,7 @@ async function loadPricesTab() {
 
   let overrides = { services: {}, equip: {} };
   try {
-    const res  = await fetch('api/config.php?action=get_prices');
+    const res  = await fetch('api/company-config.php?action=get_prices');
     const data = await res.json();
     if (data.ok && data.prices) overrides = data.prices;
   } catch {}
@@ -1634,7 +1634,7 @@ async function savePrices() {
 
   try {
     btn.disabled = true;
-    const res  = await fetch('api/config.php?action=save_prices', {
+    const res  = await fetch('api/company-config.php?action=save_prices', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json', 'X-Admin-Token': getAdminToken() },
       body:    JSON.stringify(payload)
@@ -1654,7 +1654,7 @@ async function savePrices() {
 
 async function loadCompanyTab() {
   try {
-    const res  = await fetch('api/config.php?action=get_company');
+    const res  = await fetch('api/company-config.php?action=get_company');
     const data = await res.json();
     if (!data.ok) return;
     const c = data.config || {};
@@ -1693,7 +1693,7 @@ async function saveCompanyConfig() {
 
   try {
     btn.disabled = true;
-    const res  = await fetch('api/config.php?action=save_company', {
+    const res  = await fetch('api/company-config.php?action=save_company', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json', 'X-Admin-Token': getAdminToken() },
       body:    JSON.stringify(payload)
