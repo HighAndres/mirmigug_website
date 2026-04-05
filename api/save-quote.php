@@ -30,11 +30,12 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $raw  = file_get_contents('php://input');
 $data = json_decode($raw, true);
 
-if (!$data || empty($data['items']) || !is_array($data['items'])) {
+if (!$data || (empty($data['items']) && empty($data['equipment']))) {
   http_response_code(400);
   echo json_encode(['ok' => false, 'error' => 'Invalid data']);
   exit;
 }
+if (!isset($data['items']) || !is_array($data['items'])) $data['items'] = [];
 
 try {
   $dsn = 'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME . ';charset=utf8mb4';
@@ -73,51 +74,71 @@ try {
 
     $folio = 'MB-' . strtoupper($vendedor_id) . '-' . str_pad((string)$nextSeq, 4, '0', STR_PAD_LEFT);
 
+    $vigencia = max(1, min(365, (int)($data['vigencia_dias'] ?? 30)));
+
     $stmt = $pdo->prepare("
       INSERT INTO sales_quotes
         (token, folio, cliente_empresa, cliente_contacto, cliente_email,
-         vendedor, vendedor_id, quote_json, total_mensual, notas, expires_at)
+         vendedor, vendedor_id, quote_json, total_mensual, notas,
+         rfc_cliente, condiciones_pago, vigencia_dias, descuento_pct,
+         expires_at)
       VALUES
         (:token, :folio, :empresa, :contacto, :email,
          :vendedor, :vendedor_id, :json, :total, :notas,
-         DATE_ADD(NOW(), INTERVAL 60 DAY))
+         :rfc_cliente, :condiciones_pago, :vigencia_dias, :descuento_pct,
+         DATE_ADD(NOW(), INTERVAL :vigencia DAY))
     ");
 
     $stmt->execute([
-      ':token'       => $token,
-      ':folio'       => $folio,
-      ':empresa'     => mb_substr((string)($data['empresa']  ?? ''), 0, 120),
-      ':contacto'    => mb_substr((string)($data['contacto'] ?? ''), 0, 120),
-      ':email'       => mb_substr((string)($data['email']    ?? ''), 0, 180),
-      ':vendedor'    => mb_substr((string)($data['vendedor'] ?? ''), 0, 60),
-      ':vendedor_id' => $vendedor_id,
-      ':json'        => json_encode($data, JSON_UNESCAPED_UNICODE),
-      ':total'       => (float)($data['total'] ?? 0),
-      ':notas'       => mb_substr((string)($data['notas']    ?? ''), 0, 500),
+      ':token'           => $token,
+      ':folio'           => $folio,
+      ':empresa'         => mb_substr((string)($data['empresa']         ?? ''), 0, 120),
+      ':contacto'        => mb_substr((string)($data['contacto']        ?? ''), 0, 120),
+      ':email'           => mb_substr((string)($data['email']           ?? ''), 0, 180),
+      ':vendedor'        => mb_substr((string)($data['vendedor']        ?? ''), 0, 60),
+      ':vendedor_id'     => $vendedor_id,
+      ':json'            => json_encode($data, JSON_UNESCAPED_UNICODE),
+      ':total'           => (float)($data['total'] ?? 0),
+      ':notas'           => mb_substr((string)($data['notas']           ?? ''), 0, 500),
+      ':rfc_cliente'     => mb_substr((string)($data['rfc_cliente']     ?? ''), 0, 30),
+      ':condiciones_pago'=> mb_substr((string)($data['condiciones_pago']?? ''), 0, 60),
+      ':vigencia_dias'   => $vigencia,
+      ':descuento_pct'   => max(0, min(100, (float)($data['descuento_pct'] ?? 0))),
+      ':vigencia'        => $vigencia,
     ]);
 
     $pdo->commit();
   } else {
     // Sin vendor ID válido: guardar sin folio
+    $vigencia = max(1, min(365, (int)($data['vigencia_dias'] ?? 30)));
+
     $stmt = $pdo->prepare("
       INSERT INTO sales_quotes
         (token, cliente_empresa, cliente_contacto, cliente_email,
-         vendedor, quote_json, total_mensual, notas, expires_at)
+         vendedor, quote_json, total_mensual, notas,
+         rfc_cliente, condiciones_pago, vigencia_dias, descuento_pct,
+         expires_at)
       VALUES
         (:token, :empresa, :contacto, :email,
          :vendedor, :json, :total, :notas,
-         DATE_ADD(NOW(), INTERVAL 60 DAY))
+         :rfc_cliente, :condiciones_pago, :vigencia_dias, :descuento_pct,
+         DATE_ADD(NOW(), INTERVAL :vigencia DAY))
     ");
 
     $stmt->execute([
-      ':token'    => $token,
-      ':empresa'  => mb_substr((string)($data['empresa']  ?? ''), 0, 120),
-      ':contacto' => mb_substr((string)($data['contacto'] ?? ''), 0, 120),
-      ':email'    => mb_substr((string)($data['email']    ?? ''), 0, 180),
-      ':vendedor' => mb_substr((string)($data['vendedor'] ?? ''), 0, 60),
-      ':json'     => json_encode($data, JSON_UNESCAPED_UNICODE),
-      ':total'    => (float)($data['total'] ?? 0),
-      ':notas'    => mb_substr((string)($data['notas']    ?? ''), 0, 500),
+      ':token'           => $token,
+      ':empresa'         => mb_substr((string)($data['empresa']         ?? ''), 0, 120),
+      ':contacto'        => mb_substr((string)($data['contacto']        ?? ''), 0, 120),
+      ':email'           => mb_substr((string)($data['email']           ?? ''), 0, 180),
+      ':vendedor'        => mb_substr((string)($data['vendedor']        ?? ''), 0, 60),
+      ':json'            => json_encode($data, JSON_UNESCAPED_UNICODE),
+      ':total'           => (float)($data['total'] ?? 0),
+      ':notas'           => mb_substr((string)($data['notas']           ?? ''), 0, 500),
+      ':rfc_cliente'     => mb_substr((string)($data['rfc_cliente']     ?? ''), 0, 30),
+      ':condiciones_pago'=> mb_substr((string)($data['condiciones_pago']?? ''), 0, 60),
+      ':vigencia_dias'   => $vigencia,
+      ':descuento_pct'   => max(0, min(100, (float)($data['descuento_pct'] ?? 0))),
+      ':vigencia'        => $vigencia,
     ]);
   }
 
