@@ -94,8 +94,14 @@ try {
         exit;
       }
 
+      // Generar vendor_token para todos los usuarios
+      $vendorToken = bin2hex(random_bytes(16));
+      $_SESSION['vendor_token']    = $vendorToken;
+      $_SESSION['vendor_id']       = $matched['vendor_id'];
+
       $response = [
-        'ok'   => true,
+        'ok'           => true,
+        'vendor_token' => $vendorToken,
         'user' => [
           'id'   => $matched['vendor_id'],
           'name' => $matched['name'],
@@ -103,7 +109,7 @@ try {
         ],
       ];
 
-      // Si es admin, generar token temporal
+      // Si es admin, generar token adicional de admin
       if ($matched['role'] === 'admin') {
         $adminToken = bin2hex(random_bytes(16));
         $_SESSION['admin_token'] = $adminToken;

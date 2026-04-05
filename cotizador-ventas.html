@@ -51,6 +51,7 @@
         <div class="cv-header-right">
           <span id="userBadge" class="cv-user-badge" style="display:none"></span>
           <span id="currentDate" class="cv-date"></span>
+          <button onclick="openHistorialModal()" class="cv-hist-btn">📋 HISTORIAL</button>
           <button onclick="triggerPrint()" class="cv-print-btn">⎙ PDF</button>
           <button id="adminBtn" onclick="openAdminPanel()" class="cv-admin-btn" style="display:none">⚙ ADMIN</button>
           <button id="logoutBtn" onclick="logout()" class="cv-logout-btn" style="display:none">⏻ SALIR</button>
@@ -73,6 +74,10 @@
               <input type="text" id="empresa" placeholder="Nombre empresa" oninput="updateSummary()" />
             </div>
             <div class="cv-cf">
+              <label>RFC CLIENTE</label>
+              <input type="text" id="rfcCliente" placeholder="RFC (opcional)" maxlength="13" oninput="updateSummary()" style="text-transform:uppercase" />
+            </div>
+            <div class="cv-cf">
               <label>CONTACTO</label>
               <input type="text" id="contacto" placeholder="Nombre contacto" oninput="updateSummary()" />
             </div>
@@ -84,10 +89,29 @@
               <label>VENDEDOR</label>
               <input type="text" id="vendedor" placeholder="Tu nombre" oninput="updateSummary()" />
             </div>
+            <div class="cv-cf">
+              <label>COND. DE PAGO</label>
+              <select id="condPago" onchange="updateSummary()">
+                <option value="">— Seleccionar —</option>
+                <option value="Mensual adelantado">Mensual adelantado</option>
+                <option value="50% inicio / 50% entrega">50% inicio / 50% entrega</option>
+                <option value="Pago al completar">Pago al completar</option>
+                <option value="A 30 días">A 30 días</option>
+                <option value="Personalizado">Personalizado (ver notas)</option>
+              </select>
+            </div>
+            <div class="cv-cf">
+              <label>VIGENCIA (DÍAS)</label>
+              <input type="number" id="vigenciaDias" value="30" min="1" max="365" oninput="updateSummary()" />
+            </div>
+            <div class="cv-cf">
+              <label>DESCUENTO %</label>
+              <input type="number" id="descuentoPct" value="0" min="0" max="100" step="0.5" placeholder="0" oninput="updateSummary()" />
+            </div>
           </div>
           <div class="cv-cf cv-cf-full" style="margin-top:10px">
             <label>NOTAS / CONDICIONES</label>
-            <textarea id="notas" placeholder="Descuentos, condiciones especiales, observaciones..." rows="2" oninput="updateSummary()"></textarea>
+            <textarea id="notas" placeholder="Descuentos especiales, acuerdos, observaciones..." rows="2" oninput="updateSummary()"></textarea>
           </div>
         </div>
 
@@ -128,6 +152,10 @@
               <div class="t-line t-info">// Configura servicios en el panel izquierdo</div>
               <div id="termItems" class="t-items"></div>
               <div class="t-sep" id="termSep" style="display:none">─────────────────────────────</div>
+              <div class="t-discount-row" id="termDiscountRow" style="display:none">
+                <span class="t-discount-label">DESCUENTO</span>
+                <span class="t-discount-amount" id="termDiscountAmt"></span>
+              </div>
               <div class="t-total-row" id="termTotalRow" style="display:none">
                 <div class="t-total-label" id="termTotalLabel">TOTAL/MES <span class="t-noiva">(sin IVA)</span></div>
                 <div class="t-total-amount" id="termTotal">$0</div>
@@ -182,31 +210,118 @@
     <div id="printView" class="print-view"></div>
 
     <!-- ══════════════════════════════════
-         ADMIN PANEL — GESTIÓN DE VENDEDORES
+         HISTORIAL DE COTIZACIONES
+    ══════════════════════════════════ -->
+    <div id="historialModal" class="admin-overlay" style="display:none">
+      <div class="admin-box admin-box-wide">
+        <div class="admin-header">
+          <span class="admin-title">📋 MIS COTIZACIONES</span>
+          <button onclick="closeHistorialModal()" class="admin-close">✕</button>
+        </div>
+        <div class="historial-toolbar">
+          <input type="text" id="histSearch" class="admin-input" placeholder="Buscar empresa, folio, contacto..." oninput="filterHistorial()" />
+          <button onclick="loadHistorial()" class="admin-create-btn" style="width:auto;padding:0 16px">↺ ACTUALIZAR</button>
+        </div>
+        <div id="historialList" class="historial-list">
+          <div class="admin-loading">Cargando historial...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         ADMIN PANEL
     ══════════════════════════════════ -->
     <div id="adminPanel" class="admin-overlay" style="display:none">
-      <div class="admin-box">
+      <div class="admin-box admin-box-wide">
         <div class="admin-header">
-          <span class="admin-title">⚙ ADMINISTRAR VENDEDORES</span>
+          <span class="admin-title">⚙ PANEL DE ADMINISTRACIÓN</span>
           <button onclick="closeAdminPanel()" class="admin-close">✕</button>
         </div>
 
-        <div class="admin-create">
-          <div class="admin-create-label">// nuevo vendedor</div>
-          <div class="admin-create-fields">
-            <input id="newVendorName" class="admin-input" type="text" placeholder="Nombre" maxlength="60" autocomplete="off" />
-            <input id="newVendorPin" class="admin-input" type="password" placeholder="PIN (mín. 4 chars)" maxlength="30" autocomplete="off" />
-            <button onclick="createVendor()" class="admin-create-btn">+ AGREGAR</button>
+        <!-- TABS -->
+        <div class="admin-tabs">
+          <button class="admin-tab active" id="tab-btn-vendors"  onclick="switchAdminTab('vendors')">👥 VENDEDORES</button>
+          <button class="admin-tab"        id="tab-btn-precios"  onclick="switchAdminTab('precios')">💲 PRECIOS</button>
+          <button class="admin-tab"        id="tab-btn-empresa"  onclick="switchAdminTab('empresa')">🏢 EMPRESA</button>
+        </div>
+
+        <!-- TAB: VENDEDORES -->
+        <div id="adminTabVendors" class="admin-tab-content">
+          <div class="admin-create">
+            <div class="admin-create-label">// nuevo vendedor</div>
+            <div class="admin-create-fields">
+              <input id="newVendorName" class="admin-input" type="text" placeholder="Nombre" maxlength="60" autocomplete="off" />
+              <input id="newVendorPin" class="admin-input" type="password" placeholder="PIN (mín. 4 chars)" maxlength="30" autocomplete="off" />
+              <button onclick="createVendor()" class="admin-create-btn">+ AGREGAR</button>
+            </div>
+          </div>
+          <div class="admin-list-label">// vendedores registrados</div>
+          <div id="vendorList" class="admin-list"></div>
+        </div>
+
+        <!-- TAB: PRECIOS -->
+        <div id="adminTabPrecios" class="admin-tab-content" style="display:none">
+          <div class="admin-prices-header">
+            <div class="admin-create-label">// precios de servicios y equipos</div>
+            <div class="admin-create-label" style="color:var(--muted2);font-size:.75rem;margin-top:2px">Los cambios aplican a todas las cotizaciones nuevas</div>
+          </div>
+          <div id="priceForm" class="price-form">
+            <div class="admin-loading">Cargando precios...</div>
+          </div>
+          <div class="admin-save-row">
+            <button onclick="savePrices()" class="admin-create-btn" style="width:auto;padding:0 24px">💾 GUARDAR PRECIOS</button>
+            <span id="priceSaveMsg" class="admin-save-msg"></span>
           </div>
         </div>
 
-        <div class="admin-list-label">// vendedores registrados</div>
-        <div id="vendorList" class="admin-list"></div>
+        <!-- TAB: EMPRESA -->
+        <div id="adminTabEmpresa" class="admin-tab-content" style="display:none">
+          <div class="admin-create-label">// datos de la empresa (aparecen en PDF)</div>
+          <div class="empresa-form" id="empresaForm">
+            <div class="cv-cf">
+              <label>RFC</label>
+              <input type="text" id="cfg_rfc" class="admin-input" placeholder="MIS-XXXXXX" maxlength="15" style="text-transform:uppercase" />
+            </div>
+            <div class="cv-cf">
+              <label>DIRECCIÓN</label>
+              <input type="text" id="cfg_address" class="admin-input" placeholder="Ciudad de México, CDMX" maxlength="200" />
+            </div>
+            <div class="cv-cf">
+              <label>TELÉFONO</label>
+              <input type="text" id="cfg_phone" class="admin-input" placeholder="+52 55 0000-0000" maxlength="30" />
+            </div>
+            <div class="cv-cf">
+              <label>CLABE</label>
+              <input type="text" id="cfg_clabe" class="admin-input" placeholder="18 dígitos" maxlength="18" />
+            </div>
+            <div class="cv-cf">
+              <label>BANCO</label>
+              <input type="text" id="cfg_bank" class="admin-input" placeholder="BBVA, Banamex, etc." maxlength="40" />
+            </div>
+            <div class="cv-cf">
+              <label>TITULAR CUENTA</label>
+              <input type="text" id="cfg_bank_titular" class="admin-input" placeholder="Mirmibug IT Solutions" maxlength="80" />
+            </div>
+            <div class="cv-cf">
+              <label>DESCUENTO MÁX %</label>
+              <input type="number" id="cfg_max_discount" class="admin-input" placeholder="20" min="0" max="100" />
+            </div>
+            <div class="cv-cf cv-cf-full">
+              <label>TÉRMINOS Y CONDICIONES (PDF footer)</label>
+              <textarea id="cfg_terms" class="admin-input" rows="3" placeholder="Precios en MXN sin IVA. IVA aplicable 16%..."></textarea>
+            </div>
+          </div>
+          <div class="admin-save-row">
+            <button onclick="saveCompanyConfig()" class="admin-create-btn" style="width:auto;padding:0 24px">💾 GUARDAR DATOS</button>
+            <span id="empresaSaveMsg" class="admin-save-msg"></span>
+          </div>
+        </div>
+
       </div>
     </div>
 
   </div>
 
-  <script src="js/cotizador-ventas.js?v=5"></script>
+  <script src="js/cotizador-ventas.js?v=6"></script>
 </body>
 </html>

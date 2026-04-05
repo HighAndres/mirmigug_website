@@ -43,6 +43,40 @@ CREATE TABLE IF NOT EXISTS sales_quotes (
 --   ADD COLUMN total_unico DECIMAL(12,2) DEFAULT NULL AFTER total_mensual;
 
 -- =============================================
+-- Migración: nuevos campos de cotización (v2)
+-- Ejecutar si la tabla ya existe
+-- =============================================
+-- ALTER TABLE sales_quotes
+--   ADD COLUMN rfc_cliente      VARCHAR(30)  DEFAULT NULL AFTER cliente_email,
+--   ADD COLUMN condiciones_pago VARCHAR(60)  DEFAULT NULL AFTER notas,
+--   ADD COLUMN vigencia_dias    TINYINT      DEFAULT 30   AFTER condiciones_pago,
+--   ADD COLUMN descuento_pct    DECIMAL(5,2) DEFAULT 0    AFTER vigencia_dias;
+
+-- =============================================
+-- Tabla: company_config
+-- Configuración de empresa y precios (admin)
+-- =============================================
+CREATE TABLE IF NOT EXISTS company_config (
+  cfg_key    VARCHAR(80)  NOT NULL PRIMARY KEY,
+  cfg_value  TEXT,
+  updated_at TIMESTAMP    DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =============================================
+-- Seed inicial de configuración de empresa
+-- Personalizar estos valores en el panel admin
+-- =============================================
+-- INSERT IGNORE INTO company_config (cfg_key, cfg_value) VALUES
+--   ('rfc',          'MIS-XXXXXX'),
+--   ('address',      'Ciudad de México, CDMX'),
+--   ('phone',        '+52 55 0000-0000'),
+--   ('clabe',        '000000000000000000'),
+--   ('bank',         'BBVA'),
+--   ('bank_titular', 'Mirmibug IT Solutions'),
+--   ('terms',        'Precios en MXN sin IVA. IVA aplicable 16%. Contrato mensual sin permanencia mínima. Pago mensual adelantado.'),
+--   ('max_discount', '20');
+
+-- =============================================
 -- Tabla: sales_vendors
 -- Vendedores del cotizador con autenticación server-side
 -- =============================================
