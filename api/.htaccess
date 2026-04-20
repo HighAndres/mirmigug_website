@@ -1,0 +1,14 @@
+# Bloquear acceso web directo a archivos sensibles de la API
+<FilesMatch "^(config\.php|contact\.log|\.env|test-smtp\.php|test-debug\.php|sales-quotes-schema\.sql)$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Bloquear directorio mailer completo
+<Files "mailer/*">
+    Order Allow,Deny
+    Deny from all
+</Files>
+
+# Sin listado de directorio
+Options -Indexes

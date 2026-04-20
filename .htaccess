@@ -1,11 +1,14 @@
-# Proteger archivos sensibles
+# Sin listado de directorios
+Options -Indexes
+
+# Proteger archivos sensibles en raíz
 <FilesMatch "^(config\.php|contact\.log|\.env|\.gitignore)$">
     Order Allow,Deny
     Deny from all
 </FilesMatch>
 
 # Proteger directorio mailer
-<Directory "mailer">
+<DirectoryMatch "^(.*/)?mailer(/.*)?$">
     Order Allow,Deny
     Deny from all
-</Directory>
+</DirectoryMatch>
