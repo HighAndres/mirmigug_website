@@ -43,7 +43,40 @@
   <link rel="stylesheet" href="css/style.css" />
 
   <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet" />
+
+  <!-- Hreflang -->
+  <link rel="alternate" hreflang="es" href="https://mirmibug.com/" />
+  <link rel="alternate" hreflang="en" href="https://mirmibug.com/en.html" />
+  <link rel="alternate" hreflang="x-default" href="https://mirmibug.com/" />
+
+  <!-- JSON-LD Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ProfessionalService",
+    "name": "Mirmibug IT Solutions",
+    "description": "IT services for small and mid-sized businesses in Mexico. Help Desk, monitoring, cloud, security and automation.",
+    "url": "https://mirmibug.com",
+    "logo": "https://mirmibug.com/img/logo_mirmibug_360.png",
+    "telephone": "+525549644749",
+    "email": "contacto@mirmibug.com",
+    "address": {
+      "@type": "PostalAddress",
+      "addressCountry": "MX"
+    },
+    "areaServed": {
+      "@type": "Country",
+      "name": "Mexico"
+    },
+    "serviceType": ["IT Support", "Help Desk", "Cloud Computing", "Cybersecurity", "Software Development"],
+    "sameAs": [
+      "https://github.com/HighAndres"
+    ]
+  }
+  </script>
 </head>
 
 <body class="bg-black text-white font-inter overflow-x-hidden">
@@ -308,11 +341,11 @@
     <form id="contactForm" class="contact-form" action="/api/contact.php" method="POST" enctype="multipart/form-data">
       <input type="text" name="website" style="display:none" tabindex="-1" autocomplete="off" />
 
-      <input type="text" name="nombre" placeholder="Name" required />
-      <input type="email" name="email" placeholder="Email" required />
-      <input type="text" name="telefono" placeholder="Phone (optional)" />
-      <input type="text" name="empresa" placeholder="Company (optional)" />
-      <textarea name="mensaje" placeholder="Message" required></textarea>
+      <input type="text" name="nombre" placeholder="Name" required aria-label="Name" />
+      <input type="email" name="email" placeholder="Email" required aria-label="Email address" />
+      <input type="text" name="telefono" placeholder="Phone (optional)" aria-label="Phone" />
+      <input type="text" name="empresa" placeholder="Company (optional)" aria-label="Company" />
+      <textarea name="mensaje" placeholder="Message" required aria-label="Message"></textarea>
 
       <label class="consent-row">
         <input type="checkbox" name="consentimiento" />
@@ -354,7 +387,7 @@
       </div>
 
       <div class="flex justify-center gap-6 text-gray-400">
-        <a href="https://www.linkedin.com/" target="_blank" rel="noopener" class="hover:text-[#38d84e] transition">LinkedIn</a>
+        <a href="https://www.linkedin.com/company/mirmibug" target="_blank" rel="noopener" aria-label="LinkedIn" class="hover:text-[#38d84e] transition">LinkedIn</a>
         <a href="https://github.com/HighAndres" target="_blank" rel="noopener" class="hover:text-[#38d84e] transition">GitHub</a>
         <a href="https://wa.me/5215549644749" target="_blank" rel="noopener" class="hover:text-[#38d84e] transition">WhatsApp</a>
         <a href="mailto:contacto@mirmibug.com" class="hover:text-[#38d84e] transition">Email</a>

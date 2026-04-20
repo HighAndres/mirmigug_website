@@ -43,11 +43,44 @@
   <link rel="stylesheet" href="css/style.css" />
 
   <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet" />
-</head>
+
+  <!-- Hreflang -->
+  <link rel="alternate" hreflang="es" href="https://mirmibug.com/" />
+  <link rel="alternate" hreflang="en" href="https://mirmibug.com/en.html" />
+  <link rel="alternate" hreflang="x-default" href="https://mirmibug.com/" />
+
+  <!-- JSON-LD Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ProfessionalService",
+    "name": "Mirmibug IT Solutions",
+    "description": "Servicios IT para pequeñas y medianas empresas en México. Help Desk, monitoreo, cloud, seguridad y automatización.",
+    "url": "https://mirmibug.com",
+    "logo": "https://mirmibug.com/img/logo_mirmibug_360.png",
+    "telephone": "+525549644749",
+    "email": "contacto@mirmibug.com",
+    "address": {
+      "@type": "PostalAddress",
+      "addressCountry": "MX"
+    },
+    "areaServed": {
+      "@type": "Country",
+      "name": "México"
+    },
+    "serviceType": ["Soporte IT", "Help Desk", "Cloud Computing", "Seguridad Informática", "Desarrollo de Software"],
+    "sameAs": [
+      "https://github.com/HighAndres"
+    ]
+  }
+  </script>
+</head>                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
 
 <body class="bg-black text-white font-inter overflow-x-hidden">
-
+                                                       
   <!-- NAVBAR -->
   <header class="navbar">
     <nav class="nav-content">
@@ -324,11 +357,11 @@
       <!-- honeypot anti-spam (no lo borres) -->
       <input type="text" name="website" style="display:none" tabindex="-1" autocomplete="off" />
 
-      <input type="text" name="nombre" placeholder="Nombre" required />
-      <input type="email" name="email" placeholder="Correo" required />
-      <input type="text" name="telefono" placeholder="Teléfono (opcional)" />
-      <input type="text" name="empresa" placeholder="Empresa (opcional)" />
-      <textarea name="mensaje" placeholder="Mensaje" required></textarea>
+      <input type="text" name="nombre" placeholder="Nombre" required aria-label="Nombre" />
+      <input type="email" name="email" placeholder="Correo" required aria-label="Correo electrónico" />
+      <input type="text" name="telefono" placeholder="Teléfono (opcional)" aria-label="Teléfono" />
+      <input type="text" name="empresa" placeholder="Empresa (opcional)" aria-label="Empresa" />
+      <textarea name="mensaje" placeholder="Mensaje" required aria-label="Mensaje"></textarea>
 
       <label class="consent-row">
         <input type="checkbox" name="consentimiento" />
@@ -370,7 +403,7 @@
       </div>
 
       <div class="flex justify-center gap-6 text-gray-400">
-        <a href="https://www.linkedin.com/" target="_blank" rel="noopener" aria-label="LinkedIn"
+        <a href="https://www.linkedin.com/company/mirmibug" target="_blank" rel="noopener" aria-label="LinkedIn"
           class="hover:text-[#38d84e] transition">LinkedIn</a>
 
         <a href="https://github.com/HighAndres" target="_blank" rel="noopener" aria-label="GitHub"
@@ -419,6 +452,143 @@
   </div>
 
   <script src="js/app.js"></script>
+
+  <!-- ══ MIRMIBOT CHAT WIDGET ══ -->
+  <style>
+    #mb-btn{position:fixed;bottom:152px;right:24px;z-index:9000;width:52px;height:52px;border-radius:50%;background:#38d84e;color:#000;border:none;cursor:pointer;box-shadow:0 4px 16px rgba(56,216,78,.4);display:flex;align-items:center;justify-content:center;transition:transform .2s,box-shadow .2s;}
+    #mb-btn:hover{transform:scale(1.08);box-shadow:0 6px 20px rgba(56,216,78,.55);}
+    #mb-win{position:fixed;bottom:152px;right:24px;z-index:9001;width:340px;max-width:calc(100vw - 32px);height:460px;max-height:calc(100vh - 120px);background:#111;border:1px solid #1e1e1e;border-radius:16px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.7);transform:scale(.9) translateY(20px);opacity:0;pointer-events:none;transition:transform .25s cubic-bezier(.4,0,.2,1),opacity .25s;}
+    #mb-win.mb-open{transform:scale(1) translateY(0);opacity:1;pointer-events:all;}
+    #mb-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:#161616;border-bottom:1px solid #222;flex-shrink:0;}
+    .mb-htitle{display:flex;align-items:center;gap:8px;font-weight:600;font-size:.9rem;color:#fff;}
+    .mb-dot{width:8px;height:8px;border-radius:50%;background:#38d84e;animation:mbpulse 2s infinite;}
+    @keyframes mbpulse{0%,100%{opacity:1}50%{opacity:.3}}
+    #mb-close{background:none;border:none;color:#888;cursor:pointer;font-size:1.3rem;line-height:1;padding:2px 6px;border-radius:4px;transition:color .15s;}
+    #mb-close:hover{color:#fff;}
+    #mb-msgs{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;scroll-behavior:smooth;}
+    #mb-msgs::-webkit-scrollbar{width:3px;}
+    #mb-msgs::-webkit-scrollbar-thumb{background:#2a2a2a;border-radius:2px;}
+    .mb-msg{max-width:82%;padding:8px 12px;border-radius:12px;font-size:.85rem;line-height:1.45;word-break:break-word;}
+    .mb-msg-bot{background:#1a2b1c;color:#d4f7d9;align-self:flex-start;border-bottom-left-radius:3px;}
+    .mb-msg-user{background:#38d84e;color:#000;align-self:flex-end;border-bottom-right-radius:3px;}
+    #mb-status{text-align:center;font-size:.68rem;color:#555;padding:3px 0;flex-shrink:0;}
+    #mb-foot{display:flex;gap:8px;padding:10px 12px;background:#161616;border-top:1px solid #222;flex-shrink:0;align-items:flex-end;}
+    #mb-input{flex:1;background:#0c0c0c;border:1px solid #272727;color:#fff;border-radius:8px;padding:8px 10px;font-size:.85rem;font-family:inherit;resize:none;height:36px;max-height:80px;outline:none;transition:border-color .15s;overflow-y:hidden;}
+    #mb-input:focus{border-color:#38d84e;}
+    #mb-input::placeholder{color:#555;}
+    #mb-send{background:#38d84e;color:#000;border:none;border-radius:8px;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:opacity .15s;}
+    #mb-send:hover{opacity:.85;}
+    #mb-send:disabled{opacity:.35;cursor:default;}
+  </style>
+
+  <button id="mb-btn" title="Chat con Mirmibot" aria-label="Abrir chat" aria-expanded="false">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+
+  <div id="mb-win" role="dialog" aria-label="Chat de Mirmibot" aria-modal="true">
+    <div id="mb-head">
+      <div class="mb-htitle">
+        <span class="mb-dot" aria-hidden="true"></span>
+        Mirmibot
+      </div>
+      <button id="mb-close" aria-label="Cerrar">×</button>
+    </div>
+    <div id="mb-msgs" aria-live="polite"></div>
+    <div id="mb-status">Conectando...</div>
+    <div id="mb-foot">
+      <textarea id="mb-input" placeholder="Escribe tu mensaje..." aria-label="Mensaje" rows="1"></textarea>
+      <button id="mb-send" aria-label="Enviar" disabled>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M22 2L11 13" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M22 2L15 22l-4-9-9-4 20-7z" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <script>
+  (function(){
+    var GW='wss://brain.mirmibug.com';
+    var TOKEN='02c1b1a739b6f26e57df3ad6dbf51c8256b9b95dda64a1c79aab65af3f3df380';
+    var SESSION='agent:main:webchat:mirmibot-site';
+    var WELCOME='¡Hola! Soy Mirmibot, el asistente virtual de Mirmibug IT Solutions. ¿En qué puedo ayudarte hoy?';
+    var ws=null,chatOpen=false,welcomed=false,reconnDelay=2000,reconnTimer=null;
+    var btn=document.getElementById('mb-btn');
+    var win=document.getElementById('mb-win');
+    var closeBtn=document.getElementById('mb-close');
+    var msgsEl=document.getElementById('mb-msgs');
+    var inputEl=document.getElementById('mb-input');
+    var sendBtn=document.getElementById('mb-send');
+    var statusEl=document.getElementById('mb-status');
+
+    function addMsg(text,type){
+      var d=document.createElement('div');
+      d.className='mb-msg mb-msg-'+type;
+      d.textContent=text;
+      msgsEl.appendChild(d);
+      msgsEl.scrollTop=msgsEl.scrollHeight;
+    }
+    function setSt(t){statusEl.textContent=t;}
+
+    function connect(){
+      if(ws&&(ws.readyState===0||ws.readyState===1))return;
+      setSt('Conectando...');
+      sendBtn.disabled=true;
+      try{ws=new WebSocket(GW);}
+      catch(e){setSt('● Reconectando...');scheduleReconn();return;}
+      ws.onopen=function(){
+        reconnDelay=2000;
+        sendBtn.disabled=false;
+        setSt('● En línea');
+        ws.send(JSON.stringify({type:'auth',token:TOKEN,session:SESSION}));
+      };
+      ws.onmessage=function(e){
+        try{
+          var d=JSON.parse(e.data);
+          var t=d.text||d.message||d.content||d.response||'';
+          if(t)addMsg(t,'bot');
+        }catch(_){if(e.data)addMsg(e.data,'bot');}
+      };
+      ws.onclose=function(){sendBtn.disabled=true;setSt('● Reconectando...');scheduleReconn();};
+      ws.onerror=function(){ws.close();};
+    }
+    function scheduleReconn(){
+      clearTimeout(reconnTimer);
+      reconnTimer=setTimeout(function(){if(chatOpen)connect();},reconnDelay);
+      reconnDelay=Math.min(reconnDelay*1.6,16000);
+    }
+    function sendMsg(){
+      var text=inputEl.value.trim();
+      if(!text)return;
+      addMsg(text,'user');
+      inputEl.value='';
+      inputEl.style.height='36px';
+      if(ws&&ws.readyState===1)ws.send(JSON.stringify({type:'message',text:text,session:SESSION}));
+    }
+    function openChat(){
+      chatOpen=true;
+      win.classList.add('mb-open');
+      btn.setAttribute('aria-expanded','true');
+      connect();
+      if(!welcomed){welcomed=true;setTimeout(function(){addMsg(WELCOME,'bot');},350);}
+      setTimeout(function(){inputEl.focus();},280);
+    }
+    function closeChat(){
+      chatOpen=false;
+      win.classList.remove('mb-open');
+      btn.setAttribute('aria-expanded','false');
+    }
+    btn.addEventListener('click',function(){chatOpen?closeChat():openChat();});
+    closeBtn.addEventListener('click',closeChat);
+    sendBtn.addEventListener('click',sendMsg);
+    inputEl.addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}});
+    inputEl.addEventListener('input',function(){this.style.height='36px';this.style.height=Math.min(this.scrollHeight,80)+'px';});
+    document.addEventListener('keydown',function(e){if(e.key==='Escape'&&chatOpen)closeChat();});
+  })();
+  </script>
+  <!-- ══ FIN MIRMIBOT ══ -->
 </body>
 
 </html>

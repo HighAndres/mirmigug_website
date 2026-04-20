@@ -1,13 +1,18 @@
 # Credenciales (NUNCA subir)
-api/.env
+config.php
 api/config.php
+.env
+api/.env
 
 # Logs
+*.log
+contact.log
 api/contact.log
 
-# macOS
+# macOS / Windows
 .DS_Store
 .DS_Store?
+Thumbs.db
 
 # IDEs
 .vscode/

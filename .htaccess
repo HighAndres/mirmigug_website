@@ -1,0 +1,11 @@
+# Proteger archivos sensibles
+<FilesMatch "^(config\.php|contact\.log|\.env|\.gitignore)$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Proteger directorio mailer
+<Directory "mailer">
+    Order Allow,Deny
+    Deny from all
+</Directory>

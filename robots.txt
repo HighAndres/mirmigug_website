@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+Disallow: /mailer/
+Disallow: /api/config.php
+Disallow: /api/contact.log
+Disallow: /api/test-smtp.php
+Disallow: /api/save-quote.php
+Disallow: /api/get-quote.php
+Disallow: /api/quotes.php
+Disallow: /api/vendors.php
+
+Sitemap: https://mirmibug.com/sitemap.xml
