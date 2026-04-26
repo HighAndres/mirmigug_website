@@ -259,7 +259,10 @@ function initApp() {
 // ─────────────────────────────────────────
 async function loadCompanyConfig() {
   try {
-    const res  = await fetch('api/company-config.php?action=get_company');
+    const token = getVendorToken() || getAdminToken();
+    const res  = await fetch('api/company-config.php?action=get_company', {
+      headers: token ? { 'X-Vendor-Token': token } : {}
+    });
     const data = await res.json();
     if (data.ok) companyConfig = data.config || {};
   } catch { /* sin servidor: usar vacío */ }
@@ -1654,7 +1657,9 @@ async function savePrices() {
 
 async function loadCompanyTab() {
   try {
-    const res  = await fetch('api/company-config.php?action=get_company');
+    const res  = await fetch('api/company-config.php?action=get_company', {
+      headers: { 'X-Admin-Token': getAdminToken() }
+    });
     const data = await res.json();
     if (!data.ok) return;
     const c = data.config || {};

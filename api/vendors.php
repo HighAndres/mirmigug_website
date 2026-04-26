@@ -1,7 +1,5 @@
 <?php
 declare(strict_types=1);
-error_reporting(E_ALL);
-ini_set('display_errors', '1');
 
 header('Content-Type: application/json; charset=utf-8');
 
@@ -89,6 +87,7 @@ try {
       }
 
       if (!$matched) {
+        sleep(1); // ralentiza brute force
         http_response_code(401);
         echo json_encode(['ok' => false, 'error' => 'PIN incorrecto']);
         exit;

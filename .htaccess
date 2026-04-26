@@ -1,7 +1,39 @@
 # Sin listado de directorios
 Options -Indexes
 
-# Proteger archivos sensibles en raíz
+# ── Security Headers ──────────────────────────────────────────────────────────
+<IfModule mod_headers.c>
+  # Clickjacking
+  Header always set X-Frame-Options "SAMEORIGIN"
+
+  # MIME sniffing
+  Header always set X-Content-Type-Options "nosniff"
+
+  # HSTS — forzar HTTPS por 1 año
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+
+  # Referrer
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+  # Permisos de APIs del navegador
+  Header always set Permissions-Policy "geolocation=(), microphone=(), camera=(), payment=()"
+
+  # CSP — Tailwind CDN requiere unsafe-eval y unsafe-inline para estilos
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' https://cdn.tailwindcss.com 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self'; frame-ancestors 'none'; form-action 'self'; base-uri 'self';"
+
+  # Ocultar versión del servidor
+  Header always unset X-Powered-By
+  Header always unset Server
+</IfModule>
+
+# ── PHP Session segura ────────────────────────────────────────────────────────
+<IfModule mod_php.c>
+  php_flag session.cookie_httponly On
+  php_flag session.cookie_secure   On
+  php_value session.cookie_samesite "Strict"
+</IfModule>
+
+# ── Proteger archivos sensibles en raíz ──────────────────────────────────────
 <FilesMatch "^(config\.php|contact\.log|\.env|\.gitignore)$">
     Order Allow,Deny
     Deny from all

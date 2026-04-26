@@ -33,10 +33,17 @@ try {
   switch ($action) {
 
     // ══════════════════════════════════
-    // GET_COMPANY — datos de la empresa (público)
+    // GET_COMPANY — datos de la empresa
+    // Campos sensibles (clabe, bank, bank_titular, rfc) solo con vendor token
     // ══════════════════════════════════
     case 'get_company':
-      $stmt = $pdo->query("SELECT cfg_key, cfg_value FROM company_config WHERE cfg_key NOT IN ('price_overrides')");
+      $isVendor = isValidVendor($pdo);
+      if ($isVendor) {
+        $stmt = $pdo->query("SELECT cfg_key, cfg_value FROM company_config WHERE cfg_key != 'price_overrides'");
+      } else {
+        $stmt = $pdo->prepare("SELECT cfg_key, cfg_value FROM company_config WHERE cfg_key IN ('address','phone','terms','max_discount')");
+        $stmt->execute();
+      }
       $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
       $config = [];
       foreach ($rows as $r) $config[$r['cfg_key']] = $r['cfg_value'];
@@ -158,5 +165,21 @@ function requirePost(): void {
     http_response_code(405);
     echo json_encode(['ok' => false, 'error' => 'POST required']);
     exit;
+  }
+}
+
+/**
+ * Returns true if request carries a valid vendor or admin token.
+ * Does NOT exit — use this for optional auth checks.
+ */
+function isValidVendor(PDO $pdo): bool {
+  $token = $_SERVER['HTTP_X_VENDOR_TOKEN'] ?? $_SERVER['HTTP_X_ADMIN_TOKEN'] ?? '';
+  if ($token === '') return false;
+  try {
+    $stmt = $pdo->prepare("SELECT id FROM sales_vendors WHERE (vendor_token = ? OR admin_token = ?) AND active = 1");
+    $stmt->execute([$token, $token]);
+    return (bool) $stmt->fetch();
+  } catch (Throwable $ignore) {
+    return false;
   }
 }
