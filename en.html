@@ -20,7 +20,7 @@
   <meta property="og:url" content="https://mirmibug.com/en.html" />
   <meta property="og:title" content="Mirmibug | IT Services for Businesses in Mexico" />
   <meta property="og:description"
-    content="Your external IT department. Support, infrastructure, cloud and automation with operational discipline." />
+    content="Your external IT department. Support, infrastructure, cloud and automation for businesses that need reliability and operational order." />
   <meta property="og:image" content="https://mirmibug.com/img/logo_mirmibug_360.png" />
   <meta property="og:locale" content="en_US" />
   <meta property="og:site_name" content="Mirmibug IT Solutions" />
@@ -31,21 +31,21 @@
   <meta name="twitter:description" content="Your external IT department. Support, infrastructure, cloud and automation." />
   <meta name="twitter:image" content="https://mirmibug.com/img/logo_mirmibug_360.png" />
 
-  <!-- Favicon (Mirmibug) -->
+  <!-- Favicon -->
   <link rel="icon" type="image/png" href="img/mirmibug-logo-green_sfondo.png" />
   <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png" />
   <link rel="apple-touch-icon" sizes="192x192" href="img/favicon-192.png" />
 
-  <!-- Tailwind -->
+  <!-- Tailwind (needed for existing sections) -->
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Custom CSS -->
   <link rel="stylesheet" href="css/style.css" />
 
-  <!-- Fonts -->
+  <!-- Fonts: Space Mono + DM Sans + Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet" />
 
   <!-- Hreflang -->
   <link rel="alternate" hreflang="es" href="https://mirmibug.com/" />
@@ -72,74 +72,752 @@
       "name": "Mexico"
     },
     "serviceType": ["IT Support", "Help Desk", "Cloud Computing", "Cybersecurity", "Software Development"],
-    "sameAs": [
-      "https://github.com/HighAndres"
-    ]
+    "sameAs": ["https://github.com/HighAndres"]
   }
   </script>
+
+  <!-- ═══ HERO & NAV — New Design CSS ═══ -->
+  <style>
+    body {
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    :root {
+      --black: #0a0a0a;
+      --green: #38d84e;
+      --green-dim: #2ab83f;
+      --green-glow: rgba(56, 216, 78, 0.15);
+      --green-glow-strong: rgba(56, 216, 78, 0.3);
+      --dark-surface: #111111;
+      --dark-card: #1a1a1a;
+      --gray-text: #8a8a8a;
+      --gray-light: #b0b0b0;
+      --white: #f0f0f0;
+    }
+
+    /* ── NAVBAR ── */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 60px;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      background: rgba(10, 10, 10, 0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(56, 216, 78, 0.1);
+      animation: fadeDown 0.6s ease-out;
+    }
+
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .nav-logo-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .nav-logo-icon img {
+      width: 42px;
+      height: 42px;
+      object-fit: contain;
+    }
+
+    .nav-logo-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+
+    .nav-logo-text strong {
+      font-family: 'Space Mono', monospace;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: 1px;
+    }
+
+    .nav-logo-text span {
+      font-size: 11px;
+      color: var(--green);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 36px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .nav-links a {
+      color: var(--gray-light);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      font-family: 'DM Sans', sans-serif;
+      transition: color 0.3s;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--green);
+      transition: width 0.3s;
+    }
+
+    .nav-links a:hover { color: var(--white); }
+    .nav-links a:hover::after { width: 100%; }
+
+    .nav-cta {
+      background: var(--green) !important;
+      color: var(--black) !important;
+      padding: 10px 24px;
+      border-radius: 8px;
+      font-weight: 700 !important;
+      font-family: 'Space Mono', monospace !important;
+      font-size: 13px !important;
+      transition: box-shadow 0.3s, transform 0.2s !important;
+    }
+
+    .nav-cta:hover {
+      box-shadow: 0 0 24px var(--green-glow-strong);
+      transform: translateY(-1px);
+    }
+
+    .nav-cta::after { display: none !important; }
+
+    .nav-hamburger {
+      display: none;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.14);
+      color: var(--white);
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 16px;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .mobile-menu {
+      top: 82px !important;
+    }
+
+    .nav-lang {
+      display: inline-flex;
+    }
+
+    @media (max-width: 1024px) {
+      nav { padding: 16px 24px; }
+      .nav-links { display: none; }
+      .nav-lang { display: none; }
+      .nav-hamburger { display: inline-flex; align-items: center; justify-content: center; }
+    }
+
+    /* ── HERO ── */
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      padding: 60px 60px 40px;
+      min-height: 80vh;
+      position: relative;
+      isolation: auto;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(circle, rgba(56,216,78,0.12) 1px, transparent 1px),
+        radial-gradient(circle, rgba(56,216,78,0.06) 1px, transparent 1px);
+      background-size: 80px 80px, 40px 40px;
+      background-position: 0 0, 20px 20px;
+      mask-image: radial-gradient(ellipse 80% 70% at 70% 40%, black 20%, transparent 80%);
+      -webkit-mask-image: radial-gradient(ellipse 80% 70% at 70% 40%, black 20%, transparent 80%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      top: -100px;
+      right: -100px;
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(circle, rgba(56,216,78,0.07) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .hero-left {
+      position: relative;
+      z-index: 10;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(56,216,78,0.08);
+      border: 1px solid rgba(56,216,78,0.2);
+      padding: 8px 20px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: 'DM Sans', sans-serif;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 36px;
+      animation: fadeUp 0.6s ease-out 0.2s both;
+    }
+
+    .hero-badge::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: var(--green);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(56,216,78,0.4); }
+      50%       { opacity: 0.8; box-shadow: 0 0 0 6px rgba(56,216,78,0); }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-title {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 62px;
+      font-weight: 700;
+      line-height: 1.08;
+      letter-spacing: -2px;
+      margin-bottom: 28px;
+      animation: fadeUp 0.6s ease-out 0.35s both;
+      max-width: none;
+      text-shadow: none;
+      color: var(--white);
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--green);
+      position: relative;
+    }
+
+    .hero-title em::after {
+      content: '';
+      position: absolute;
+      bottom: 2px;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: var(--green);
+      opacity: 0.3;
+      border-radius: 2px;
+    }
+
+    .hero-subtitle {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 17px;
+      color: var(--gray-text);
+      line-height: 1.7;
+      max-width: 460px;
+      margin-bottom: 40px;
+      margin-left: 0;
+      margin-right: 0;
+      text-shadow: none;
+      animation: fadeUp 0.6s ease-out 0.5s both;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 60px;
+      animation: fadeUp 0.6s ease-out 0.65s both;
+    }
+
+    .btn-primary {
+      background: var(--green);
+      color: var(--black);
+      padding: 16px 32px;
+      border-radius: 10px;
+      font-family: 'Space Mono', monospace;
+      font-weight: 700;
+      font-size: 14px;
+      text-decoration: none;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 0 30px var(--green-glow-strong), 0 4px 20px rgba(0,0,0,0.3);
+      transform: translateY(-2px);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--white);
+      padding: 16px 32px;
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.15);
+      transition: all 0.3s;
+    }
+
+    .btn-outline:hover {
+      border-color: rgba(255,255,255,0.4);
+      background: rgba(255,255,255,0.04);
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 48px;
+      animation: fadeUp 0.6s ease-out 0.8s both;
+    }
+
+    .stat { position: relative; }
+
+    .stat::after {
+      content: '';
+      position: absolute;
+      right: -24px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 1px;
+      height: 40px;
+      background: rgba(255,255,255,0.08);
+    }
+
+    .stat:last-child::after { display: none; }
+
+    .stat-value {
+      font-family: 'Space Mono', monospace;
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1;
+    }
+
+    .stat-value span { color: var(--green); }
+
+    .stat-label {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      color: var(--gray-text);
+      margin-top: 6px;
+    }
+
+    .hero-right {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: fadeUp 0.8s ease-out 0.4s both;
+    }
+
+    .illustration-container {
+      position: relative;
+      width: 500px;
+      height: 500px;
+    }
+
+    .terminal {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 280px;
+      background: var(--dark-card);
+      border: 1px solid rgba(56,216,78,0.15);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(56,216,78,0.05);
+    }
+
+    .terminal-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.03);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .terminal-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .terminal-dot:nth-child(1) { background: #ff5f57; }
+    .terminal-dot:nth-child(2) { background: #ffbd2e; }
+    .terminal-dot:nth-child(3) { background: var(--green); }
+
+    .terminal-title {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--gray-text);
+      margin-left: 8px;
+    }
+
+    .terminal-body {
+      padding: 20px;
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      line-height: 1.8;
+      color: var(--gray-light);
+    }
+
+    .terminal-line { opacity: 0; animation: typeIn 0.3s ease-out forwards; }
+    .terminal-line:nth-child(1) { animation-delay: 1s; }
+    .terminal-line:nth-child(2) { animation-delay: 1.4s; }
+    .terminal-line:nth-child(3) { animation-delay: 1.8s; }
+    .terminal-line:nth-child(4) { animation-delay: 2.2s; }
+    .terminal-line:nth-child(5) { animation-delay: 2.6s; }
+
+    @keyframes typeIn {
+      from { opacity: 0; transform: translateX(-8px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    .terminal-prompt { color: var(--green); }
+    .terminal-comment { color: #555; }
+    .terminal-cursor {
+      display: inline-block;
+      width: 8px;
+      height: 14px;
+      background: var(--green);
+      animation: blink 1s step-end infinite;
+      vertical-align: text-bottom;
+      margin-left: 2px;
+    }
+
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+
+    .float-card {
+      position: absolute;
+      background: var(--dark-card);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+      animation: floatIn 0.6s ease-out both;
+      transition: transform 0.3s;
+      cursor: default;
+    }
+
+    .float-card:hover { transform: translateY(-4px) scale(1.02); }
+
+    .float-card-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .float-card-text strong {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--white);
+      margin-bottom: 2px;
+    }
+
+    .float-card-text span {
+      font-size: 11px;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--gray-text);
+    }
+
+    .card-1 { top: 30px; right: 20px; animation-delay: 1.2s; }
+    .card-1 .float-card-icon { background: rgba(56,216,78,0.15); color: var(--green); }
+
+    .card-2 { top: 140px; left: 0; animation-delay: 1.5s; }
+    .card-2 .float-card-icon { background: rgba(96,165,250,0.15); color: #60a5fa; }
+
+    .card-3 { bottom: 120px; right: 0; animation-delay: 1.8s; }
+    .card-3 .float-card-icon { background: rgba(251,191,36,0.15); color: #fbbf24; }
+
+    .card-4 { bottom: 30px; left: 40px; animation-delay: 2.1s; }
+    .card-4 .float-card-icon { background: rgba(167,139,250,0.15); color: #a78bfa; }
+
+    @keyframes floatIn {
+      from { opacity: 0; transform: translateY(20px) scale(0.9); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* ── MARQUEE ── */
+    .marquee-container {
+      background: var(--green);
+      padding: 14px 0;
+      overflow: hidden;
+    }
+
+    .marquee-track {
+      display: flex;
+      gap: 60px;
+      animation: marqueeScroll 25s linear infinite;
+      width: max-content;
+    }
+
+    .marquee-item {
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--black);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .marquee-item::after { content: '◆'; font-size: 6px; opacity: 0.5; }
+
+    @keyframes marqueeScroll {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1024px) {
+      .hero { grid-template-columns: 1fr; padding: 40px 24px; min-height: auto; }
+      .hero-title { font-size: 44px; letter-spacing: -1px; }
+      .hero-right { display: none; }
+      .hero-subtitle { max-width: 100%; }
+      .hero-stats { gap: 28px; }
+      .stat-value { font-size: 28px; }
+    }
+
+    @media (max-width: 600px) {
+      .hero { padding: 32px 20px; }
+      .hero-title { font-size: 36px; }
+      .hero-actions { flex-direction: column; align-items: flex-start; }
+      .btn-primary, .btn-outline { width: 100%; justify-content: center; text-align: center; }
+      .hero-stats { gap: 20px; flex-wrap: wrap; }
+    }
+  </style>
 </head>
 
-<body class="bg-black text-white font-inter overflow-x-hidden">
+<body class="bg-black text-white overflow-x-hidden">
 
-  <!-- NAVBAR -->
-  <header class="navbar">
-    <nav class="nav-content">
-      <a class="logo" href="#home" aria-label="Go to Home">
-        <img src="img/mirmibug-logo-green_sfondo.png" class="w-10" alt="Mirmibug Logo" />
-        <span class="brand-name">MIRMIBUG</span>
-      </a>
-
-      <ul class="menu">
-        <li><a href="#home">Home</a></li>
-        <li><a href="#services">Services</a></li>
-        <li><a href="#contact">Contact</a></li>
-      </ul>
-
-      <div class="nav-actions">
-        <div class="lang-switch" role="navigation" aria-label="Switch language">
-          <a class="lang-btn" href="index.html" hreflang="es">ES</a>
-          <a class="lang-btn is-active" href="en.html" hreflang="en">EN</a>
-        </div>
-
-        <a href="#contact" class="btn-contacto">Contact us</a>
+  <!-- ═══ NAVBAR ═══ -->
+  <nav>
+    <a class="nav-logo" href="#home" aria-label="Go to Home">
+      <div class="nav-logo-icon">
+        <img src="img/mirmibug-logo-green_sfondo.png" alt="Mirmibug Logo" />
       </div>
+      <div class="nav-logo-text">
+        <strong>MIRMIBUG</strong>
+        <span>IT Solutions</span>
+      </div>
+    </a>
 
-      <button id="menuBtn" class="menu-btn" aria-label="Open menu" aria-expanded="false">☰</button>
-    </nav>
-  </header>
+    <ul class="nav-links">
+      <li><a href="#services">Services</a></li>
+      <li><a href="#products">Products</a></li>
+      <li><a href="#process">Process</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact">Contact</a></li>
+      <li><a href="#contact" class="nav-cta">Contact us →</a></li>
+    </ul>
+
+    <div class="nav-lang lang-switch" role="navigation" aria-label="Switch language">
+      <a class="lang-btn" href="index.html" hreflang="es">ES</a>
+      <a class="lang-btn is-active" href="en.html" hreflang="en">EN</a>
+    </div>
+
+    <button id="menuBtn" class="nav-hamburger" aria-label="Open menu" aria-expanded="false">☰</button>
+  </nav>
 
   <!-- MOBILE MENU -->
   <div id="mobileMenu" class="mobile-menu hidden">
     <a href="#home">Home</a>
     <a href="#services">Services</a>
     <a href="#contact">Contact</a>
-
     <div class="lang-switch mobile-lang" role="navigation" aria-label="Switch language">
       <a class="lang-btn" href="index.html" hreflang="es">ES</a>
       <a class="lang-btn is-active" href="en.html" hreflang="en">EN</a>
     </div>
   </div>
 
-  <!-- HERO -->
-  <section id="home" class="hero hero-bg hero-section">
-    <h1 class="hero-title">Technology infrastructure under control</h1>
-    <p class="hero-subtitle">
-      We implement and manage IT environments with a focus on operational order, security, and efficiency.
-      Managed technology with technical discipline and strategic vision.
-    </p>
+  <!-- ═══ HERO ═══ -->
+  <section id="home" class="hero">
+    <div class="hero-left">
+      <div class="hero-badge">Your IT team, always available</div>
 
-    <a href="#services" class="hero-btn">Solutions</a>
+      <h1 class="hero-title">
+        IT Solutions that<br>
+        <em>protect</em> your<br>
+        business
+      </h1>
+
+      <p class="hero-subtitle">
+        IT Support, infrastructure, cybersecurity, AI automation
+        and custom development — all from one team that understands SMBs.
+      </p>
+
+      <div class="hero-actions">
+        <a href="#contact" class="btn-primary">Talk to an expert →</a>
+        <a href="#services" class="btn-outline">See services</a>
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat">
+          <div class="stat-value">50<span>+</span></div>
+          <div class="stat-label">Projects delivered</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">99<span>%</span></div>
+          <div class="stat-label">Guaranteed uptime</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">24<span>/7</span></div>
+          <div class="stat-label">Active monitoring</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-right">
+      <div class="illustration-container">
+
+        <!-- Central terminal -->
+        <div class="terminal">
+          <div class="terminal-bar">
+            <div class="terminal-dot"></div>
+            <div class="terminal-dot"></div>
+            <div class="terminal-dot"></div>
+            <span class="terminal-title">mirmibug@brain:~</span>
+          </div>
+          <div class="terminal-body">
+            <div class="terminal-line"><span class="terminal-comment"># active systems</span></div>
+            <div class="terminal-line"><span class="terminal-prompt">$</span> status --all</div>
+            <div class="terminal-line">firewall ......... <span style="color:var(--green)">✓ OK</span></div>
+            <div class="terminal-line">backup ........... <span style="color:var(--green)">✓ OK</span></div>
+            <div class="terminal-line"><span class="terminal-prompt">$</span> <span class="terminal-cursor"></span></div>
+          </div>
+        </div>
+
+        <!-- Floating cards -->
+        <div class="float-card card-1">
+          <div class="float-card-icon">🛡</div>
+          <div class="float-card-text">
+            <strong>Threat blocked</strong>
+            <span>Firewall · 2 min ago</span>
+          </div>
+        </div>
+
+        <div class="float-card card-2">
+          <div class="float-card-icon">⚙</div>
+          <div class="float-card-text">
+            <strong>Automation active</strong>
+            <span>n8n · 12 workflows</span>
+          </div>
+        </div>
+
+        <div class="float-card card-3">
+          <div class="float-card-icon">📊</div>
+          <div class="float-card-text">
+            <strong>Infrastructure stable</strong>
+            <span>VPS · 99.9% uptime</span>
+          </div>
+        </div>
+
+        <div class="float-card card-4">
+          <div class="float-card-icon">🤖</div>
+          <div class="float-card-text">
+            <strong>Mirmibot online</strong>
+            <span>AI · responding</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
   </section>
+
+  <!-- ═══ MARQUEE ═══ -->
+  <div class="marquee-container">
+    <div class="marquee-track">
+      <span class="marquee-item">IT Support</span>
+      <span class="marquee-item">Cybersecurity</span>
+      <span class="marquee-item">Infrastructure &amp; Networks</span>
+      <span class="marquee-item">AI Automation</span>
+      <span class="marquee-item">Custom Development</span>
+      <span class="marquee-item">Microsoft 365</span>
+      <span class="marquee-item">Consulting</span>
+      <span class="marquee-item">Pentesting</span>
+      <!-- Duplicate for seamless loop -->
+      <span class="marquee-item">IT Support</span>
+      <span class="marquee-item">Cybersecurity</span>
+      <span class="marquee-item">Infrastructure &amp; Networks</span>
+      <span class="marquee-item">AI Automation</span>
+      <span class="marquee-item">Custom Development</span>
+      <span class="marquee-item">Microsoft 365</span>
+      <span class="marquee-item">Consulting</span>
+      <span class="marquee-item">Pentesting</span>
+    </div>
+  </div>
 
   <div class="section-divider" aria-hidden="true"></div>
 
-  <!-- ABOUT -->
+  <!-- ═══ ABOUT ═══ -->
   <section id="about" class="section section-block">
     <h2 class="section-title">Our Approach</h2>
 
     <p class="max-w-3xl mx-auto text-gray-300 text-center leading-relaxed">
       At Mirmibug IT Solutions we structure, manage and optimize IT operations for small and mid-sized businesses.
-      We work as an external IT department, combining support, infrastructure, security and automation with a clear and scalable operating model.
+      We act as an external IT department, combining technical support, infrastructure, security and automation
+      under a clear, documented and scalable operating model.
     </p>
 
     <div class="pillars">
@@ -152,7 +830,7 @@
 
   <div class="section-divider" aria-hidden="true"></div>
 
-  <!-- SERVICES -->
+  <!-- ═══ SERVICES ═══ -->
   <section id="services" class="section section-block services-pro">
     <div class="services-bg" aria-hidden="true"></div>
 
@@ -176,6 +854,7 @@
       </div>
 
       <div class="solutions-stack">
+        <!-- LEFT -->
         <div class="solutions-left">
           <div class="solution-item">
             <div class="solution-ico">
@@ -269,12 +948,13 @@
           </div>
         </div>
 
+        <!-- RIGHT -->
         <div class="solutions-right">
           <div class="stack-wrap stack-wrap-kpi">
             <div class="stack-layer">
               <div class="stack-top"><span>SLA &amp; Availability</span><i></i></div>
               <div class="stack-body">
-                <p>Monitoring + priority response, with ticket traceability.</p>
+                <p>Monitoring + priority response with ticket traceability.</p>
                 <div class="stack-metrics">
                   <span class="metric"><b>Uptime</b> 99.9%</span>
                   <span class="metric"><b>MTTA</b> &lt; 15 min</span>
@@ -301,7 +981,7 @@
                 <p>Controlled deployments with windows, rollback and documentation.</p>
                 <ul class="stack-list">
                   <li>Change control</li>
-                  <li>Checklist & validation</li>
+                  <li>Checklist &amp; validation</li>
                   <li>Release notes</li>
                 </ul>
               </div>
@@ -322,11 +1002,12 @@
         </div>
       </div>
 
+      <!-- CTA -->
       <div class="services-cta">
         <div class="services-cta-box">
           <div class="services-cta-title">Want a dashboard sample or an add-on demo?</div>
           <div class="services-cta-desc">
-            We can send you an example (Looker/Power BI) with KPIs & SLAs, or a phased custom development proposal.
+            We'll send you an example (Looker/Power BI) with KPIs &amp; SLAs, or a phased custom development proposal.
           </div>
         </div>
         <a href="#contact" class="services-cta-btn">Request a sample</a>
@@ -334,11 +1015,12 @@
     </div>
   </section>
 
-  <!-- CONTACT -->
+  <!-- ═══ CONTACT ═══ -->
   <section id="contact" class="section section-block">
     <h2 class="section-title">Contact</h2>
 
     <form id="contactForm" class="contact-form" action="/api/contact.php" method="POST" enctype="multipart/form-data">
+      <!-- honeypot anti-spam -->
       <input type="text" name="website" style="display:none" tabindex="-1" autocomplete="off" />
 
       <input type="text" name="nombre" placeholder="Name" required aria-label="Name" />
@@ -378,7 +1060,7 @@
     <span class="wa-text">Chat with Mirmibot</span>
   </a>
 
-  <!-- FOOTER -->
+  <!-- ═══ FOOTER ═══ -->
   <footer class="footer border-t border-gray-800 mt-20">
     <div class="max-w-6xl mx-auto px-6 py-10 text-center space-y-6">
       <div class="flex justify-center items-center gap-3">
@@ -387,10 +1069,22 @@
       </div>
 
       <div class="flex justify-center gap-6 text-gray-400">
-        <a href="https://www.linkedin.com/company/mirmibug" target="_blank" rel="noopener" aria-label="LinkedIn" class="hover:text-[#38d84e] transition">LinkedIn</a>
-        <a href="https://github.com/HighAndres" target="_blank" rel="noopener" class="hover:text-[#38d84e] transition">GitHub</a>
-        <a href="https://wa.me/5215549644749" target="_blank" rel="noopener" class="hover:text-[#38d84e] transition">WhatsApp</a>
-        <a href="mailto:contacto@mirmibug.com" class="hover:text-[#38d84e] transition">Email</a>
+        <a href="https://www.linkedin.com/company/mirmibug" target="_blank" rel="noopener" aria-label="LinkedIn"
+          class="hover:text-[#38d84e] transition">LinkedIn</a>
+        <a href="https://github.com/HighAndres" target="_blank" rel="noopener" aria-label="GitHub"
+          class="hover:text-[#38d84e] transition">GitHub</a>
+        <a href="https://wa.me/5215549644749" target="_blank" rel="noopener" aria-label="WhatsApp"
+          class="hover:text-[#38d84e] transition">WhatsApp</a>
+        <a href="mailto:contacto@mirmibug.com" aria-label="Email"
+          class="hover:text-[#38d84e] transition">Email</a>
+      </div>
+
+      <div class="text-sm text-gray-500">
+        <a href="policy-cookies.html" class="hover:text-[#38d84e]">Cookie Policy</a>
+        <span class="mx-2">|</span>
+        <a href="privacy-policy.html" class="hover:text-[#38d84e]">Privacy Notice</a>
+        <span class="mx-2">|</span>
+        <a href="terms-conditions.html" class="hover:text-[#38d84e]">Terms &amp; Conditions</a>
       </div>
 
       <p class="text-xs text-gray-600">
@@ -399,7 +1093,163 @@
     </div>
   </footer>
 
-  <script src="js/app.js"></script>
-</body>
+  <!-- COOKIE BANNER -->
+  <div id="cookie-banner" class="fixed bottom-0 left-0 w-full bg-black/95 text-gray-300 text-sm px-6 py-4 z-50 hidden">
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+      <p class="leading-relaxed">
+        We use cookies to improve your experience and analyze site usage.
+        By continuing to browse, you accept our cookie policy.
+      </p>
+      <div class="flex gap-3">
+        <button onclick="acceptCookies()"
+          class="px-4 py-2 bg-[#38d84e] text-black font-semibold rounded hover:opacity-90 transition">
+          Accept
+        </button>
+        <a href="policy-cookies.html" class="px-4 py-2 border border-gray-500 rounded hover:bg-gray-800 transition">
+          Learn more
+        </a>
+      </div>
+    </div>
+  </div>
 
+  <script src="js/app.js"></script>
+
+  <!-- ══ MIRMIBOT CHAT WIDGET ══ -->
+  <style>
+    #mb-btn{position:fixed;bottom:152px;right:24px;z-index:9000;width:52px;height:52px;border-radius:50%;background:#38d84e;color:#000;border:none;cursor:pointer;box-shadow:0 4px 16px rgba(56,216,78,.4);display:flex;align-items:center;justify-content:center;transition:transform .2s,box-shadow .2s;}
+    #mb-btn:hover{transform:scale(1.08);box-shadow:0 6px 20px rgba(56,216,78,.55);}
+    #mb-win{position:fixed;bottom:152px;right:24px;z-index:9001;width:340px;max-width:calc(100vw - 32px);height:460px;max-height:calc(100vh - 120px);background:#111;border:1px solid #1e1e1e;border-radius:16px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.7);transform:scale(.9) translateY(20px);opacity:0;pointer-events:none;transition:transform .25s cubic-bezier(.4,0,.2,1),opacity .25s;}
+    #mb-win.mb-open{transform:scale(1) translateY(0);opacity:1;pointer-events:all;}
+    #mb-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:#161616;border-bottom:1px solid #222;flex-shrink:0;}
+    .mb-htitle{display:flex;align-items:center;gap:8px;font-weight:600;font-size:.9rem;color:#fff;}
+    .mb-dot{width:8px;height:8px;border-radius:50%;background:#38d84e;animation:mbpulse 2s infinite;}
+    @keyframes mbpulse{0%,100%{opacity:1}50%{opacity:.3}}
+    #mb-close{background:none;border:none;color:#888;cursor:pointer;font-size:1.3rem;line-height:1;padding:2px 6px;border-radius:4px;transition:color .15s;}
+    #mb-close:hover{color:#fff;}
+    #mb-msgs{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;scroll-behavior:smooth;}
+    #mb-msgs::-webkit-scrollbar{width:3px;}
+    #mb-msgs::-webkit-scrollbar-thumb{background:#2a2a2a;border-radius:2px;}
+    .mb-msg{max-width:82%;padding:8px 12px;border-radius:12px;font-size:.85rem;line-height:1.45;word-break:break-word;}
+    .mb-msg-bot{background:#1a2b1c;color:#d4f7d9;align-self:flex-start;border-bottom-left-radius:3px;}
+    .mb-msg-user{background:#38d84e;color:#000;align-self:flex-end;border-bottom-right-radius:3px;}
+    #mb-status{text-align:center;font-size:.68rem;color:#555;padding:3px 0;flex-shrink:0;}
+    #mb-foot{display:flex;gap:8px;padding:10px 12px;background:#161616;border-top:1px solid #222;flex-shrink:0;align-items:flex-end;}
+    #mb-input{flex:1;background:#0c0c0c;border:1px solid #272727;color:#fff;border-radius:8px;padding:8px 10px;font-size:.85rem;font-family:inherit;resize:none;height:36px;max-height:80px;outline:none;transition:border-color .15s;overflow-y:hidden;}
+    #mb-input:focus{border-color:#38d84e;}
+    #mb-input::placeholder{color:#555;}
+    #mb-send{background:#38d84e;color:#000;border:none;border-radius:8px;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:opacity .15s;}
+    #mb-send:hover{opacity:.85;}
+    #mb-send:disabled{opacity:.35;cursor:default;}
+  </style>
+
+  <button id="mb-btn" title="Chat with Mirmibot" aria-label="Open chat" aria-expanded="false">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+
+  <div id="mb-win" role="dialog" aria-label="Mirmibot Chat" aria-modal="true">
+    <div id="mb-head">
+      <div class="mb-htitle">
+        <span class="mb-dot" aria-hidden="true"></span>
+        Mirmibot
+      </div>
+      <button id="mb-close" aria-label="Close">×</button>
+    </div>
+    <div id="mb-msgs" aria-live="polite"></div>
+    <div id="mb-status">Connecting...</div>
+    <div id="mb-foot">
+      <textarea id="mb-input" placeholder="Type your message..." aria-label="Message" rows="1"></textarea>
+      <button id="mb-send" aria-label="Send" disabled>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M22 2L11 13" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M22 2L15 22l-4-9-9-4 20-7z" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <script>
+  (function(){
+    var GW='wss://brain.mirmibug.com';
+    var TOKEN='02c1b1a739b6f26e57df3ad6dbf51c8256b9b95dda64a1c79aab65af3f3df380';
+    var SESSION='agent:main:webchat:mirmibot-site';
+    var WELCOME='Hi! I\'m Mirmibot, the virtual assistant of Mirmibug IT Solutions. How can I help you today?';
+    var ws=null,chatOpen=false,welcomed=false,reconnDelay=2000,reconnTimer=null;
+    var btn=document.getElementById('mb-btn');
+    var win=document.getElementById('mb-win');
+    var closeBtn=document.getElementById('mb-close');
+    var msgsEl=document.getElementById('mb-msgs');
+    var inputEl=document.getElementById('mb-input');
+    var sendBtn=document.getElementById('mb-send');
+    var statusEl=document.getElementById('mb-status');
+
+    function addMsg(text,type){
+      var d=document.createElement('div');
+      d.className='mb-msg mb-msg-'+type;
+      d.textContent=text;
+      msgsEl.appendChild(d);
+      msgsEl.scrollTop=msgsEl.scrollHeight;
+    }
+    function setSt(t){statusEl.textContent=t;}
+
+    function connect(){
+      if(ws&&(ws.readyState===0||ws.readyState===1))return;
+      setSt('Connecting...');
+      sendBtn.disabled=true;
+      try{ws=new WebSocket(GW);}
+      catch(e){setSt('● Reconnecting...');scheduleReconn();return;}
+      ws.onopen=function(){
+        reconnDelay=2000;
+        sendBtn.disabled=false;
+        setSt('● Online');
+        ws.send(JSON.stringify({type:'auth',token:TOKEN,session:SESSION}));
+      };
+      ws.onmessage=function(e){
+        try{
+          var d=JSON.parse(e.data);
+          var t=d.text||d.message||d.content||d.response||'';
+          if(t)addMsg(t,'bot');
+        }catch(_){if(e.data)addMsg(e.data,'bot');}
+      };
+      ws.onclose=function(){sendBtn.disabled=true;setSt('● Reconnecting...');scheduleReconn();};
+      ws.onerror=function(){ws.close();};
+    }
+    function scheduleReconn(){
+      clearTimeout(reconnTimer);
+      reconnTimer=setTimeout(function(){if(chatOpen)connect();},reconnDelay);
+      reconnDelay=Math.min(reconnDelay*1.6,16000);
+    }
+    function sendMsg(){
+      var text=inputEl.value.trim();
+      if(!text)return;
+      addMsg(text,'user');
+      inputEl.value='';
+      inputEl.style.height='36px';
+      if(ws&&ws.readyState===1)ws.send(JSON.stringify({type:'message',text:text,session:SESSION}));
+    }
+    function openChat(){
+      chatOpen=true;
+      win.classList.add('mb-open');
+      btn.setAttribute('aria-expanded','true');
+      connect();
+      if(!welcomed){welcomed=true;setTimeout(function(){addMsg(WELCOME,'bot');},350);}
+      setTimeout(function(){inputEl.focus();},280);
+    }
+    function closeChat(){
+      chatOpen=false;
+      win.classList.remove('mb-open');
+      btn.setAttribute('aria-expanded','false');
+    }
+    btn.addEventListener('click',function(){chatOpen?closeChat():openChat();});
+    closeBtn.addEventListener('click',closeChat);
+    sendBtn.addEventListener('click',sendMsg);
+    inputEl.addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}});
+    inputEl.addEventListener('input',function(){this.style.height='36px';this.style.height=Math.min(this.scrollHeight,80)+'px';});
+    document.addEventListener('keydown',function(e){if(e.key==='Escape'&&chatOpen)closeChat();});
+  })();
+  </script>
+  <!-- ══ END MIRMIBOT ══ -->
+
+</body>
 </html>

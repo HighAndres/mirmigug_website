@@ -15,7 +15,7 @@
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://mirmibug.com/" />
 
-  <!-- ═══ OPEN GRAPH (WhatsApp, LinkedIn, Facebook) ═══ -->
+  <!-- ═══ OPEN GRAPH ═══ -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://mirmibug.com/" />
   <meta property="og:title" content="Mirmibug | Servicios IT para Empresas en México" />
@@ -31,21 +31,21 @@
   <meta name="twitter:description" content="Tu departamento de IT externo. Soporte, infraestructura, cloud y automatización." />
   <meta name="twitter:image" content="https://mirmibug.com/img/logo_mirmibug_360.png" />
 
-  <!-- Favicon (Mirmibug) -->
+  <!-- Favicon -->
   <link rel="icon" type="image/png" href="img/mirmibug-logo-green_sfondo.png" />
   <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png" />
   <link rel="apple-touch-icon" sizes="192x192" href="img/favicon-192.png" />
 
-  <!-- Tailwind -->
+  <!-- Tailwind (needed for existing sections) -->
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Custom CSS -->
   <link rel="stylesheet" href="css/style.css" />
 
-  <!-- Fonts -->
+  <!-- Fonts: Space Mono + DM Sans + Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet" />
 
   <!-- Hreflang -->
   <link rel="alternate" hreflang="es" href="https://mirmibug.com/" />
@@ -72,70 +72,772 @@
       "name": "México"
     },
     "serviceType": ["Soporte IT", "Help Desk", "Cloud Computing", "Seguridad Informática", "Desarrollo de Software"],
-    "sameAs": [
-      "https://github.com/HighAndres"
-    ]
+    "sameAs": ["https://github.com/HighAndres"]
   }
   </script>
-</head>                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
 
-<body class="bg-black text-white font-inter overflow-x-hidden">
-                                                       
-  <!-- NAVBAR -->
-  <header class="navbar">
-    <nav class="nav-content">
-      <a class="logo" href="#inicio" aria-label="Ir a Inicio">
-        <img src="img/mirmibug-logo-green_sfondo.png" class="w-10" alt="Mirmibug Logo" />
-        <span class="brand-name">MIRMIBUG</span>
-      </a>
+  <!-- ═══ HERO & NAV — New Design CSS ═══ -->
+  <style>
+    body {
+      font-family: 'DM Sans', sans-serif;
+    }
 
-      <ul class="menu">
-        <li><a href="#inicio">Inicio</a></li>
-        <li><a href="#servicios">Servicios</a></li>
-        <li><a href="#contacto">Contacto</a></li>
-      </ul>
+    :root {
+      --black: #0a0a0a;
+      --green: #38d84e;
+      --green-dim: #2ab83f;
+      --green-glow: rgba(56, 216, 78, 0.15);
+      --green-glow-strong: rgba(56, 216, 78, 0.3);
+      --dark-surface: #111111;
+      --dark-card: #1a1a1a;
+      --gray-text: #8a8a8a;
+      --gray-light: #b0b0b0;
+      --white: #f0f0f0;
+    }
 
-      <!-- Actions (RIGHT) -->
-      <div class="nav-actions">
-        <div class="lang-switch" role="navigation" aria-label="Cambiar idioma">
-          <a class="lang-btn is-active" href="index.html" hreflang="es">ES</a>
-          <a class="lang-btn" href="en.html" hreflang="en">EN</a>
-        </div>
+    /* ── NAVBAR ── */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 60px;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      background: rgba(10, 10, 10, 0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(56, 216, 78, 0.1);
+      animation: fadeDown 0.6s ease-out;
+    }
 
-        <a href="#contacto" class="btn-contacto">Contáctanos</a>
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .nav-logo-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .nav-logo-icon img {
+      width: 42px;
+      height: 42px;
+      object-fit: contain;
+    }
+
+    .nav-logo-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+
+    .nav-logo-text strong {
+      font-family: 'Space Mono', monospace;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: 1px;
+    }
+
+    .nav-logo-text span {
+      font-size: 11px;
+      color: var(--green);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 36px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .nav-links a {
+      color: var(--gray-light);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      font-family: 'DM Sans', sans-serif;
+      transition: color 0.3s;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--green);
+      transition: width 0.3s;
+    }
+
+    .nav-links a:hover { color: var(--white); }
+    .nav-links a:hover::after { width: 100%; }
+
+    .nav-cta {
+      background: var(--green) !important;
+      color: var(--black) !important;
+      padding: 10px 24px;
+      border-radius: 8px;
+      font-weight: 700 !important;
+      font-family: 'Space Mono', monospace !important;
+      font-size: 13px !important;
+      transition: box-shadow 0.3s, transform 0.2s !important;
+    }
+
+    .nav-cta:hover {
+      box-shadow: 0 0 24px var(--green-glow-strong);
+      transform: translateY(-1px);
+    }
+
+    .nav-cta::after { display: none !important; }
+
+    /* Mobile hamburger (shown <= 1024px) */
+    .nav-hamburger {
+      display: none;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.14);
+      color: var(--white);
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 16px;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    /* Override style.css mobile-menu top for new nav height */
+    .mobile-menu {
+      top: 82px !important;
+    }
+
+    /* Language switcher in nav — hide on mobile (already in mobile menu) */
+    .nav-lang {
+      display: inline-flex;
+    }
+
+    @media (max-width: 1024px) {
+      nav { padding: 16px 24px; }
+      .nav-links { display: none; }
+      .nav-lang { display: none; }
+      .nav-hamburger { display: inline-flex; align-items: center; justify-content: center; }
+    }
+
+    /* ── HERO ── */
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      padding: 60px 60px 40px;
+      min-height: 80vh;
+      position: relative;
+      isolation: auto;
+    }
+
+    /* Particle field (overrides style.css .hero::before overlay) */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(circle, rgba(56,216,78,0.12) 1px, transparent 1px),
+        radial-gradient(circle, rgba(56,216,78,0.06) 1px, transparent 1px);
+      background-size: 80px 80px, 40px 40px;
+      background-position: 0 0, 20px 20px;
+      mask-image: radial-gradient(ellipse 80% 70% at 70% 40%, black 20%, transparent 80%);
+      -webkit-mask-image: radial-gradient(ellipse 80% 70% at 70% 40%, black 20%, transparent 80%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Green radial glow */
+    .hero::after {
+      content: '';
+      position: absolute;
+      top: -100px;
+      right: -100px;
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(circle, rgba(56,216,78,0.07) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .hero-left {
+      position: relative;
+      z-index: 10;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(56,216,78,0.08);
+      border: 1px solid rgba(56,216,78,0.2);
+      padding: 8px 20px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: 'DM Sans', sans-serif;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 36px;
+      animation: fadeUp 0.6s ease-out 0.2s both;
+    }
+
+    .hero-badge::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: var(--green);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(56,216,78,0.4); }
+      50%       { opacity: 0.8; box-shadow: 0 0 0 6px rgba(56,216,78,0); }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Override style.css .hero-title */
+    .hero-title {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 62px;
+      font-weight: 700;
+      line-height: 1.08;
+      letter-spacing: -2px;
+      margin-bottom: 28px;
+      animation: fadeUp 0.6s ease-out 0.35s both;
+      max-width: none;
+      text-shadow: none;
+      color: var(--white);
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--green);
+      position: relative;
+    }
+
+    .hero-title em::after {
+      content: '';
+      position: absolute;
+      bottom: 2px;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: var(--green);
+      opacity: 0.3;
+      border-radius: 2px;
+    }
+
+    /* Override style.css .hero-subtitle */
+    .hero-subtitle {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 17px;
+      color: var(--gray-text);
+      line-height: 1.7;
+      max-width: 460px;
+      margin-bottom: 40px;
+      margin-left: 0;
+      margin-right: 0;
+      text-shadow: none;
+      animation: fadeUp 0.6s ease-out 0.5s both;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 60px;
+      animation: fadeUp 0.6s ease-out 0.65s both;
+    }
+
+    .btn-primary {
+      background: var(--green);
+      color: var(--black);
+      padding: 16px 32px;
+      border-radius: 10px;
+      font-family: 'Space Mono', monospace;
+      font-weight: 700;
+      font-size: 14px;
+      text-decoration: none;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 0 30px var(--green-glow-strong), 0 4px 20px rgba(0,0,0,0.3);
+      transform: translateY(-2px);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--white);
+      padding: 16px 32px;
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.15);
+      transition: all 0.3s;
+    }
+
+    .btn-outline:hover {
+      border-color: rgba(255,255,255,0.4);
+      background: rgba(255,255,255,0.04);
+    }
+
+    /* ── STATS ── */
+    .hero-stats {
+      display: flex;
+      gap: 48px;
+      animation: fadeUp 0.6s ease-out 0.8s both;
+    }
+
+    .stat {
+      position: relative;
+    }
+
+    .stat::after {
+      content: '';
+      position: absolute;
+      right: -24px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 1px;
+      height: 40px;
+      background: rgba(255,255,255,0.08);
+    }
+
+    .stat:last-child::after { display: none; }
+
+    .stat-value {
+      font-family: 'Space Mono', monospace;
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1;
+    }
+
+    .stat-value span { color: var(--green); }
+
+    .stat-label {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      color: var(--gray-text);
+      margin-top: 6px;
+    }
+
+    /* ── HERO RIGHT ── */
+    .hero-right {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: fadeUp 0.8s ease-out 0.4s both;
+    }
+
+    .illustration-container {
+      position: relative;
+      width: 500px;
+      height: 500px;
+    }
+
+    /* Terminal */
+    .terminal {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 280px;
+      background: var(--dark-card);
+      border: 1px solid rgba(56,216,78,0.15);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(56,216,78,0.05);
+    }
+
+    .terminal-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.03);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .terminal-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .terminal-dot:nth-child(1) { background: #ff5f57; }
+    .terminal-dot:nth-child(2) { background: #ffbd2e; }
+    .terminal-dot:nth-child(3) { background: var(--green); }
+
+    .terminal-title {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--gray-text);
+      margin-left: 8px;
+    }
+
+    .terminal-body {
+      padding: 20px;
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      line-height: 1.8;
+      color: var(--gray-light);
+    }
+
+    .terminal-line { opacity: 0; animation: typeIn 0.3s ease-out forwards; }
+    .terminal-line:nth-child(1) { animation-delay: 1s; }
+    .terminal-line:nth-child(2) { animation-delay: 1.4s; }
+    .terminal-line:nth-child(3) { animation-delay: 1.8s; }
+    .terminal-line:nth-child(4) { animation-delay: 2.2s; }
+    .terminal-line:nth-child(5) { animation-delay: 2.6s; }
+
+    @keyframes typeIn {
+      from { opacity: 0; transform: translateX(-8px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    .terminal-prompt { color: var(--green); }
+    .terminal-comment { color: #555; }
+    .terminal-cursor {
+      display: inline-block;
+      width: 8px;
+      height: 14px;
+      background: var(--green);
+      animation: blink 1s step-end infinite;
+      vertical-align: text-bottom;
+      margin-left: 2px;
+    }
+
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+
+    /* ── FLOATING CARDS ── */
+    .float-card {
+      position: absolute;
+      background: var(--dark-card);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+      animation: floatIn 0.6s ease-out both;
+      transition: transform 0.3s;
+      cursor: default;
+    }
+
+    .float-card:hover { transform: translateY(-4px) scale(1.02); }
+
+    .float-card-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .float-card-text strong {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--white);
+      margin-bottom: 2px;
+    }
+
+    .float-card-text span {
+      font-size: 11px;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--gray-text);
+    }
+
+    .card-1 { top: 30px; right: 20px; animation-delay: 1.2s; }
+    .card-1 .float-card-icon { background: rgba(56,216,78,0.15); color: var(--green); }
+
+    .card-2 { top: 140px; left: 0; animation-delay: 1.5s; }
+    .card-2 .float-card-icon { background: rgba(96,165,250,0.15); color: #60a5fa; }
+
+    .card-3 { bottom: 120px; right: 0; animation-delay: 1.8s; }
+    .card-3 .float-card-icon { background: rgba(251,191,36,0.15); color: #fbbf24; }
+
+    .card-4 { bottom: 30px; left: 40px; animation-delay: 2.1s; }
+    .card-4 .float-card-icon { background: rgba(167,139,250,0.15); color: #a78bfa; }
+
+    @keyframes floatIn {
+      from { opacity: 0; transform: translateY(20px) scale(0.9); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* ── MARQUEE BANNER ── */
+    .marquee-container {
+      background: var(--green);
+      padding: 14px 0;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .marquee-track {
+      display: flex;
+      gap: 60px;
+      animation: marqueeScroll 25s linear infinite;
+      width: max-content;
+    }
+
+    .marquee-item {
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--black);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .marquee-item::after {
+      content: '◆';
+      font-size: 6px;
+      opacity: 0.5;
+    }
+
+    @keyframes marqueeScroll {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* ── RESPONSIVE (hero) ── */
+    @media (max-width: 1024px) {
+      .hero {
+        grid-template-columns: 1fr;
+        padding: 40px 24px;
+        min-height: auto;
+      }
+      .hero-title { font-size: 44px; letter-spacing: -1px; }
+      .hero-right { display: none; }
+      .hero-subtitle { max-width: 100%; }
+      .hero-stats { gap: 28px; }
+      .stat-value { font-size: 28px; }
+    }
+
+    @media (max-width: 600px) {
+      .hero { padding: 32px 20px; }
+      .hero-title { font-size: 36px; }
+      .hero-actions { flex-direction: column; align-items: flex-start; }
+      .btn-primary, .btn-outline { width: 100%; justify-content: center; text-align: center; }
+      .hero-stats { gap: 20px; flex-wrap: wrap; }
+    }
+  </style>
+</head>
+
+<body class="bg-black text-white overflow-x-hidden">
+
+  <!-- ═══ NAVBAR ═══ -->
+  <nav>
+    <a class="nav-logo" href="#inicio" aria-label="Ir a Inicio">
+      <div class="nav-logo-icon">
+        <img src="img/mirmibug-logo-green_sfondo.png" alt="Mirmibug Logo" />
       </div>
+      <div class="nav-logo-text">
+        <strong>MIRMIBUG</strong>
+        <span>IT Solutions</span>
+      </div>
+    </a>
 
-      <button id="menuBtn" class="menu-btn" aria-label="Abrir menú" aria-expanded="false">☰</button>
-    </nav>
-  </header>
+    <ul class="nav-links">
+      <li><a href="#servicios">Servicios</a></li>
+      <li><a href="#productos">Productos</a></li>
+      <li><a href="#proceso">Proceso</a></li>
+      <li><a href="#nosotros">Nosotros</a></li>
+      <li><a href="#contacto">Contacto</a></li>
+      <li><a href="#contacto" class="nav-cta">Contáctanos →</a></li>
+    </ul>
+
+    <div class="nav-lang lang-switch" role="navigation" aria-label="Cambiar idioma">
+      <a class="lang-btn is-active" href="index.html" hreflang="es">ES</a>
+      <a class="lang-btn" href="en.html" hreflang="en">EN</a>
+    </div>
+
+    <button id="menuBtn" class="nav-hamburger" aria-label="Abrir menú" aria-expanded="false">☰</button>
+  </nav>
 
   <!-- MOBILE MENU -->
   <div id="mobileMenu" class="mobile-menu hidden">
     <a href="#inicio">Inicio</a>
     <a href="#servicios">Servicios</a>
     <a href="#contacto">Contacto</a>
-
-    <!-- Language Switch (Mobile) -->
     <div class="lang-switch mobile-lang" role="navigation" aria-label="Cambiar idioma">
       <a class="lang-btn is-active" href="index.html" hreflang="es">ES</a>
       <a class="lang-btn" href="en.html" hreflang="en">EN</a>
     </div>
   </div>
 
-  <!-- HERO -->
-  <section id="inicio" class="hero hero-bg hero-section">
-    <h1 class="hero-title">Infraestructura tecnológica bajo control</h1>
-    <p class="hero-subtitle">
-      Implementamos y administramos entornos IT con enfoque en orden, seguridad y eficiencia operativa.
-      Tecnología gestionada con disciplina técnica y visión estratégica.
-    </p>
+  <!-- ═══ HERO ═══ -->
+  <section id="inicio" class="hero">
+    <div class="hero-left">
+      <div class="hero-badge">Tu equipo IT, siempre disponible</div>
 
-    <a href="#servicios" class="hero-btn">Soluciones</a>
+      <h1 class="hero-title">
+        Soluciones TI que<br>
+        <em>protegen</em> tu<br>
+        negocio
+      </h1>
+
+      <p class="hero-subtitle">
+        Soporte TI, infraestructura, ciberseguridad, automatización con IA
+        y desarrollo a la medida — todo desde un solo equipo que entiende a las PyMEs.
+      </p>
+
+      <div class="hero-actions">
+        <a href="#contacto" class="btn-primary">Hablar con un experto →</a>
+        <a href="#servicios" class="btn-outline">Ver servicios</a>
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat">
+          <div class="stat-value">50<span>+</span></div>
+          <div class="stat-label">Proyectos entregados</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">99<span>%</span></div>
+          <div class="stat-label">Uptime garantizado</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">24<span>/7</span></div>
+          <div class="stat-label">Monitoreo activo</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-right">
+      <div class="illustration-container">
+
+        <!-- Terminal central -->
+        <div class="terminal">
+          <div class="terminal-bar">
+            <div class="terminal-dot"></div>
+            <div class="terminal-dot"></div>
+            <div class="terminal-dot"></div>
+            <span class="terminal-title">mirmibug@brain:~</span>
+          </div>
+          <div class="terminal-body">
+            <div class="terminal-line"><span class="terminal-comment"># sistemas activos</span></div>
+            <div class="terminal-line"><span class="terminal-prompt">$</span> status --all</div>
+            <div class="terminal-line">firewall ......... <span style="color:var(--green)">✓ OK</span></div>
+            <div class="terminal-line">backup ........... <span style="color:var(--green)">✓ OK</span></div>
+            <div class="terminal-line"><span class="terminal-prompt">$</span> <span class="terminal-cursor"></span></div>
+          </div>
+        </div>
+
+        <!-- Floating cards -->
+        <div class="float-card card-1">
+          <div class="float-card-icon">🛡</div>
+          <div class="float-card-text">
+            <strong>Amenaza bloqueada</strong>
+            <span>Firewall · hace 2 min</span>
+          </div>
+        </div>
+
+        <div class="float-card card-2">
+          <div class="float-card-icon">⚙</div>
+          <div class="float-card-text">
+            <strong>Automatización activa</strong>
+            <span>n8n · 12 workflows</span>
+          </div>
+        </div>
+
+        <div class="float-card card-3">
+          <div class="float-card-icon">📊</div>
+          <div class="float-card-text">
+            <strong>Infraestructura estable</strong>
+            <span>VPS · 99.9% uptime</span>
+          </div>
+        </div>
+
+        <div class="float-card card-4">
+          <div class="float-card-icon">🤖</div>
+          <div class="float-card-text">
+            <strong>Mirmibot online</strong>
+            <span>IA · respondiendo</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
   </section>
+
+  <!-- ═══ MARQUEE ═══ -->
+  <div class="marquee-container">
+    <div class="marquee-track">
+      <span class="marquee-item">Soporte TI</span>
+      <span class="marquee-item">Ciberseguridad</span>
+      <span class="marquee-item">Infraestructura &amp; Redes</span>
+      <span class="marquee-item">Automatización con IA</span>
+      <span class="marquee-item">Desarrollo a Medida</span>
+      <span class="marquee-item">Microsoft 365</span>
+      <span class="marquee-item">Consultoría</span>
+      <span class="marquee-item">Pentesting</span>
+      <!-- Duplicate for seamless loop -->
+      <span class="marquee-item">Soporte TI</span>
+      <span class="marquee-item">Ciberseguridad</span>
+      <span class="marquee-item">Infraestructura &amp; Redes</span>
+      <span class="marquee-item">Automatización con IA</span>
+      <span class="marquee-item">Desarrollo a Medida</span>
+      <span class="marquee-item">Microsoft 365</span>
+      <span class="marquee-item">Consultoría</span>
+      <span class="marquee-item">Pentesting</span>
+    </div>
+  </div>
 
   <div class="section-divider" aria-hidden="true"></div>
 
-  <!-- QUIÉNES SOMOS -->
+  <!-- ═══ QUIÉNES SOMOS ═══ -->
   <section id="quienes" class="section section-block">
     <h2 class="section-title">Nuestro Enfoque</h2>
 
@@ -155,7 +857,7 @@
 
   <div class="section-divider" aria-hidden="true"></div>
 
-  <!-- SERVICIOS -->
+  <!-- ═══ SERVICIOS ═══ -->
   <section id="servicios" class="section section-block services-pro">
     <div class="services-bg" aria-hidden="true"></div>
 
@@ -349,12 +1051,12 @@
     </div>
   </section>
 
-  <!-- CONTACTO -->
+  <!-- ═══ CONTACTO ═══ -->
   <section id="contacto" class="section section-block">
     <h2 class="section-title">Contacto</h2>
 
     <form id="contactForm" class="contact-form" action="/api/contact.php" method="POST" enctype="multipart/form-data">
-      <!-- honeypot anti-spam (no lo borres) -->
+      <!-- honeypot anti-spam -->
       <input type="text" name="website" style="display:none" tabindex="-1" autocomplete="off" />
 
       <input type="text" name="nombre" placeholder="Nombre" required aria-label="Nombre" />
@@ -372,7 +1074,7 @@
     </form>
   </section>
 
-  <!-- WhatsApp Floating Button (Mirmibot) -->
+  <!-- WhatsApp Floating Button -->
   <a
     href="https://wa.me/5215549644749?text=Hola%20Mirmibug%2C%20quiero%20info%20de%20servicios%20IT."
     target="_blank"
@@ -394,7 +1096,7 @@
     <span class="wa-text">Hablar con Mirmibot</span>
   </a>
 
-  <!-- FOOTER -->
+  <!-- ═══ FOOTER ═══ -->
   <footer class="footer border-t border-gray-800 mt-20">
     <div class="max-w-6xl mx-auto px-6 py-10 text-center space-y-6">
       <div class="flex justify-center items-center gap-3">
@@ -405,13 +1107,10 @@
       <div class="flex justify-center gap-6 text-gray-400">
         <a href="https://www.linkedin.com/company/mirmibug" target="_blank" rel="noopener" aria-label="LinkedIn"
           class="hover:text-[#38d84e] transition">LinkedIn</a>
-
         <a href="https://github.com/HighAndres" target="_blank" rel="noopener" aria-label="GitHub"
           class="hover:text-[#38d84e] transition">GitHub</a>
-
         <a href="https://wa.me/5215549644749" target="_blank" rel="noopener" aria-label="WhatsApp"
           class="hover:text-[#38d84e] transition">WhatsApp</a>
-
         <a href="mailto:contacto@mirmibug.com" aria-label="Correo"
           class="hover:text-[#38d84e] transition">Correo</a>
       </div>
@@ -437,13 +1136,11 @@
         Utilizamos cookies para mejorar tu experiencia y analizar el uso del sitio.
         Al continuar navegando, aceptas nuestra política de cookies.
       </p>
-
       <div class="flex gap-3">
         <button onclick="acceptCookies()"
           class="px-4 py-2 bg-[#38d84e] text-black font-semibold rounded hover:opacity-90 transition">
           Aceptar
         </button>
-
         <a href="policy-cookies.html" class="px-4 py-2 border border-gray-500 rounded hover:bg-gray-800 transition">
           Saber más
         </a>
@@ -589,6 +1286,6 @@
   })();
   </script>
   <!-- ══ FIN MIRMIBOT ══ -->
-</body>
 
+</body>
 </html>
