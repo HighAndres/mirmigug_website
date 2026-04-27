@@ -475,6 +475,25 @@
       height: 500px;
     }
 
+    .mascot-bg {
+      position: absolute;
+      top: 26%;
+      left: 6%;
+      transform: translate(-50%, -50%) rotate(-4deg);
+      width: 380px;
+      opacity: 0.75;
+      pointer-events: none;
+      z-index: 0;
+      animation: mascotFloat 5s ease-in-out infinite;
+      mask-image: radial-gradient(ellipse 75% 75% at center, black 45%, transparent 75%);
+      -webkit-mask-image: radial-gradient(ellipse 75% 75% at center, black 45%, transparent 75%);
+    }
+
+    @keyframes mascotFloat {
+      0%, 100% { transform: translate(-50%, -50%) rotate(-4deg); }
+      50%       { transform: translate(-50%, calc(-50% - 18px)) rotate(4deg); }
+    }
+
     /* Terminal */
     .terminal {
       position: absolute;
@@ -555,7 +574,9 @@
     /* ── FLOATING CARDS ── */
     .float-card {
       position: absolute;
-      background: var(--dark-card);
+      background: rgba(26, 26, 26, 0.55);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       border: 1px solid rgba(255,255,255,0.08);
       border-radius: 14px;
       padding: 14px 20px;
@@ -757,6 +778,9 @@
 
     <div class="hero-right">
       <div class="illustration-container">
+
+        <!-- Mascot background -->
+        <img src="img/mirmibug-logo-green_sfondo.png" class="mascot-bg" alt="" aria-hidden="true" />
 
         <!-- Terminal central -->
         <div class="terminal">
