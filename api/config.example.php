@@ -11,6 +11,9 @@ define('DB_NAME', 'tu_base_de_datos');
 define('DB_USER', 'tu_usuario');
 define('DB_PASS', 'tu_contraseña');
 
+// ── Groq AI (Mirmibot chat) ──
+define('GROQ_API_KEY', 'gsk_tu_api_key_aqui');
+
 // ── SMTP (correo) ──
 define('SMTP_HOST', 'smtp.tuproveedor.com');
 define('SMTP_PORT', 465);
