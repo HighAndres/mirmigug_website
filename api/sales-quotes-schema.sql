@@ -1,4 +1,26 @@
 -- =============================================
+-- Tabla: contact_leads
+-- Contactos del formulario web
+-- Ejecutar en: andres63_mirmibug_web
+-- =============================================
+
+CREATE TABLE IF NOT EXISTS contact_leads (
+  id            INT UNSIGNED   AUTO_INCREMENT PRIMARY KEY,
+  nombre        VARCHAR(120)   NOT NULL,
+  email         VARCHAR(180)   NOT NULL,
+  telefono      VARCHAR(30)    DEFAULT NULL,
+  empresa       VARCHAR(120)   DEFAULT NULL,
+  mensaje       TEXT           NOT NULL,
+  origen        VARCHAR(255)   DEFAULT NULL,
+  ip            VARCHAR(45)    DEFAULT NULL,
+  user_agent    VARCHAR(255)   DEFAULT NULL,
+  consentimiento TINYINT(1)    DEFAULT 0,
+  created_at    DATETIME       DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_email    (email),
+  INDEX idx_created  (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =============================================
 -- Tabla: sales_quotes
 -- Propuestas guardadas del Cotizador de Ventas
 -- Mirmibug IT Solutions
