@@ -246,6 +246,7 @@ function initApp() {
 
   renderCards();
   renderEquipSection();
+  renderTemplatesBar();
   updateSummary();
 
   const token = new URLSearchParams(window.location.search).get('propuesta');
@@ -497,6 +498,11 @@ function getDescuento() {
   return Math.min(100, Math.max(0, pct));
 }
 
+function getIncludeIva() {
+  const el = document.getElementById('ivaToggle');
+  return el ? el.checked : true;
+}
+
 // ─────────────────────────────────────────
 // EQUIPOS: RENDER SECCIÓN
 // ─────────────────────────────────────────
@@ -697,23 +703,26 @@ function updateSummary() {
     }
   }
 
+  const includeIva = getIncludeIva();
+
   const hasMensual = grandMensual > 0;
   if (termTotRow)  termTotRow.style.display  = hasMensual ? 'flex' : 'none';
-  if (termIvaRow)  termIvaRow.style.display  = hasMensual ? 'flex' : 'none';
+  if (termIvaRow)  termIvaRow.style.display  = (hasMensual && includeIva) ? 'flex' : 'none';
   if (hasMensual) {
-    if (termTotLabel) termTotLabel.innerHTML = 'TOTAL/MES <span class="t-noiva">(sin IVA)</span>';
+    const ivaLabel = includeIva ? '(sin IVA)' : '(IVA no incluido)';
+    if (termTotLabel) termTotLabel.innerHTML = `TOTAL/MES <span class="t-noiva">${ivaLabel}</span>`;
     animateCount(termTotal, prevTotalMensual, grandMensual);
     prevTotalMensual = grandMensual;
-    if (termIva) termIva.textContent = fmt(Math.round(grandMensual * 1.16));
+    if (termIva) termIva.textContent = fmt(Math.round(grandMensual * 0.16));
   }
 
   const hasUnico = grandUnico > 0;
   if (termUnicoRow)  termUnicoRow.style.display  = hasUnico ? 'flex' : 'none';
-  if (termUnicoIvaR) termUnicoIvaR.style.display = hasUnico ? 'flex' : 'none';
+  if (termUnicoIvaR) termUnicoIvaR.style.display = (hasUnico && includeIva) ? 'flex' : 'none';
   if (hasUnico && termUnicoAmt) {
     animateCount(termUnicoAmt, prevTotalUnico, grandUnico);
     prevTotalUnico = grandUnico;
-    if (termUnicoIva) termUnicoIva.textContent = fmt(Math.round(grandUnico * 1.16));
+    if (termUnicoIva) termUnicoIva.textContent = fmt(Math.round(grandUnico * 0.16));
   }
 
   if (termFolio) {
@@ -814,13 +823,14 @@ function exportWhatsApp() {
 
   text += `\n━━━━━━━━━━━━━━━━━━━`;
   if (descPct > 0) text += `\n🏷️ Descuento aplicado: ${descPct}%`;
+  const _waIva = getIncludeIva();
   if (totalMensual > 0) {
-    text += `\n💰 *MENSUAL: ${fmt(totalMensual)} MXN*`;
-    text += `\n💼 *Con IVA (16%): ${fmt(Math.round(totalMensual * 1.16))} MXN*`;
+    text += `\n💰 *MENSUAL: ${fmt(totalMensual)} MXN* (sin IVA)`;
+    if (_waIva) text += `\n💼 *Con IVA (16%): ${fmt(Math.round(totalMensual * 1.16))} MXN*`;
   }
   if (totalUnico > 0) {
-    text += `\n💰 *ÚNICO: ${fmt(totalUnico)} MXN*`;
-    text += `\n💼 *Con IVA (16%): ${fmt(Math.round(totalUnico * 1.16))} MXN*`;
+    text += `\n💰 *ÚNICO: ${fmt(totalUnico)} MXN* (sin IVA)`;
+    if (_waIva) text += `\n💼 *Con IVA (16%): ${fmt(Math.round(totalUnico * 1.16))} MXN*`;
   }
   text += `\n━━━━━━━━━━━━━━━━━━━`;
   if (condPago) text += `\n💳 Condiciones de pago: ${condPago}`;
@@ -1046,10 +1056,81 @@ async function loadSharedQuote(token) {
 // ─────────────────────────────────────────
 // PRINT / PDF — TEMPLATE PROFESIONAL
 // ─────────────────────────────────────────
-function triggerPrint() {
+async function triggerPrint() {
   if (!assertAny()) return;
+
+  // Auto-save para obtener folio antes de imprimir
+  if (!currentFolio && !IS_LOCALHOST) {
+    showToast('// generando folio...', 'ok');
+    try {
+      const res = await fetch('/api/save-quote.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(buildQuoteData())
+      });
+      const data = await res.json();
+      if (data.ok && data.folio) {
+        currentFolio = data.folio;
+        updateSummary();
+      }
+    } catch { /* continúa sin folio */ }
+  }
+
   buildPrintView();
-  window.print();
+  openPdfPreview();
+}
+
+function openPdfPreview() {
+  const content  = document.getElementById('pdfPreviewContent');
+  const printView = document.getElementById('printView');
+  if (!content || !printView) { window.print(); return; }
+  content.innerHTML = printView.innerHTML;
+  document.getElementById('pdfPreviewModal').style.display = 'flex';
+}
+
+function closePdfPreview() {
+  document.getElementById('pdfPreviewModal').style.display = 'none';
+}
+
+function confirmPrint() {
+  document.getElementById('pdfPreviewModal').style.display = 'none';
+  setTimeout(() => window.print(), 80);
+}
+
+function downloadPdf() {
+  if (typeof html2pdf === 'undefined') {
+    showToast('⚠ Librería PDF no disponible — usa Imprimir → Guardar como PDF', 'warn');
+    return;
+  }
+  const element  = document.getElementById('printView');
+  const empresa  = val('empresa') || 'propuesta';
+  const filename = `${currentFolio || 'MB'}-${empresa}.pdf`
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9\-_.]/g, '');
+
+  const btn = document.querySelector('.pdf-dl-btn');
+  if (btn) { btn.textContent = '⏳ GENERANDO...'; btn.disabled = true; }
+
+  html2pdf()
+    .set({
+      margin:     [8, 8, 8, 8],
+      filename,
+      image:      { type: 'jpeg', quality: 0.97 },
+      html2canvas:{ scale: 2, useCORS: true, logging: false },
+      jsPDF:      { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    })
+    .from(element)
+    .save()
+    .then(() => {
+      if (btn) { btn.textContent = '⬇ DESCARGAR PDF'; btn.disabled = false; }
+      closePdfPreview();
+      showToast('// PDF descargado', 'ok');
+    })
+    .catch(() => {
+      if (btn) { btn.textContent = '⬇ DESCARGAR PDF'; btn.disabled = false; }
+      showToast('⚠ Error al generar PDF', 'error');
+    });
 }
 
 function buildPrintView() {
@@ -1140,17 +1221,23 @@ function buildPrintView() {
   const hasUnico   = q.total_unico   > 0;
   const descPct    = q.descuento_pct || 0;
 
+  const _includeIva = getIncludeIva();
+
   function totalBox(label, subtotal, descuento, total, color) {
     const discRow = descuento > 0
       ? `<div style="font-size:11px;color:#e53935;margin:4px 0">Descuento (${descPct}%): -${fmt(descuento)}</div>`
       : '';
+    const ivaBlock = _includeIva
+      ? `<div style="font-size:11px;color:#777;margin-top:4px">+ IVA 16%: <b>${fmt(Math.round(total * 0.16))} MXN</b></div>
+         <div style="font-size:12px;color:#444;margin-top:2px;font-weight:700">Total c/IVA: ${fmt(Math.round(total * 1.16))} MXN</div>`
+      : `<div style="font-size:10px;color:#999;margin-top:4px;font-style:italic">IVA no incluido en esta propuesta</div>`;
     return `
       <div style="text-align:right;background:#fafafa;padding:14px 20px;border-radius:6px;border-left:4px solid ${color};min-width:220px">
         <div style="font-size:10px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">${label}</div>
         ${descuento > 0 ? `<div style="font-size:12px;color:#aaa;margin-bottom:2px">Subtotal: ${fmt(subtotal)}</div>` : ''}
         ${discRow}
         <div style="font-size:22px;font-weight:900;color:${color}">${fmt(total)} MXN</div>
-        <div style="font-size:11px;color:#777;margin-top:4px">+ IVA 16%: <b>${fmt(Math.round(total * 1.16))} MXN</b></div>
+        ${ivaBlock}
       </div>`;
   }
 
@@ -1202,7 +1289,7 @@ function buildPrintView() {
       <!-- HEADER EMPRESA -->
       <div style="display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:16px;margin-bottom:20px;border-bottom:3px solid #38d84e">
         <div style="display:flex;align-items:center;gap:14px">
-          <img src="${logoPath}" alt="Mirmibug" style="width:52px;height:52px;object-fit:contain" />
+          <img src="${logoPath}" alt="Mirmibug" style="width:52px;height:52px;object-fit:contain" onerror="this.style.display='none'" />
           <div>
             <div style="font-size:20px;font-weight:900;color:#38d84e;letter-spacing:1px">MIRMIBUG IT SOLUTIONS</div>
             ${rfc     ? `<div style="font-size:10px;color:#555;margin-top:2px">RFC: <b>${rfc}</b></div>` : ''}
@@ -1420,6 +1507,107 @@ async function duplicateQuote(token) {
     }
     updateSummary();
   } catch { alert('Error de conexión'); }
+}
+
+// ─────────────────────────────────────────
+// PLANTILLAS DE SERVICIOS (localStorage)
+// ─────────────────────────────────────────
+const TEMPLATES_KEY = 'cv_templates_v1';
+
+function getTemplates() {
+  try { return JSON.parse(localStorage.getItem(TEMPLATES_KEY)) || []; }
+  catch { return []; }
+}
+
+function saveTemplates(list) {
+  localStorage.setItem(TEMPLATES_KEY, JSON.stringify(list));
+}
+
+function saveCurrentTemplate() {
+  if (activeModules.size === 0) {
+    showToast('⚠ Activa módulos antes de guardar una plantilla.', 'warn');
+    return;
+  }
+  const name = prompt('Nombre de la plantilla (ej. "Paquete PyME"):');
+  if (!name || !name.trim()) return;
+
+  const snapshot = {
+    name: name.trim(),
+    modules: [...activeModules],
+    modes: { ...svcModes },
+    quantities: {},
+    hours: {},
+    rates: {},
+    projects: {},
+  };
+  activeModules.forEach(id => {
+    const mode = svcModes[id] || 'mensual';
+    if (mode === 'mensual') {
+      snapshot.quantities[id] = parseInt(document.getElementById('qty_' + id)?.value || '0') || 0;
+    } else if (mode === 'hora') {
+      snapshot.hours[id] = parseInt(document.getElementById('hrs_' + id)?.value || '0') || 0;
+      snapshot.rates[id] = parseInt(document.getElementById('rate_' + id)?.value || '0') || 0;
+    } else if (mode === 'proyecto') {
+      snapshot.projects[id] = parseFloat(document.getElementById('proj_' + id)?.value || '0') || 0;
+    }
+  });
+
+  const list = getTemplates().filter(t => t.name !== snapshot.name);
+  list.unshift(snapshot);
+  saveTemplates(list.slice(0, 10)); // máximo 10 plantillas
+  renderTemplatesBar();
+  showToast(`// Plantilla "${snapshot.name}" guardada`, 'ok');
+}
+
+function applyTemplate(name) {
+  const tpl = getTemplates().find(t => t.name === name);
+  if (!tpl) return;
+
+  // Desactivar módulos actuales
+  [...activeModules].forEach(id => deactivateModule(id));
+
+  tpl.modules.forEach(id => {
+    if (!SERVICES.find(s => s.id === id)) return;
+    activateModule(id);
+    const mode = tpl.modes[id] || 'mensual';
+    setMode(id, mode);
+    if (mode === 'mensual' && tpl.quantities[id]) {
+      const inp = document.getElementById('qty_' + id);
+      if (inp) inp.value = tpl.quantities[id];
+    } else if (mode === 'hora') {
+      const hrsInp  = document.getElementById('hrs_' + id);
+      const rateInp = document.getElementById('rate_' + id);
+      if (hrsInp  && tpl.hours[id])  hrsInp.value  = tpl.hours[id];
+      if (rateInp && tpl.rates[id])  rateInp.value = tpl.rates[id];
+    } else if (mode === 'proyecto' && tpl.projects[id]) {
+      const projInp = document.getElementById('proj_' + id);
+      if (projInp) projInp.value = tpl.projects[id];
+    }
+  });
+  updateSummary();
+  showToast(`// Plantilla "${name}" aplicada`, 'ok');
+}
+
+function deleteTemplate(name) {
+  const list = getTemplates().filter(t => t.name !== name);
+  saveTemplates(list);
+  renderTemplatesBar();
+  showToast(`// Plantilla "${name}" eliminada`, 'warn');
+}
+
+function renderTemplatesBar() {
+  const bar   = document.getElementById('templatesBar');
+  const chips = document.getElementById('templateChips');
+  if (!bar || !chips) return;
+
+  const list = getTemplates();
+  bar.style.display = 'flex';
+
+  chips.innerHTML = list.map(tpl => `
+    <span class="cv-tpl-chip">
+      <button class="cv-tpl-apply" onclick="applyTemplate('${tpl.name.replace(/'/g, "\\'")}')" title="Aplicar plantilla">${tpl.name}</button>
+      <button class="cv-tpl-del" onclick="deleteTemplate('${tpl.name.replace(/'/g, "\\'")}')" title="Eliminar">✕</button>
+    </span>`).join('');
 }
 
 // ─────────────────────────────────────────
@@ -1717,9 +1905,29 @@ async function saveCompanyConfig() {
 // ─────────────────────────────────────────
 // HELPERS
 // ─────────────────────────────────────────
+function showToast(msg, type = 'warn') {
+  let toast = document.getElementById('cv-toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'cv-toast';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = msg;
+  toast.className = 'cv-toast cv-toast-show cv-toast-' + type;
+  clearTimeout(toast._tid);
+  toast._tid = setTimeout(() => { toast.className = 'cv-toast'; }, 3500);
+}
+
 function assertAny() {
   if (activeModules.size === 0 && equipmentItems.length === 0) {
-    alert('Activa al menos un módulo de servicio o agrega un equipo primero.');
+    showToast('⚠ Activa al menos un módulo de servicio o agrega un equipo para continuar.');
+    const grid = document.getElementById('svcGrid');
+    if (grid) {
+      grid.classList.remove('cv-grid-shake');
+      void grid.offsetWidth; // reflow para reiniciar animación
+      grid.classList.add('cv-grid-shake');
+      setTimeout(() => grid.classList.remove('cv-grid-shake'), 600);
+    }
     return false;
   }
   return true;

@@ -108,6 +108,13 @@
               <label>DESCUENTO %</label>
               <input type="number" id="descuentoPct" value="0" min="0" max="100" step="0.5" placeholder="0" oninput="updateSummary()" />
             </div>
+            <div class="cv-cf cv-cf-iva">
+              <label>IVA 16%</label>
+              <label class="cv-toggle" title="Incluir o excluir IVA en la propuesta">
+                <input type="checkbox" id="ivaToggle" checked onchange="updateSummary()" />
+                <span class="cv-toggle-slider"></span>
+              </label>
+            </div>
           </div>
           <div class="cv-cf cv-cf-full" style="margin-top:10px">
             <label>NOTAS / CONDICIONES</label>
@@ -119,6 +126,13 @@
         <div class="cv-grid-header">
           <span class="cv-grid-label">// módulos de servicio — selecciona y configura</span>
           <span class="cv-grid-count"><span id="activeCount">0</span> activos</span>
+        </div>
+
+        <!-- TEMPLATES BAR -->
+        <div id="templatesBar" class="cv-templates-bar" style="display:none">
+          <span class="cv-templates-label">// plantillas:</span>
+          <div id="templateChips" class="cv-template-chips"></div>
+          <button onclick="saveCurrentTemplate()" class="cv-tpl-save-btn" title="Guardar selección actual como plantilla">+ Guardar</button>
         </div>
 
         <!-- SERVICE CARDS GRID -->
@@ -187,7 +201,7 @@
               </button>
               <button onclick="triggerPrint()" class="cv-act-btn cv-act-pdf">
                 <span class="cv-act-icon">⎙</span>
-                <span>PDF</span>
+                <span>PDF / Vista</span>
               </button>
               <button onclick="saveAndShare()" class="cv-act-btn cv-act-link">
                 <span class="cv-act-icon">🔗</span>
@@ -206,8 +220,25 @@
 
     </main>
 
-    <!-- PRINT VIEW -->
+    <!-- PRINT VIEW (oculta, solo para @media print y preview) -->
     <div id="printView" class="print-view"></div>
+
+    <!-- ══════════════════════════════════
+         PDF PREVIEW MODAL
+    ══════════════════════════════════ -->
+    <div id="pdfPreviewModal" class="admin-overlay" style="display:none">
+      <div class="pdf-preview-box">
+        <div class="admin-header pdf-preview-header">
+          <span class="admin-title">👁 VISTA PREVIA DE PROPUESTA</span>
+          <div class="pdf-preview-actions">
+            <button onclick="downloadPdf()" class="admin-create-btn pdf-dl-btn">⬇ DESCARGAR PDF</button>
+            <button onclick="confirmPrint()" class="admin-create-btn pdf-print-btn">⎙ IMPRIMIR</button>
+            <button onclick="closePdfPreview()" class="admin-close">✕</button>
+          </div>
+        </div>
+        <div id="pdfPreviewContent" class="pdf-preview-content"></div>
+      </div>
+    </div>
 
     <!-- ══════════════════════════════════
          HISTORIAL DE COTIZACIONES
@@ -322,6 +353,7 @@
 
   </div>
 
-  <script src="js/cotizador-ventas.js?v=7"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="js/cotizador-ventas.js?v=9"></script>
 </body>
 </html>
