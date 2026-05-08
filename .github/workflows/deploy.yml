@@ -19,7 +19,7 @@ jobs:
           server: ${{ secrets.FTP_SERVER_WEB }}
           username: ${{ secrets.FTP_USERNAME_WEB }}
           password: ${{ secrets.FTP_PASSWORD_WEB }}
-          server-dir: /public_html/
+          server-dir: /
           dangerous-clean-slate: false
           exclude: |
             **/.git*
