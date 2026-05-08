@@ -28,9 +28,9 @@ try {
   $mail->SMTPAuth = true;
   $mail->Username = SMTP_USER;
   $mail->Password = SMTP_PASS;
-  $mail->Port = (int) SMTP_PORT;
+  $mail->Port = 587;
   $mail->Timeout = 15;
-  $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+  $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
 
   $mail->setFrom(SMTP_USER, 'Mirmibug Web TEST');
   $mail->addAddress(MAIL_TO, 'Contacto Mirmibug');
