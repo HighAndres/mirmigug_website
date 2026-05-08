@@ -143,11 +143,10 @@ try {
   $mail->isSMTP();
   $mail->Host = SMTP_HOST;
   $mail->SMTPAuth = true;
-  $mail->AuthType = 'PLAIN';
   $mail->Username = SMTP_USER;
   $mail->Password = SMTP_PASS;
   $mail->Port = (int) SMTP_PORT;
-  $mail->Timeout = 10;
+  $mail->Timeout = 15;
   $mail->SMTPKeepAlive = false;
   $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
 
