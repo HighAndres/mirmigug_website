@@ -141,14 +141,10 @@ try {
   $mail->CharSet = 'UTF-8';
 
   $mail->isSMTP();
-  $mail->Host = SMTP_HOST;
-  $mail->SMTPAuth = true;
-  $mail->Username = SMTP_USER;
-  $mail->Password = SMTP_PASS;
-  $mail->Port = 587;
-  $mail->Timeout = 15;
-  $mail->SMTPKeepAlive = false;
-  $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+  $mail->Host = 'localhost';
+  $mail->SMTPAuth = false;
+  $mail->Port = 25;
+  $mail->SMTPSecure = '';
 
   $mail->setFrom(SMTP_USER, 'Mirmibug Web');
   $mail->addAddress(MAIL_TO, 'Contacto Mirmibug');
