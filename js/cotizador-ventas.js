@@ -317,7 +317,7 @@ function renderCards() {
       : `$${fmt2(svc.varRate)} / ${svc.varUnit}`;
 
     return `
-      <div class="svc-card" id="card_${svc.id}" onclick="handleCardClick(event,'${svc.id}')">
+      <div class="svc-card" id="card_${svc.id}" data-svcid="${svc.id}">
 
         <div class="svc-status">
           <span class="svc-status-dot" id="sdot_${svc.id}"></span>
@@ -384,6 +384,17 @@ function renderCards() {
         <button class="svc-close" onclick="event.stopPropagation();deactivateModule('${svc.id}')">✕ quitar</button>
       </div>`;
   }).join('');
+
+  // Event delegation: un solo listener en el grid en vez de onclick inline por tarjeta
+  grid.onclick = function(e) {
+    const card = e.target.closest('[data-svcid]');
+    if (!card) return;
+    // Ignorar clics en controles internos (tienen stopPropagation pero por si acaso)
+    if (e.target.closest('.svc-mode-toggle, .svc-controls, .svc-close, button, input')) return;
+    const id = card.dataset.svcid;
+    if (activeModules.has(id)) return;
+    activateModule(id);
+  };
 
   // Restaurar estado visual de módulos activos tras re-render (p.ej. después de loadPriceOverrides)
   activeModules.forEach(id => {
