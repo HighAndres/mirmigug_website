@@ -1144,51 +1144,61 @@ function loadHtml2pdf() {
   });
 }
 
-async function downloadPdf() {
-  try {
-    await loadHtml2pdf();
-  } catch {
-    showToast('⚠ Librería PDF no disponible — usa Imprimir → Guardar como PDF', 'warn');
+function downloadPdf() {
+  buildPrintView();
+  const content = document.getElementById('printView').innerHTML;
+  if (!content || !content.trim()) {
+    showToast('⚠ Configura la propuesta antes de descargar', 'warn');
     return;
   }
-  const printView = document.getElementById('printView');
-  const empresa   = val('empresa') || 'propuesta';
-  const filename  = `${currentFolio || 'MB'}-${empresa}.pdf`
-    .toLowerCase()
-    .replace(/\s+/g, '-')
-    .replace(/[^a-z0-9\-_.]/g, '');
 
-  const btn = document.querySelector('.pdf-dl-btn');
-  if (btn) { btn.textContent = '⏳ GENERANDO...'; btn.disabled = true; }
+  const empresa  = val('empresa') || 'propuesta';
+  const docTitle = (currentFolio ? currentFolio + ' — ' : '') + empresa;
 
-  // Clonar el contenido en un div temporal limpio visible en el DOM.
-  // html2canvas no captura elementos con display:none ni muy fuera de pantalla.
-  const clone = document.createElement('div');
-  clone.style.cssText = 'position:absolute; top:0; left:-9999px; width:820px; background:#fff; font-family:Inter,Arial,sans-serif; color:#111; font-size:12px;';
-  clone.innerHTML = printView.innerHTML;
-  document.body.appendChild(clone);
+  // Generar página HTML autocontenida y abrirla en pestaña nueva.
+  // html2canvas tiene problemas con flex, fuentes y CORS. El motor de impresión
+  // nativo del browser es más fiel — abre "Guardar como PDF" en el diálogo.
+  const fullHtml = [
+    '<!DOCTYPE html><html lang="es"><head>',
+    '<meta charset="UTF-8">',
+    '<title>' + docTitle + '</title>',
+    '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">',
+    '<style>',
+    '*{box-sizing:border-box;margin:0;padding:0}',
+    'body{font-family:Inter,Arial,sans-serif;background:#fff;color:#111;',
+    '-webkit-print-color-adjust:exact;print-color-adjust:exact}',
+    '@page{margin:8mm}',
+    '@media print{body{margin:0}}',
+    '.no-print{display:none!important}',
+    '.print-bar{display:flex;align-items:center;justify-content:space-between;',
+    'padding:10px 20px;background:#f5f5f5;border-bottom:1px solid #ddd;margin-bottom:16px}',
+    '.print-bar button{padding:8px 18px;background:#38d84e;border:none;',
+    'border-radius:4px;font-weight:700;cursor:pointer;font-size:13px}',
+    '@media print{.print-bar{display:none!important}}',
+    '</style>',
+    '</head><body>',
+    '<div class="print-bar no-print">',
+    '<span style="font-size:13px;color:#555">Guarda como <b>PDF</b> desde el diálogo de impresión</span>',
+    '<button onclick="window.print()">🖨 Imprimir / Guardar PDF</button>',
+    '</div>',
+    content,
+    '</body></html>'
+  ].join('');
 
-  html2pdf()
-    .set({
-      margin:      [8, 8, 8, 8],
-      filename,
-      image:       { type: 'jpeg', quality: 0.97 },
-      html2canvas: { scale: 2, useCORS: true, logging: false, backgroundColor: '#ffffff' },
-      jsPDF:       { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    })
-    .from(clone)
-    .save()
-    .then(() => {
-      document.body.removeChild(clone);
-      if (btn) { btn.textContent = '⬇ DESCARGAR PDF'; btn.disabled = false; }
-      closePdfPreview();
-      showToast('// PDF descargado', 'ok');
-    })
-    .catch(() => {
-      if (document.body.contains(clone)) document.body.removeChild(clone);
-      if (btn) { btn.textContent = '⬇ DESCARGAR PDF'; btn.disabled = false; }
-      showToast('⚠ Error al generar PDF', 'error');
-    });
+  try {
+    const blob = new Blob([fullHtml], { type: 'text/html;charset=utf-8' });
+    const url  = URL.createObjectURL(blob);
+    const win  = window.open(url, '_blank');
+    if (!win) throw new Error('popup blocked');
+    setTimeout(() => URL.revokeObjectURL(url), 120000);
+    closePdfPreview();
+    showToast('// Pestaña abierta — imprime y elige "Guardar como PDF"', 'ok');
+  } catch {
+    // Fallback si popups bloqueados: imprimir desde la página actual
+    closePdfPreview();
+    setTimeout(() => window.print(), 100);
+    showToast('// Imprime y elige "Guardar como PDF"', 'ok');
+  }
 }
 
 function buildPrintView() {
