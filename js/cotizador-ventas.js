@@ -891,7 +891,7 @@ async function saveAndShare() {
 
     if (data.ok) {
       if (data.folio) currentFolio = data.folio;
-      const url = `${location.origin}/cotizador-ventas.html?propuesta=${data.token}`;
+      const url = `${location.origin}/propuesta.php?token=${data.token}`;
       const folioHtml = data.folio ? `<div class="cv-share-folio">// FOLIO: ${data.folio}</div>` : '';
       resultEl.innerHTML = `
         ${folioHtml}
@@ -1512,7 +1512,7 @@ function renderHistorial(quotes) {
 }
 
 function openSharedQuote(token) {
-  window.open(`/cotizador-ventas.html?propuesta=${token}`, '_blank');
+  window.open(`/propuesta.php?token=${token}`, '_blank');
 }
 
 async function duplicateQuote(token) {
