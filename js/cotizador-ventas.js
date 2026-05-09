@@ -384,6 +384,25 @@ function renderCards() {
         <button class="svc-close" onclick="event.stopPropagation();deactivateModule('${svc.id}')">✕ quitar</button>
       </div>`;
   }).join('');
+
+  // Restaurar estado visual de módulos activos tras re-render (p.ej. después de loadPriceOverrides)
+  activeModules.forEach(id => {
+    const card = document.getElementById('card_' + id);
+    if (card) card.classList.add('active');
+    const stxt = document.getElementById('stxt_' + id);
+    if (stxt) stxt.textContent = 'ON';
+    const mode = svcModes[id] || 'mensual';
+    const toggleEl = document.getElementById('mode_' + id);
+    if (toggleEl) {
+      toggleEl.querySelectorAll('.svc-mode-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.mode === mode);
+      });
+    }
+    ['mensual', 'hora', 'proyecto'].forEach(m => {
+      const ctrl = document.getElementById(`ctrl_${m}_${id}`);
+      if (ctrl) ctrl.style.display = (m === mode) ? 'block' : 'none';
+    });
+  });
 }
 
 // ─────────────────────────────────────────
