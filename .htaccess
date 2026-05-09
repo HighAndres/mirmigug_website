@@ -18,8 +18,8 @@ Options -Indexes
   # Permisos de APIs del navegador
   Header always set Permissions-Policy "geolocation=(), microphone=(), camera=(), payment=()"
 
-  # CSP — Tailwind CDN requiere unsafe-eval y unsafe-inline para estilos
-  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' https://cdn.tailwindcss.com 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self'; frame-ancestors 'none'; form-action 'self'; base-uri 'self';"
+  # CSP — unsafe-inline requerido para handlers inline del cotizador; unsafe-eval para Tailwind
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self'; frame-ancestors 'none'; form-action 'self'; base-uri 'self';"
 
   # Ocultar versión del servidor
   Header always unset X-Powered-By
