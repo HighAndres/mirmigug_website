@@ -1161,6 +1161,11 @@ async function downloadPdf() {
   const btn = document.querySelector('.pdf-dl-btn');
   if (btn) { btn.textContent = '⏳ GENERANDO...'; btn.disabled = true; }
 
+  // #printView tiene display:none en CSS normal — html2canvas lo renderiza en blanco.
+  // Lo colocamos fuera de pantalla pero visible para que html2canvas pueda capturarlo.
+  const prevStyle = element.style.cssText;
+  element.style.cssText = 'display:block !important; position:fixed; top:-99999px; left:0; width:820px; background:#fff;';
+
   html2pdf()
     .set({
       margin:     [8, 8, 8, 8],
@@ -1172,11 +1177,13 @@ async function downloadPdf() {
     .from(element)
     .save()
     .then(() => {
+      element.style.cssText = prevStyle;
       if (btn) { btn.textContent = '⬇ DESCARGAR PDF'; btn.disabled = false; }
       closePdfPreview();
       showToast('// PDF descargado', 'ok');
     })
     .catch(() => {
+      element.style.cssText = prevStyle;
       if (btn) { btn.textContent = '⬇ DESCARGAR PDF'; btn.disabled = false; }
       showToast('⚠ Error al generar PDF', 'error');
     });
