@@ -1334,9 +1334,6 @@ function buildPrintView() {
     ? `<div style="padding:10px 14px;border:1px solid #ddd;border-radius:6px;font-size:11px;color:#444;margin-bottom:16px"><b>Notas y condiciones especiales:</b><br>${q.notas}</div>`
     : '';
 
-  // ── Footer términos ──
-  const terms = cfg.terms || 'Precios en MXN sin IVA. IVA aplicable 16%. Contrato mensual sin permanencia mínima.';
-
   // ── RFC y datos empresa ──
   const rfc     = cfg.rfc     || '';
   const address = cfg.address || 'Ciudad de México';
@@ -1379,7 +1376,6 @@ function buildPrintView() {
         </div>
         <div style="text-align:right;font-size:11px;color:#555">
           <div style="font-size:10px;font-weight:800;color:#38d84e;letter-spacing:2px;margin-bottom:6px;text-transform:uppercase">Servicios IT Administrados</div>
-          <div>Contrato: Mensual sin permanencia</div>
         </div>
       </div>
 
@@ -1413,8 +1409,7 @@ function buildPrintView() {
 
       <!-- FOOTER -->
       <div style="font-size:9px;color:#aaa;border-top:1px solid #eee;padding-top:10px;line-height:1.8">
-        ${terms}
-        Propuesta válida hasta el ${vigStr}. Consultas: <b>contacto@mirmibug.com</b>
+        Consultas: <b>contacto@mirmibug.com</b> · <b>mirmibug.com</b>
       </div>
 
     </div>`;
