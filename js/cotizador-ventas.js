@@ -1167,21 +1167,15 @@ function downloadPdf() {
     '*{box-sizing:border-box;margin:0;padding:0}',
     'body{font-family:Inter,Arial,sans-serif;background:#fff;color:#111;',
     '-webkit-print-color-adjust:exact;print-color-adjust:exact}',
-    '@page{margin:8mm}',
-    '@media print{body{margin:0}}',
-    '.no-print{display:none!important}',
-    '.print-bar{display:flex;align-items:center;justify-content:space-between;',
-    'padding:10px 20px;background:#f5f5f5;border-bottom:1px solid #ddd;margin-bottom:16px}',
-    '.print-bar button{padding:8px 18px;background:#38d84e;border:none;',
-    'border-radius:4px;font-weight:700;cursor:pointer;font-size:13px}',
-    '@media print{.print-bar{display:none!important}}',
+    '@page{size:A4;margin:8mm}',
+    '@media print{.no-print{display:none!important}}',
     '</style>',
     '</head><body>',
-    '<div class="print-bar no-print">',
-    '<span style="font-size:13px;color:#555">Guarda como <b>PDF</b> desde el diálogo de impresión</span>',
-    '<button onclick="window.print()">🖨 Imprimir / Guardar PDF</button>',
-    '</div>',
     content,
+    '<script>',
+    // Esperar a que las fuentes carguen antes de imprimir
+    'document.fonts.ready.then(function(){setTimeout(window.print,400)});',
+    '<\/script>',
     '</body></html>'
   ].join('');
 
@@ -1192,12 +1186,12 @@ function downloadPdf() {
     if (!win) throw new Error('popup blocked');
     setTimeout(() => URL.revokeObjectURL(url), 120000);
     closePdfPreview();
-    showToast('// Pestaña abierta — imprime y elige "Guardar como PDF"', 'ok');
+    showToast('// Elige "Guardar como PDF" en el diálogo que se abre', 'ok');
   } catch {
-    // Fallback si popups bloqueados: imprimir desde la página actual
+    // Fallback si popups bloqueados
     closePdfPreview();
     setTimeout(() => window.print(), 100);
-    showToast('// Imprime y elige "Guardar como PDF"', 'ok');
+    showToast('// Elige "Guardar como PDF" en el diálogo de impresión', 'ok');
   }
 }
 
