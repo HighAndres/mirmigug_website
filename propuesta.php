@@ -272,7 +272,6 @@ $logoUrl = 'https://mirmibug.com/img/mirmibug-logo-green_sfondo.png';
 
   <!-- FOOTER -->
   <div style="font-size:9px;color:#aaa;border-top:1px solid #eee;padding-top:10px;line-height:1.8;margin-bottom:16px">
-    Precios en MXN sin IVA. IVA aplicable 16%. Propuesta válida hasta el <?= $vigDate ?>.
     Consultas: <b>contacto@mirmibug.com</b> · <b>mirmibug.com</b>
   </div>
 
