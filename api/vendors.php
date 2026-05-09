@@ -33,25 +33,11 @@ try {
   switch ($action) {
 
     // ══════════════════════════════════
-    // SETUP — ejecutar UNA vez para crear el admin inicial
-    // Visitar: api/vendors.php?action=setup
-    // ══════════════════════════════════
+    // SETUP — deshabilitado en producción
     case 'setup':
-      // Verificar que no existan vendedores aún
-      $count = (int) $pdo->query("SELECT COUNT(*) FROM sales_vendors")->fetchColumn();
-      if ($count > 0) {
-        echo json_encode(['ok' => false, 'error' => 'Ya existen vendedores. Setup solo funciona con tabla vacía.']);
-        exit;
-      }
-
-      $hash = password_hash('mirmi2026', PASSWORD_DEFAULT);
-      $stmt = $pdo->prepare("
-        INSERT INTO sales_vendors (vendor_id, name, pin_hash, role)
-        VALUES ('V001', 'Andres', ?, 'admin')
-      ");
-      $stmt->execute([$hash]);
-      echo json_encode(['ok' => true, 'message' => 'Admin V001 (Andres) creado. Cambia el PIN desde el panel admin.']);
-      break;
+      http_response_code(403);
+      echo json_encode(['ok' => false, 'error' => 'Endpoint deshabilitado']);
+      exit;
 
     // ══════════════════════════════════
     // LOGIN — validar PIN server-side
