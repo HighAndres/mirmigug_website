@@ -1097,8 +1097,27 @@ function confirmPrint() {
   setTimeout(() => window.print(), 80);
 }
 
-function downloadPdf() {
-  if (typeof html2pdf === 'undefined') {
+function loadHtml2pdf() {
+  return new Promise((resolve, reject) => {
+    if (typeof html2pdf !== 'undefined') { resolve(); return; }
+    const existing = document.querySelector('script[src*="html2pdf"]');
+    if (existing) {
+      existing.addEventListener('load', resolve);
+      existing.addEventListener('error', reject);
+      return;
+    }
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
+    s.onload  = resolve;
+    s.onerror = reject;
+    document.head.appendChild(s);
+  });
+}
+
+async function downloadPdf() {
+  try {
+    await loadHtml2pdf();
+  } catch {
     showToast('⚠ Librería PDF no disponible — usa Imprimir → Guardar como PDF', 'warn');
     return;
   }
@@ -1601,7 +1620,8 @@ function renderTemplatesBar() {
   if (!bar || !chips) return;
 
   const list = getTemplates();
-  bar.style.display = 'flex';
+  bar.style.display = list.length > 0 ? 'flex' : 'none';
+  if (list.length === 0) return;
 
   chips.innerHTML = list.map(tpl => `
     <span class="cv-tpl-chip">
