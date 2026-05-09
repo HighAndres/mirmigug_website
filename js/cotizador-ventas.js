@@ -1151,9 +1151,9 @@ async function downloadPdf() {
     showToast('⚠ Librería PDF no disponible — usa Imprimir → Guardar como PDF', 'warn');
     return;
   }
-  const element  = document.getElementById('printView');
-  const empresa  = val('empresa') || 'propuesta';
-  const filename = `${currentFolio || 'MB'}-${empresa}.pdf`
+  const printView = document.getElementById('printView');
+  const empresa   = val('empresa') || 'propuesta';
+  const filename  = `${currentFolio || 'MB'}-${empresa}.pdf`
     .toLowerCase()
     .replace(/\s+/g, '-')
     .replace(/[^a-z0-9\-_.]/g, '');
@@ -1161,29 +1161,31 @@ async function downloadPdf() {
   const btn = document.querySelector('.pdf-dl-btn');
   if (btn) { btn.textContent = '⏳ GENERANDO...'; btn.disabled = true; }
 
-  // #printView tiene display:none en CSS normal — html2canvas lo renderiza en blanco.
-  // Lo colocamos fuera de pantalla pero visible para que html2canvas pueda capturarlo.
-  const prevStyle = element.style.cssText;
-  element.style.cssText = 'display:block !important; position:fixed; top:-99999px; left:0; width:820px; background:#fff;';
+  // Clonar el contenido en un div temporal limpio visible en el DOM.
+  // html2canvas no captura elementos con display:none ni muy fuera de pantalla.
+  const clone = document.createElement('div');
+  clone.style.cssText = 'position:absolute; top:0; left:-9999px; width:820px; background:#fff; font-family:Inter,Arial,sans-serif; color:#111; font-size:12px;';
+  clone.innerHTML = printView.innerHTML;
+  document.body.appendChild(clone);
 
   html2pdf()
     .set({
-      margin:     [8, 8, 8, 8],
+      margin:      [8, 8, 8, 8],
       filename,
-      image:      { type: 'jpeg', quality: 0.97 },
-      html2canvas:{ scale: 2, useCORS: true, logging: false },
-      jsPDF:      { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      image:       { type: 'jpeg', quality: 0.97 },
+      html2canvas: { scale: 2, useCORS: true, logging: false, backgroundColor: '#ffffff' },
+      jsPDF:       { unit: 'mm', format: 'a4', orientation: 'portrait' }
     })
-    .from(element)
+    .from(clone)
     .save()
     .then(() => {
-      element.style.cssText = prevStyle;
+      document.body.removeChild(clone);
       if (btn) { btn.textContent = '⬇ DESCARGAR PDF'; btn.disabled = false; }
       closePdfPreview();
       showToast('// PDF descargado', 'ok');
     })
     .catch(() => {
-      element.style.cssText = prevStyle;
+      if (document.body.contains(clone)) document.body.removeChild(clone);
       if (btn) { btn.textContent = '⬇ DESCARGAR PDF'; btn.disabled = false; }
       showToast('⚠ Error al generar PDF', 'error');
     });
