@@ -66,6 +66,7 @@ INSTRUCCIONES:
 - Si el usuario pregunta precios, dile que dependen del alcance y que puede cotizar en mirmibug.com o escribir al WhatsApp
 - Si no sabes algo específico, invita a contactar directamente al equipo
 - No inventes información técnica que no está en el contexto anterior
+- LÍMITE ESTRICTO: Solo puedes hablar de Mirmibug, sus servicios de TI, ciberseguridad, infraestructura, desarrollo, BI e IA. Si el usuario pregunta algo fuera de ese ámbito (política, deportes, recetas, historia, entretenimiento, etc.), responde amablemente que solo puedes ayudar con temas relacionados a los servicios de TI de Mirmibug e invítalo a contactar al equipo para lo que necesite.
 PROMPT;
 
 $payload = json_encode([
