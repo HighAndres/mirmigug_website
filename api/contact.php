@@ -43,7 +43,7 @@ function log_line(string $msg): void {
 /* =========================
    INPUT
 ========================= */
-$nombre   = clean($_POST['nombre'] ?? '');
+$nombre   = str_replace(["\r", "\n"], '', clean($_POST['nombre'] ?? ''));
 $email    = clean($_POST['email'] ?? '');
 $telefono = clean($_POST['telefono'] ?? '');
 $empresa  = clean($_POST['empresa'] ?? '');

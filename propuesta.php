@@ -250,7 +250,7 @@ $logoUrl = 'https://mirmibug.com/img/mirmibug-logo-green_sfondo.png';
   <!-- NOTAS -->
   <?php if ($notas): ?>
   <div style="padding:10px 14px;border:1px solid #ddd;border-radius:6px;font-size:11px;color:#444;margin-bottom:16px">
-    <b>Notas y condiciones especiales:</b><br><?= nl2br($notas) ?>
+    <b>Notas y condiciones especiales:</b><br><?= nl2br(htmlspecialchars($notas, ENT_QUOTES, 'UTF-8')) ?>
   </div>
   <?php endif; ?>
 
