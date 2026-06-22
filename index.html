@@ -1169,6 +1169,10 @@
     #mb-msgs::-webkit-scrollbar-thumb{background:#2a2a2a;border-radius:2px;}
     .mb-msg{max-width:82%;padding:8px 12px;border-radius:12px;font-size:.85rem;line-height:1.5;word-break:break-word;font-family:'DM Sans',sans-serif;}
     .mb-msg-bot{background:#1a2b1c;color:#d4f7d9;align-self:flex-start;border-bottom-left-radius:3px;}
+    .mb-msg-bot strong,.mb-msg-bot b{color:#38d84e;font-weight:600;}
+    .mb-msg-bot ul,.mb-msg-bot ol{margin:4px 0;padding-left:18px;}
+    .mb-msg-bot li{margin:2px 0;}
+    .mb-msg-bot a{color:#38d84e;text-decoration:underline;}
     .mb-msg-user{background:#38d84e;color:#000;align-self:flex-end;border-bottom-right-radius:3px;}
     .mb-typing{display:flex;gap:5px;align-items:center;padding:12px 14px !important;}
     .mb-typing span{width:7px;height:7px;border-radius:50%;background:#38d84e;animation:mbdot 1.2s infinite;}
@@ -1183,6 +1187,9 @@
     #mb-send{background:#38d84e;color:#000;border:none;border-radius:8px;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:opacity .15s;}
     #mb-send:hover{opacity:.85;}
     #mb-send:disabled{opacity:.35;cursor:default;}
+    .mb-chips{display:flex;flex-wrap:wrap;gap:6px;padding:4px 12px 8px;align-self:flex-start;max-width:90%;}
+    .mb-chip{background:#1a2b1c;color:#38d84e;border:1px solid #2a3d2c;border-radius:16px;padding:5px 12px;font-size:.78rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .15s,border-color .15s;white-space:nowrap;}
+    .mb-chip:hover{background:#243826;border-color:#38d84e;}
   </style>
 
   <button id="mb-btn" title="Chat con Mirmibot" aria-label="Abrir chat" aria-expanded="false">
@@ -1214,7 +1221,11 @@
 
   <script>
   (function(){
+    var LANG='es';
     var WELCOME='¡Hola! Soy Mirmibot, el asistente de Mirmibug IT Solutions. ¿En qué puedo ayudarte hoy?';
+    var SUGGESTIONS=['¿Qué servicios ofrecen?','Necesito soporte TI','Quiero una cotización','¿Tienen ciberseguridad?'];
+    var SK='mirmibot_history';
+    var history=[];
     var welcomed=false,loading=false;
     var btn=document.getElementById('mb-btn');
     var win=document.getElementById('mb-win');
@@ -1223,13 +1234,57 @@
     var inputEl=document.getElementById('mb-input');
     var sendBtn=document.getElementById('mb-send');
 
-    function addMsg(text,type){
+    try{var saved=JSON.parse(sessionStorage.getItem(SK));if(Array.isArray(saved))history=saved;}catch(e){}
+
+    function saveHistory(){
+      try{sessionStorage.setItem(SK,JSON.stringify(history.slice(-20)));}catch(e){}
+    }
+
+    function renderMarkdown(text){
+      var safe=text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      safe=safe.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
+      safe=safe.replace(/\n- (.+)/g,'\n<li>$1</li>');
+      safe=safe.replace(/\n\d+\.\s(.+)/g,'\n<li>$1</li>');
+      if(safe.indexOf('<li>')>-1){
+        safe=safe.replace(/(<li>.*?<\/li>)+/gs,function(m){return '<ul>'+m+'</ul>';});
+      }
+      safe=safe.replace(/\n/g,'<br>');
+      return safe;
+    }
+
+    function addMsg(text,type,skipHistory){
       var d=document.createElement('div');
       d.className='mb-msg mb-msg-'+type;
-      d.textContent=text;
+      if(type==='bot'){
+        d.innerHTML=renderMarkdown(text);
+      }else{
+        d.textContent=text;
+      }
       msgsEl.appendChild(d);
       msgsEl.scrollTop=msgsEl.scrollHeight;
+      if(!skipHistory){
+        history.push({role:type==='user'?'user':'assistant',content:text});
+        saveHistory();
+      }
       return d;
+    }
+
+    function showChips(items){
+      var wrap=document.createElement('div');
+      wrap.className='mb-chips';
+      items.forEach(function(label){
+        var c=document.createElement('button');
+        c.className='mb-chip';
+        c.textContent=label;
+        c.addEventListener('click',function(){
+          wrap.remove();
+          inputEl.value=label;
+          sendMsg();
+        });
+        wrap.appendChild(c);
+      });
+      msgsEl.appendChild(wrap);
+      msgsEl.scrollTop=msgsEl.scrollHeight;
     }
 
     function showTyping(){
@@ -1244,6 +1299,8 @@
     function sendMsg(){
       var text=inputEl.value.trim();
       if(!text||loading)return;
+      var chips=msgsEl.querySelectorAll('.mb-chips');
+      chips.forEach(function(c){c.remove();});
       addMsg(text,'user');
       inputEl.value='';
       inputEl.style.height='36px';
@@ -1253,16 +1310,23 @@
       fetch('/api/chat.php',{
         method:'POST',
         headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({message:text})
+        body:JSON.stringify({message:text,history:history.slice(0,-1)})
       })
-      .then(function(r){return r.json();})
+      .then(function(r){
+        if(r.status===429)throw new Error('rate');
+        return r.json();
+      })
       .then(function(data){
         typing.remove();
         addMsg(data.reply||'No pude procesar la respuesta.','bot');
       })
-      .catch(function(){
+      .catch(function(err){
         typing.remove();
-        addMsg('Error de conexión. Escríbenos a contacto@mirmibug.com','bot');
+        if(err.message==='rate'){
+          addMsg('Estás enviando mensajes muy rápido. Espera un momento e intenta de nuevo.','bot');
+        }else{
+          addMsg('Error de conexión. Escríbenos a contacto@mirmibug.com','bot');
+        }
       })
       .finally(function(){
         loading=false;
@@ -1271,12 +1335,25 @@
       });
     }
 
+    function restoreSession(){
+      if(history.length>0){
+        welcomed=true;
+        addMsg(WELCOME,'bot',true);
+        history.forEach(function(m){
+          addMsg(m.content,m.role==='user'?'user':'bot',true);
+        });
+      }
+    }
+
     function openChat(){
       win.classList.add('mb-open');
       btn.setAttribute('aria-expanded','true');
       if(!welcomed){
         welcomed=true;
-        setTimeout(function(){addMsg(WELCOME,'bot');},300);
+        setTimeout(function(){
+          addMsg(WELCOME,'bot',true);
+          showChips(SUGGESTIONS);
+        },300);
       }
       setTimeout(function(){inputEl.focus();},280);
     }
@@ -1286,6 +1363,7 @@
       btn.setAttribute('aria-expanded','false');
     }
 
+    restoreSession();
     btn.addEventListener('click',function(){win.classList.contains('mb-open')?closeChat():openChat();});
     closeBtn.addEventListener('click',closeChat);
     sendBtn.addEventListener('click',sendMsg);
